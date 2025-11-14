@@ -6,7 +6,7 @@ React + Vite playground for experimenting with Mermaid diagrams, themes, and sha
 ## Setup
 ```bash
 git clone <repo>
-cd mermaid-react
+cd mermaid-preview
 yarn install
 yarn dev
 ```
