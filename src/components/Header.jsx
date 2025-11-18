@@ -5,7 +5,7 @@ const Header = ({ toggleDarkMode, darkMode }) => {
   const { t, i18n } = useTranslation();
   const languages = {
     en: "English",
-    zh: "中文",
+    zh: "繁體中文",
     hi: "हिन्दी",
     es: "Español",
     fr: "Français",

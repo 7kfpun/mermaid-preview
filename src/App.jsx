@@ -1,6 +1,7 @@
 import { useEffect, useRef, useCallback } from "react";
 import mermaid from "mermaid";
 import toast, { Toaster } from "react-hot-toast";
+import { useTranslation } from "react-i18next";
 import "./App.css";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
@@ -15,8 +16,10 @@ import {
   samples,
 } from "./utils/constants";
 import { encodeState, decodeState } from "./utils/url";
+import { isRTL } from "./i18n";
 
 function App() {
+  const { i18n } = useTranslation();
   const { code, setCode, embedHtml, setEmbedHtml } = useMermaidCode();
   const {
     theme,
@@ -269,6 +272,12 @@ ${code}
     }, 0);
     return () => clearTimeout(timer);
   }, [editorWidth, renderDiagram]);
+
+  // Handle RTL direction based on language
+  useEffect(() => {
+    const direction = isRTL(i18n.language) ? "rtl" : "ltr";
+    document.documentElement.setAttribute("dir", direction);
+  }, [i18n.language]);
 
   useEffect(() => {
     const trimmed = code.trim();
