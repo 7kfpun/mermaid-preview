@@ -5,6 +5,7 @@ import CodeMirror from "@uiw/react-codemirror";
 import { javascript } from "@codemirror/lang-javascript";
 import { oneDark } from "@codemirror/theme-one-dark";
 import { indentationMarkers } from "@replit/codemirror-indentation-markers";
+import { mermaid as mermaidLang } from "codemirror-lang-mermaid";
 import "./App.css";
 
 const Icon = ({ type }) => {
@@ -302,6 +303,8 @@ function App() {
   const [themeConfig, setThemeConfig] = useState("");
   const [showThemeConfig, setShowThemeConfig] = useState(false);
   const [isResizing, setIsResizing] = useState(false);
+  const [downloadMenuOpen, setDownloadMenuOpen] = useState(false);
+  const [copyMenuOpen, setCopyMenuOpen] = useState(false);
   const [darkMode, setDarkMode] = useState(() => {
     try {
       const saved = localStorage.getItem(STORAGE_KEYS.DARK_MODE);
@@ -929,8 +932,64 @@ ${code}
     navigator.clipboard.writeText(embedHtml).catch(() => {});
   };
 
+  const copyImage = (type) => {
+    const svgEl = previewRef.current?.querySelector("svg");
+    if (!svgEl) return;
+
+    const width = svgEl.width.baseVal.value || svgEl.clientWidth || 800;
+    const height = svgEl.height.baseVal.value || svgEl.clientHeight || 600;
+
+    const svgClone = svgEl.cloneNode(true);
+    svgClone.setAttribute("xmlns", "http://www.w3.org/2000/svg");
+    const svgText = new XMLSerializer().serializeToString(svgClone);
+
+    if (type === "svg") {
+      navigator.clipboard.writeText(svgText).catch(() => {});
+      return;
+    }
+
+    // Convert SVG to base64 using TextEncoder
+    const bytes = new TextEncoder().encode(svgText);
+    const binString = Array.from(bytes, (byte) =>
+      String.fromCodePoint(byte),
+    ).join("");
+    const svgDataUrl = "data:image/svg+xml;base64," + btoa(binString);
+
+    const img = new Image();
+    img.onload = () => {
+      const canvas = document.createElement("canvas");
+      canvas.width = width;
+      canvas.height = height;
+
+      const ctx = canvas.getContext("2d");
+
+      if (type === "jpg") {
+        ctx.fillStyle = "white";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+      }
+
+      ctx.drawImage(img, 0, 0, width, height);
+
+      canvas.toBlob(
+        (blob) => {
+          if (!blob) return;
+          navigator.clipboard.write([new ClipboardItem({ [blob.type]: blob })]);
+        },
+        type === "png" ? "image/png" : "image/jpeg",
+        type === "png" ? 1.0 : 0.9,
+      );
+    };
+
+    img.onerror = () => {
+      console.error("Failed to load SVG into image");
+    };
+
+    img.src = svgDataUrl;
+  };
+
   const handleWheel = (e) => {
     e.preventDefault();
+    e.stopPropagation();
 
     const delta = e.deltaY > 0 ? -0.03 : 0.03; // Slower zoom for better control
     const newScale = Math.max(0.1, Math.min(5, scale + delta));
@@ -1102,7 +1161,7 @@ ${code}
             value={code}
             height="100%"
             theme={darkMode ? oneDark : "light"}
-            extensions={[javascript(), indentationMarkers()]}
+            extensions={[mermaidLang(), indentationMarkers()]}
             onChange={(value) => setCode(value)}
             placeholder="Enter your Mermaid code here..."
             basicSetup={{
@@ -1146,9 +1205,36 @@ ${code}
             />
           )}
           <div className="controls">
-            <button onClick={downloadSvg}>Download SVG</button>
-            <button onClick={() => svgToRaster("png")}>Download PNG</button>
-            <button onClick={() => svgToRaster("jpg")}>Download JPG</button>
+            <div className="dropdown">
+              <button
+                onClick={() => setDownloadMenuOpen(!downloadMenuOpen)}
+                className="dropdown-toggle"
+              >
+                Download
+              </button>
+              {downloadMenuOpen && (
+                <div className="dropdown-menu">
+                  <button onClick={downloadSvg}>SVG</button>
+                  <button onClick={() => svgToRaster("png")}>PNG</button>
+                  <button onClick={() => svgToRaster("jpg")}>JPG</button>
+                </div>
+              )}
+            </div>
+            <div className="dropdown">
+              <button
+                onClick={() => setCopyMenuOpen(!copyMenuOpen)}
+                className="dropdown-toggle"
+              >
+                Copy
+              </button>
+              {copyMenuOpen && (
+                <div className="dropdown-menu">
+                  <button onClick={() => copyImage("svg")}>SVG</button>
+                  <button onClick={() => copyImage("png")}>PNG</button>
+                  <button onClick={() => copyImage("jpg")}>JPG</button>
+                </div>
+              )}
+            </div>
             <button onClick={handleShare} title="Copy shareable link">
               <svg
                 width="16"
@@ -1296,7 +1382,6 @@ ${code}
           </div>
           <div className="embed-container">
             <div className="embed-header">
-              <label htmlFor="embed-code">Embed HTML:</label>
               <button onClick={copyEmbedHtml}>Copy embed HTML</button>
             </div>
             <textarea id="embed-code" value={embedHtml} readOnly />

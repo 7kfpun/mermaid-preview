@@ -264,6 +264,52 @@ main {
   gap: 8px;
   background: #f8fafc;
   border-top: 1px solid #e2e8f0;
+  position: relative;
+  justify-content: flex-end;
+}
+
+.dropdown {
+  position: relative;
+}
+
+.dropdown-toggle {
+  padding: 10px 16px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  font-weight: 500;
+  font-size: 13px;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+}
+
+.dropdown-menu {
+  position: absolute;
+  bottom: 100%;
+  left: 0;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 4px;
+  margin-bottom: 8px;
+}
+
+.dropdown-menu button {
+  background: none;
+  color: #2d3748;
+  box-shadow: none;
+  width: 100%;
+  text-align: left;
+}
+
+.dropdown-menu button:hover {
+  background: #f1f5f9;
+  color: #667eea;
 }
 
 button {
