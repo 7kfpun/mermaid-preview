@@ -24,6 +24,22 @@ header {
   align-items: center;
 }
 
+.header-controls {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.language-selector {
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+  background: white;
+  font-size: 13px;
+  cursor: pointer;
+  outline: none;
+}
+
 header h1 {
   font-weight: 600;
   font-size: 20px;
@@ -70,7 +86,7 @@ main {
 }
 
 .resize-handle {
-  width: 16px;
+  width: 8px;
   cursor: col-resize;
   background: transparent;
   position: relative;
@@ -78,7 +94,7 @@ main {
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: 0 8px;
+  margin: 0 4px;
 }
 
 .resize-handle::before {
@@ -268,6 +284,28 @@ main {
   justify-content: flex-end;
 }
 
+.size-input {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.size-input label {
+  font-size: 13px;
+  font-weight: 500;
+  color: #2d3748;
+}
+
+.size-input input {
+  width: 80px;
+  padding: 8px;
+  border-radius: 6px;
+  border: 1px solid #e2e8f0;
+  background: white;
+  font-size: 13px;
+  text-align: center;
+}
+
 .dropdown {
   position: relative;
 }
@@ -338,53 +376,6 @@ button:disabled {
   opacity: 0.5;
   cursor: not-allowed;
   transform: none;
-}
-
-.embed-container {
-  padding: 16px;
-  border-top: 1px solid #e2e8f0;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  background: white;
-}
-
-.embed-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.embed-header label {
-  font-weight: 600;
-  color: #2d3748;
-  font-size: 14px;
-}
-
-.embed-header button {
-  font-size: 12px;
-  padding: 8px 14px;
-}
-
-.embed-container textarea {
-  width: 100%;
-  height: 100px;
-  font-family: "Monaco", "Menlo", "Ubuntu Mono", monospace;
-  font-size: 12px;
-  resize: vertical;
-  border: 1px solid #e2e8f0;
-  border-radius: 6px;
-  padding: 12px;
-  background: #f8fafc;
-  color: #2d3748;
-  outline: none;
-  transition: all 0.2s ease;
-}
-
-.embed-container textarea:focus {
-  border-color: #667eea;
-  background: white;
-  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
 }
 
 .zoom-controls {
@@ -528,4 +519,21 @@ button svg {
   header {
     padding: 16px;
   }
+}
+
+footer {
+  padding: 12px 24px;
+  background: rgba(255, 255, 255, 0.98);
+  box-shadow: 0 -2px 20px rgba(0, 0, 0, 0.1);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+  color: #4a5568;
+}
+
+footer a {
+  color: #667eea;
+  text-decoration: none;
+  font-weight: 500;
 }
