@@ -152,6 +152,14 @@ const Editor = ({
               >
                 {t("jpg")}
               </button>
+              <button
+                onClick={() => {
+                  svgToRaster("webp");
+                  trackEvent("download_webp");
+                }}
+              >
+                {t("webp")}
+              </button>
             </div>
           )}
         </div>
@@ -192,6 +200,14 @@ const Editor = ({
                 }}
               >
                 {t("jpg")}
+              </button>
+              <button
+                onClick={() => {
+                  copyImage("webp");
+                  trackEvent("copy_webp");
+                }}
+              >
+                {t("webp")}
               </button>
             </div>
           )}

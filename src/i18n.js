@@ -20,6 +20,9 @@ i18next
     interpolation: {
       escapeValue: false,
     },
+    react: {
+      useSuspense: true,
+    },
   });
 
 export default i18next;

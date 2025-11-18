@@ -1,5 +1,7 @@
+import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { trackEvent } from "../utils/ga";
+import { STORAGE_KEYS } from "../utils/constants";
 
 const Header = ({ toggleDarkMode, darkMode }) => {
   const { t, i18n } = useTranslation();
@@ -15,16 +17,36 @@ const Header = ({ toggleDarkMode, darkMode }) => {
     pt: "Português",
     id: "Bahasa Indonesia",
   };
+
+  // Load saved language on mount
+  useEffect(() => {
+    try {
+      const savedLanguage = localStorage.getItem(STORAGE_KEYS.LANGUAGE);
+      if (savedLanguage && savedLanguage !== i18n.language) {
+        i18n.changeLanguage(savedLanguage);
+      }
+    } catch (e) {
+      console.error("Failed to load language from localStorage:", e);
+    }
+  }, [i18n]);
+
+  const handleLanguageChange = (newLanguage) => {
+    i18n.changeLanguage(newLanguage);
+    try {
+      localStorage.setItem(STORAGE_KEYS.LANGUAGE, newLanguage);
+    } catch (e) {
+      console.error("Failed to save language to localStorage:", e);
+    }
+    trackEvent("change_language", { language: newLanguage });
+  };
+
   return (
     <header>
       <h1>{t("title")}</h1>
       <div className="header-controls">
         <select
           value={i18n.language}
-          onChange={(e) => {
-            i18n.changeLanguage(e.target.value);
-            trackEvent("change_language", { language: e.target.value });
-          }}
+          onChange={(e) => handleLanguageChange(e.target.value)}
           className="language-selector"
         >
           {Object.entries(languages).map(([code, name]) => (

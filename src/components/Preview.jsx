@@ -16,6 +16,7 @@ const Preview = ({
   isDragging,
   handleMouseDown,
   handleWheel,
+  handleTouchMove,
   svgContainerRef,
   previewRef,
   position,
@@ -74,6 +75,7 @@ const Preview = ({
         <button
           onClick={() => {
             setTheme("custom");
+            setThemeConfig(themeConfig || '{"theme": "base", "themeVariables": {"primaryColor": "#ff0000"}}');
             trackEvent("set_theme", { theme: "custom" });
           }}
           className={theme === "custom" ? "active" : ""}
@@ -100,6 +102,7 @@ const Preview = ({
         className={`preview ${isDragging ? "dragging" : ""}`}
         onMouseDown={handleMouseDown}
         onWheel={handleWheel}
+        onTouchMove={handleTouchMove}
         ref={svgContainerRef}
       >
         <div
