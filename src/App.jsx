@@ -1,49 +1,311 @@
-import { useState, useEffect, useRef } from 'react';
-import mermaid from 'mermaid';
-import pako from 'pako';
-import CodeMirror from '@uiw/react-codemirror';
-import { javascript } from '@codemirror/lang-javascript';
-import { oneDark } from '@codemirror/theme-one-dark';
-import { indentationMarkers } from '@replit/codemirror-indentation-markers';
-import './App.css';
+import { useState, useEffect, useRef, useCallback } from "react";
+import mermaid from "mermaid";
+import pako from "pako";
+import CodeMirror from "@uiw/react-codemirror";
+import { javascript } from "@codemirror/lang-javascript";
+import { oneDark } from "@codemirror/theme-one-dark";
+import { indentationMarkers } from "@replit/codemirror-indentation-markers";
+import "./App.css";
+
+const Icon = ({ type }) => {
+  const icons = {
+    flowchart: (
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
+        <path d="M12 2L12 8" />
+        <path d="M12 16L12 22" />
+        <path d="M17 5L7 5" />
+        <path d="M17 19L7 19" />
+        <path d="M22 12L12 12" />
+        <path d="M12 12L2 12" />
+        <path d="M17 19L17 5" />
+        <path d="M7 19L7 5" />
+      </svg>
+    ),
+    sequence: (
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
+        <path d="M3 3h18v18H3z" />
+        <path d="M9 9h6v6H9z" />
+        <path d="M9 15v3" />
+        <path d="M15 15v3" />
+        <path d="M9 6V3" />
+        <path d="M15 6V3" />
+      </svg>
+    ),
+    class: (
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
+        <path d="M3 12l9-9 9 9-9 9-9-9z" />
+        <path d="M12 22V12" />
+        <path d="M22 12H2" />
+      </svg>
+    ),
+    state: (
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
+        <circle cx="12" cy="12" r="10" />
+        <circle cx="12" cy="12" r="3" />
+      </svg>
+    ),
+    er: (
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
+        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z" />
+        <path d="M12 6v12" />
+        <path d="M17 9l-5 5-5-5" />
+      </svg>
+    ),
+    journey: (
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
+        <path d="M12 2a10 10 0 100 20 10 10 0 000-20z" />
+        <path d="M12 12l4-4" />
+        <path d="M12 12l-4 4" />
+        <path d="M12 12l4 4" />
+        <path d="M12 12l-4-4" />
+      </svg>
+    ),
+    gantt: (
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
+        <path d="M3 3h18v4H3z" />
+        <path d="M3 10h12v4H3z" />
+        <path d="M3 17h15v4H3z" />
+      </svg>
+    ),
+    pie: (
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
+        <path d="M21.21 15.89A10 10 0 118 2.83" />
+        <path d="M22 12A10 10 0 0012 2v10z" />
+      </svg>
+    ),
+    quadrant: (
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
+        <path d="M12 2v20" />
+        <path d="M2 12h20" />
+      </svg>
+    ),
+    requirement: (
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
+        <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" />
+        <path d="M14 2v6h6" />
+        <path d="M9 12h6" />
+        <path d="M9 16h6" />
+      </svg>
+    ),
+    gitgraph: (
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
+        <circle cx="12" cy="12" r="10" />
+        <path d="M12 2v20" />
+        <path d="M12 18a6 6 0 00-6-6" />
+      </svg>
+    ),
+    mindmap: (
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
+        <path d="M12 2a10 10 0 100 20 10 10 0 000-20z" />
+        <path d="M12 12h.01" />
+        <path d="M12 12l4-4" />
+        <path d="M12 12l-4 4" />
+      </svg>
+    ),
+    timeline: (
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
+        <path d="M3 3h18" />
+        <path d="M3 21h18" />
+        <path d="M12 3v18" />
+        <path d="M8 8h8" />
+        <path d="M8 16h8" />
+      </svg>
+    ),
+    sankey: (
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
+        <path d="M3 6h18" />
+        <path d="M3 12h18" />
+        <path d="M3 18h18" />
+        <path d="M3 6s6 6 6 6" />
+        <path d="M21 18s-6-6-6-6" />
+      </svg>
+    ),
+    xy: (
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
+        <path d="M3 3v18h18" />
+        <path d="M3 3l18 18" />
+      </svg>
+    ),
+    block: (
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
+        <path d="M3 3h18v18H3z" />
+        <path d="M9 3v18" />
+        <path d="M15 3v18" />
+        <path d="M3 9h18" />
+        <path d="M3 15h18" />
+      </svg>
+    ),
+    kanban: (
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
+        <path d="M3 3h6v18H3z" />
+        <path d="M15 3h6v18h-6z" />
+        <path d="M9 3h6v18H9z" />
+      </svg>
+    ),
+  };
+  return icons[type] || null;
+};
 
 // LocalStorage keys
 const STORAGE_KEYS = {
-  CODE: 'mermaid_code',
-  THEME: 'mermaid_theme',
-  THEME_CONFIG: 'mermaid_theme_config',
-  DIVIDER_POS: 'mermaid_divider_position',
-  DARK_MODE: 'mermaid_dark_mode'
+  CODE: "mermaid_code",
+  THEME: "mermaid_theme",
+  THEME_CONFIG: "mermaid_theme_config",
+  DIVIDER_POS: "mermaid_divider_position",
+  DARK_MODE: "mermaid_dark_mode",
 };
 
 // Default custom theme JSON template
-const DEFAULT_CUSTOM_THEME = JSON.stringify({
-  theme: 'base',
-  themeVariables: {
-    primaryColor: '#ff6b6b',
-    primaryTextColor: '#fff',
-    primaryBorderColor: '#ff5252',
-    lineColor: '#4ecdc4',
-    secondaryColor: '#ffe66d',
-    tertiaryColor: '#a8dadc'
-  }
-}, null, 2);
+const DEFAULT_CUSTOM_THEME = JSON.stringify(
+  {
+    theme: "base",
+    themeVariables: {
+      primaryColor: "#ff6b6b",
+      primaryTextColor: "#fff",
+      primaryBorderColor: "#ff5252",
+      lineColor: "#4ecdc4",
+      secondaryColor: "#ffe66d",
+      tertiaryColor: "#a8dadc",
+    },
+  },
+  null,
+  2,
+);
 
 function App() {
-  const [code, setCode] = useState('');
-  const [embedHtml, setEmbedHtml] = useState('');
+  const [code, setCode] = useState("");
+  const [embedHtml, setEmbedHtml] = useState("");
   const [isDragging, setIsDragging] = useState(false);
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [scale, setScale] = useState(1);
-  const [theme, setTheme] = useState('default');
-  const [themeConfig, setThemeConfig] = useState('');
+  const [theme, setTheme] = useState("default");
+  const [themeConfig, setThemeConfig] = useState("");
   const [showThemeConfig, setShowThemeConfig] = useState(false);
   const [isResizing, setIsResizing] = useState(false);
   const [darkMode, setDarkMode] = useState(() => {
     try {
       const saved = localStorage.getItem(STORAGE_KEYS.DARK_MODE);
-      return saved === 'true';
+      return saved === "true";
     } catch {
       return false;
     }
@@ -237,7 +499,7 @@ function App() {
     In Progress
       [Implement Feature]
     Done
-      [Testing]`
+      [Testing]`,
   };
 
   // URL encoding/decoding functions using pako compression
@@ -252,16 +514,16 @@ function App() {
     const binString = String.fromCharCode.apply(null, compressed);
     const base64 = btoa(binString);
     // Make URL-safe
-    return base64.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+    return base64.replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
   };
 
   const decodeState = (encoded) => {
     try {
       // Convert from URL-safe base64 back to regular base64
-      let base64 = encoded.replace(/-/g, '+').replace(/_/g, '/');
+      let base64 = encoded.replace(/-/g, "+").replace(/_/g, "/");
       // Add padding
       while (base64.length % 4) {
-        base64 += '=';
+        base64 += "=";
       }
       // Decode from base64 and decompress using pako
       const binString = atob(base64);
@@ -269,52 +531,52 @@ function App() {
       for (let i = 0; i < binString.length; i++) {
         bytes[i] = binString.charCodeAt(i);
       }
-      const decompressed = pako.inflate(bytes, { to: 'string' });
+      const decompressed = pako.inflate(bytes, { to: "string" });
       return JSON.parse(decompressed);
     } catch (e) {
-      console.error('Failed to decode state:', e);
+      console.error("Failed to decode state:", e);
       return null;
     }
   };
 
-  const updateURL = () => {
-    if (!code.trim()) return; // Don't update URL if no code
-
-    const themeConfigValue = theme === 'custom' ? themeConfig : null;
-    const encoded = encodeState(code, theme, themeConfigValue);
-    window.history.replaceState(null, '', '#pako:' + encoded);
-
-    // Also save to localStorage
-    saveToLocalStorage();
-  };
-
-  const saveToLocalStorage = () => {
+  const saveToLocalStorage = useCallback(() => {
     try {
       if (code.trim()) {
         localStorage.setItem(STORAGE_KEYS.CODE, code);
       }
       localStorage.setItem(STORAGE_KEYS.THEME, theme);
       localStorage.setItem(STORAGE_KEYS.DARK_MODE, darkMode.toString());
-      if (theme === 'custom' && themeConfig) {
+      if (theme === "custom" && themeConfig) {
         localStorage.setItem(STORAGE_KEYS.THEME_CONFIG, themeConfig);
       } else {
         localStorage.removeItem(STORAGE_KEYS.THEME_CONFIG);
       }
     } catch (e) {
-      console.error('Failed to save to localStorage:', e);
+      console.error("Failed to save to localStorage:", e);
     }
-  };
+  }, [code, theme, themeConfig, darkMode]);
 
-  const loadFromURL = () => {
+  const updateURL = useCallback(() => {
+    if (!code.trim()) return; // Don't update URL if no code
+
+    const themeConfigValue = theme === "custom" ? themeConfig : null;
+    const encoded = encodeState(code, theme, themeConfigValue);
+    window.history.replaceState(null, "", "#pako:" + encoded);
+
+    // Also save to localStorage
+    saveToLocalStorage();
+  }, [code, theme, themeConfig, saveToLocalStorage]);
+
+  const loadFromURL = useCallback(() => {
     const hash = window.location.hash;
 
-    if (hash.startsWith('#pako:')) {
+    if (hash.startsWith("#pako:")) {
       // Load from hash with pako compression
       const encoded = hash.substring(6); // Remove '#pako:' prefix
       const state = decodeState(encoded);
       if (state) {
-        setCode(state.code || '');
-        setTheme(state.theme || 'default');
+        setCode(state.code || "");
+        setTheme(state.theme || "default");
         if (state.themeConfig) {
           setThemeConfig(state.themeConfig);
           setShowThemeConfig(true);
@@ -322,7 +584,7 @@ function App() {
         return true;
       } else {
         // Failed to decode, clear invalid hash
-        window.history.replaceState(null, '', window.location.pathname);
+        window.history.replaceState(null, "", window.location.pathname);
       }
     }
 
@@ -338,23 +600,23 @@ function App() {
       if (savedTheme) {
         setTheme(savedTheme);
       }
-      if (savedThemeConfig && savedTheme === 'custom') {
+      if (savedThemeConfig && savedTheme === "custom") {
         setThemeConfig(savedThemeConfig);
         setShowThemeConfig(true);
       }
 
       return !!savedCode;
     } catch (e) {
-      console.error('Failed to load from localStorage:', e);
+      console.error("Failed to load from localStorage:", e);
       return false;
     }
-  };
+  }, []);
 
   const initializeMermaid = (selectedTheme, configObj) => {
     const config = {
       startOnLoad: false,
-      securityLevel: 'strict',
-      theme: selectedTheme
+      securityLevel: "strict",
+      theme: selectedTheme,
     };
 
     if (configObj) {
@@ -364,36 +626,39 @@ function App() {
     mermaid.initialize(config);
   };
 
-  const renderDiagram = async () => {
+  const renderDiagram = useCallback(async () => {
     if (!code.trim() || !previewRef.current) return;
 
     try {
       // Apply theme before rendering
       let themeConfigObj = null;
-      if (theme === 'custom' && themeConfig) {
+      if (theme === "custom" && themeConfig) {
         try {
           themeConfigObj = JSON.parse(themeConfig);
         } catch (e) {
-          console.error('Invalid theme JSON:', e);
+          console.error("Invalid theme JSON:", e);
         }
       }
-      initializeMermaid(theme === 'custom' ? (themeConfigObj?.theme || 'default') : theme, themeConfigObj);
+      initializeMermaid(
+        theme === "custom" ? themeConfigObj?.theme || "default" : theme,
+        themeConfigObj,
+      );
 
       // Clear previous content
       previewRef.current.innerHTML = `<div class="mermaid" id="diagram-target">${code}</div>`;
 
       // Wait for next tick to ensure DOM is updated
-      await new Promise(resolve => setTimeout(resolve, 0));
+      await new Promise((resolve) => setTimeout(resolve, 0));
 
       // Check if element exists before rendering
-      const diagramElement = document.getElementById('diagram-target');
+      const diagramElement = document.getElementById("diagram-target");
       if (!diagramElement) {
-        console.error('Diagram target element not found');
+        console.error("Diagram target element not found");
         return;
       }
 
       // Render with Mermaid
-      await mermaid.run({ querySelector: '#diagram-target' });
+      await mermaid.run({ querySelector: "#diagram-target" });
 
       // Update URL
       updateURL();
@@ -405,96 +670,110 @@ ${code}
 </div>
 <script type="module">
   import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs";
-  mermaid.initialize({ startOnLoad: true, theme: "${theme !== 'custom' ? theme : 'default'}" });
-<\/script>`;
+  mermaid.initialize({ startOnLoad: true, theme: "${theme !== "custom" ? theme : "default"}" });
+</script>`;
 
       setEmbedHtml(newEmbedHtml);
 
-      // Reset position and scale when new diagram is rendered
-      setPosition({ x: 0, y: 0 });
-      setScale(1);
+      // Auto-fit the diagram
+      const svgEl = previewRef.current.querySelector("svg");
+      if (svgEl && svgContainerRef.current) {
+        const containerWidth = svgContainerRef.current.offsetWidth;
+        const containerHeight = svgContainerRef.current.offsetHeight;
+        const svgWidth = svgEl.width.baseVal.value;
+        const svgHeight = svgEl.height.baseVal.value;
+
+        const scaleX = containerWidth / svgWidth;
+        const scaleY = containerHeight / svgHeight;
+        const newScale = Math.min(scaleX, scaleY) * 0.95; // 95% padding
+
+        const newX = (containerWidth - svgWidth * newScale) / 2;
+        const newY = (containerHeight - svgHeight * newScale) / 2;
+
+        setScale(newScale);
+        setPosition({ x: newX, y: newY });
+      }
     } catch (error) {
-      console.error('Mermaid rendering error:', error);
+      console.error("Mermaid rendering error:", error);
       previewRef.current.innerHTML = `<div style="color: #e53e3e; padding: 20px;">Error rendering diagram. Check your syntax.</div>`;
     }
-  };
+  }, [code, theme, themeConfig, updateURL]);
 
   useEffect(() => {
-    const hasData = loadFromURL();
-    let timer;
-
-    // Only render if we have data to render (from URL or localStorage)
-    if (hasData) {
-      // Delay initial render slightly to ensure Mermaid is fully ready
-      timer = setTimeout(() => {
+    const timer = setTimeout(() => {
+      if (loadFromURL()) {
         renderDiagram();
-      }, 100);
-    }
+      }
+    }, 100);
 
-    // Listen for hash changes (when user edits URL and presses Enter)
     const handleHashChange = () => {
       if (loadFromURL()) {
         renderDiagram();
       }
     };
 
-    window.addEventListener('hashchange', handleHashChange);
+    window.addEventListener("hashchange", handleHashChange);
 
     return () => {
-      if (timer) {
-        clearTimeout(timer);
-      }
-      window.removeEventListener('hashchange', handleHashChange);
+      clearTimeout(timer);
+      window.removeEventListener("hashchange", handleHashChange);
     };
-  }, []);
+  }, [loadFromURL, renderDiagram]);
 
   useEffect(() => {
     if (!code.trim()) return; // Don't render if code is empty
 
     clearTimeout(debounceTimer.current);
-    debounceTimer.current = setTimeout(renderDiagram, 500);
+    debounceTimer.current = setTimeout(() => renderDiagram(), 500);
 
     return () => clearTimeout(debounceTimer.current);
-  }, [code]);
+  }, [code, renderDiagram]);
 
   useEffect(() => {
     if (!code.trim()) return; // Don't render if code is empty
 
     clearTimeout(themeDebounceTimer.current);
-    themeDebounceTimer.current = setTimeout(renderDiagram, 500);
+    themeDebounceTimer.current = setTimeout(() => renderDiagram(), 500);
 
     return () => clearTimeout(themeDebounceTimer.current);
-  }, [theme, themeConfig]);
+  }, [code, theme, themeConfig, renderDiagram]);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      renderDiagram();
+    }, 0);
+    return () => clearTimeout(timer);
+  }, [editorWidth, renderDiagram]);
 
   useEffect(() => {
     const trimmed = code.trim();
-    const firstToken = trimmed.split(/\s+/)[0]?.toLowerCase() || '';
+    const firstToken = trimmed.split(/\s+/)[0]?.toLowerCase() || "";
     const labelMap = {
-      flowchart: 'Flowchart Diagram',
-      'flowcharttd': 'Flowchart Diagram',
-      sequencediagram: 'Sequence Diagram',
-      classdiagram: 'Class Diagram',
-      statediagram: 'State Diagram',
-      'statediagram-v2': 'State Diagram',
-      erdiagram: 'ER Diagram',
-      journey: 'User Journey',
-      gantt: 'Gantt Chart',
-      pie: 'Pie Chart',
-      quadrantchart: 'Quadrant Chart',
-      requirementdiagram: 'Requirement Diagram',
-      gitgraph: 'Git Graph',
-      mindmap: 'Mind Map',
-      timeline: 'Timeline Diagram',
-      'sankey-beta': 'Sankey Diagram',
-      'xychart-beta': 'XY Chart',
-      'block-beta': 'Block Diagram',
-      kanban: 'Kanban Board'
+      flowchart: "Flowchart Diagram",
+      flowcharttd: "Flowchart Diagram",
+      sequencediagram: "Sequence Diagram",
+      classdiagram: "Class Diagram",
+      statediagram: "State Diagram",
+      "statediagram-v2": "State Diagram",
+      erdiagram: "ER Diagram",
+      journey: "User Journey",
+      gantt: "Gantt Chart",
+      pie: "Pie Chart",
+      quadrantchart: "Quadrant Chart",
+      requirementdiagram: "Requirement Diagram",
+      gitgraph: "Git Graph",
+      mindmap: "Mind Map",
+      timeline: "Timeline Diagram",
+      "sankey-beta": "Sankey Diagram",
+      "xychart-beta": "XY Chart",
+      "block-beta": "Block Diagram",
+      kanban: "Kanban Board",
     };
-    const diagramLabel = labelMap[firstToken] || 'Mermaid Diagram';
+    const diagramLabel = labelMap[firstToken] || "Mermaid Diagram";
     const title = `${diagramLabel} | Mermaid Live Preview`;
     const description = `Create and share ${diagramLabel.toLowerCase()}s using a fast React + Vite Mermaid editor with themes, samples, and shareable URLs.`;
 
-    const updateMeta = (selector, value, attribute = 'content') => {
+    const updateMeta = (selector, value, attribute = "content") => {
       const element = document.querySelector(selector);
       if (element) {
         element.setAttribute(attribute, value);
@@ -510,58 +789,51 @@ ${code}
 
     const currentUrl = window.location.href;
     updateMeta('meta[property="og:url"]', currentUrl);
-    updateMeta('link[rel="canonical"]', currentUrl, 'href');
+    updateMeta('link[rel="canonical"]', currentUrl, "href");
   }, [code, theme]);
 
-  const handleThemeChange = (e) => {
-    const newTheme = e.target.value;
-    setTheme(newTheme);
-    setShowThemeConfig(newTheme === 'custom');
-    // Set predefined custom theme JSON when switching to custom
-    if (newTheme === 'custom' && !themeConfig) {
-      setThemeConfig(DEFAULT_CUSTOM_THEME);
-    }
-  };
-
-  const handleSampleChange = (e) => {
-    const sampleType = e.target.value;
+  const handleSampleClick = (sampleType) => {
     if (sampleType && samples[sampleType]) {
       const newCode = samples[sampleType];
       setCode(newCode);
       // Update URL immediately with new code
-      const themeConfigValue = theme === 'custom' ? themeConfig : null;
+      const themeConfigValue = theme === "custom" ? themeConfig : null;
       const encoded = encodeState(newCode, theme, themeConfigValue);
-      window.history.replaceState(null, '', '#pako:' + encoded);
-      // Reset selection to placeholder
-      e.target.value = '';
+      window.history.replaceState(null, "", "#pako:" + encoded);
     }
   };
 
   const handleShare = () => {
     const url = window.location.href;
-    navigator.clipboard.writeText(url).then(() => {
-      alert('Link copied to clipboard!');
-    }).catch(() => {});
+    navigator.clipboard
+      .writeText(url)
+      .then(() => {
+        alert("Link copied to clipboard!");
+      })
+      .catch(() => {});
   };
 
   const handleMouseDown = (e) => {
-    if (e.target.closest('svg')) {
+    if (e.target.closest("svg")) {
       setIsDragging(true);
       setDragOffset({
         x: e.clientX - position.x,
-        y: e.clientY - position.y
+        y: e.clientY - position.y,
       });
     }
   };
 
-  const handleMouseMove = (e) => {
-    if (isDragging) {
-      setPosition({
-        x: e.clientX - dragOffset.x,
-        y: e.clientY - dragOffset.y
-      });
-    }
-  };
+  const handleMouseMove = useCallback(
+    (e) => {
+      if (isDragging) {
+        setPosition({
+          x: e.clientX - dragOffset.x,
+          y: e.clientY - dragOffset.y,
+        });
+      }
+    },
+    [isDragging, dragOffset],
+  );
 
   const handleMouseUp = () => {
     setIsDragging(false);
@@ -569,27 +841,27 @@ ${code}
 
   useEffect(() => {
     if (isDragging) {
-      document.addEventListener('mousemove', handleMouseMove);
-      document.addEventListener('mouseup', handleMouseUp);
+      document.addEventListener("mousemove", handleMouseMove);
+      document.addEventListener("mouseup", handleMouseUp);
 
       return () => {
-        document.removeEventListener('mousemove', handleMouseMove);
-        document.removeEventListener('mouseup', handleMouseUp);
+        document.removeEventListener("mousemove", handleMouseMove);
+        document.removeEventListener("mouseup", handleMouseUp);
       };
     }
-  }, [isDragging, dragOffset]);
+  }, [isDragging, dragOffset, handleMouseMove]);
 
   const downloadSvg = () => {
-    const svgEl = previewRef.current?.querySelector('svg');
+    const svgEl = previewRef.current?.querySelector("svg");
     if (!svgEl) return;
 
     const svgText = svgEl.outerHTML;
-    const blob = new Blob([svgText], { type: 'image/svg+xml' });
+    const blob = new Blob([svgText], { type: "image/svg+xml" });
     const url = URL.createObjectURL(blob);
 
-    const a = document.createElement('a');
+    const a = document.createElement("a");
     a.href = url;
-    a.download = 'diagram.svg';
+    a.download = "diagram.svg";
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -597,31 +869,33 @@ ${code}
   };
 
   const svgToRaster = (type) => {
-    const svgEl = previewRef.current?.querySelector('svg');
+    const svgEl = previewRef.current?.querySelector("svg");
     if (!svgEl) return;
 
     const width = svgEl.width.baseVal.value || svgEl.clientWidth || 800;
     const height = svgEl.height.baseVal.value || svgEl.clientHeight || 600;
 
     const svgClone = svgEl.cloneNode(true);
-    svgClone.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+    svgClone.setAttribute("xmlns", "http://www.w3.org/2000/svg");
     const svgText = new XMLSerializer().serializeToString(svgClone);
 
     // Convert SVG to base64 using TextEncoder
     const bytes = new TextEncoder().encode(svgText);
-    const binString = Array.from(bytes, (byte) => String.fromCodePoint(byte)).join('');
-    const svgDataUrl = 'data:image/svg+xml;base64,' + btoa(binString);
+    const binString = Array.from(bytes, (byte) =>
+      String.fromCodePoint(byte),
+    ).join("");
+    const svgDataUrl = "data:image/svg+xml;base64," + btoa(binString);
 
     const img = new Image();
     img.onload = () => {
-      const canvas = document.createElement('canvas');
+      const canvas = document.createElement("canvas");
       canvas.width = width;
       canvas.height = height;
 
-      const ctx = canvas.getContext('2d');
+      const ctx = canvas.getContext("2d");
 
-      if (type === 'jpg') {
-        ctx.fillStyle = 'white';
+      if (type === "jpg") {
+        ctx.fillStyle = "white";
         ctx.fillRect(0, 0, canvas.width, canvas.height);
       }
 
@@ -631,7 +905,7 @@ ${code}
         (blobOut) => {
           if (!blobOut) return;
           const outUrl = URL.createObjectURL(blobOut);
-          const a = document.createElement('a');
+          const a = document.createElement("a");
           a.href = outUrl;
           a.download = `diagram.${type}`;
           document.body.appendChild(a);
@@ -639,13 +913,13 @@ ${code}
           document.body.removeChild(a);
           URL.revokeObjectURL(outUrl);
         },
-        type === 'png' ? 'image/png' : 'image/jpeg',
-        type === 'png' ? 1.0 : 0.9
+        type === "png" ? "image/png" : "image/jpeg",
+        type === "png" ? 1.0 : 0.9,
       );
     };
 
     img.onerror = () => {
-      console.error('Failed to load SVG into image');
+      console.error("Failed to load SVG into image");
     };
 
     img.src = svgDataUrl;
@@ -668,7 +942,7 @@ ${code}
     setScale(newScale);
     setPosition({
       x: position.x * scaleDiff,
-      y: position.y * scaleDiff
+      y: position.y * scaleDiff,
     });
   };
 
@@ -679,7 +953,7 @@ ${code}
     setScale(newScale);
     setPosition({
       x: position.x * scaleDiff,
-      y: position.y * scaleDiff
+      y: position.y * scaleDiff,
     });
   };
 
@@ -690,7 +964,7 @@ ${code}
     setScale(newScale);
     setPosition({
       x: position.x * scaleDiff,
-      y: position.y * scaleDiff
+      y: position.y * scaleDiff,
     });
   };
 
@@ -705,7 +979,7 @@ ${code}
     try {
       localStorage.setItem(STORAGE_KEYS.DARK_MODE, newDarkMode.toString());
     } catch (e) {
-      console.error('Failed to save dark mode preference:', e);
+      console.error("Failed to save dark mode preference:", e);
     }
   };
 
@@ -714,15 +988,15 @@ ${code}
     setIsResizing(true);
     resizeStartX.current = e.clientX;
     resizeStartWidth.current = editorWidth;
-    document.body.style.cursor = 'col-resize';
-    document.body.style.userSelect = 'none';
+    document.body.style.cursor = "col-resize";
+    document.body.style.userSelect = "none";
   };
 
   useEffect(() => {
     if (!isResizing) return;
 
     const handleResizeMove = (e) => {
-      const mainElement = document.querySelector('main');
+      const mainElement = document.querySelector("main");
       if (!mainElement) return;
 
       const mainWidth = mainElement.offsetWidth;
@@ -737,91 +1011,97 @@ ${code}
 
     const handleResizeEnd = () => {
       setIsResizing(false);
-      document.body.style.cursor = '';
-      document.body.style.userSelect = '';
+      document.body.style.cursor = "";
+      document.body.style.userSelect = "";
       // Save divider position to localStorage
       try {
         localStorage.setItem(STORAGE_KEYS.DIVIDER_POS, editorWidth.toString());
       } catch (e) {
-        console.error('Failed to save divider position:', e);
+        console.error("Failed to save divider position:", e);
       }
     };
 
-    document.addEventListener('mousemove', handleResizeMove);
-    document.addEventListener('mouseup', handleResizeEnd);
+    document.addEventListener("mousemove", handleResizeMove);
+    document.addEventListener("mouseup", handleResizeEnd);
 
     return () => {
-      document.removeEventListener('mousemove', handleResizeMove);
-      document.removeEventListener('mouseup', handleResizeEnd);
+      document.removeEventListener("mousemove", handleResizeMove);
+      document.removeEventListener("mouseup", handleResizeEnd);
     };
-  }, [isResizing]);
+  }, [isResizing, editorWidth]);
 
   return (
-    <div className={`app ${darkMode ? 'dark-mode' : ''}`}>
+    <div className={`app ${darkMode ? "dark-mode" : ""}`}>
       <header>
         <h1>Mermaid Live Preview</h1>
-        <button onClick={toggleDarkMode} className="dark-mode-toggle" title="Toggle dark mode">
+        <button
+          onClick={toggleDarkMode}
+          className="dark-mode-toggle"
+          title="Toggle dark mode"
+        >
           {darkMode ? (
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <circle cx="12" cy="12" r="5"/>
-              <line x1="12" y1="1" x2="12" y2="3"/>
-              <line x1="12" y1="21" x2="12" y2="23"/>
-              <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
-              <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
-              <line x1="1" y1="12" x2="3" y2="12"/>
-              <line x1="21" y1="12" x2="23" y2="12"/>
-              <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
-              <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <circle cx="12" cy="12" r="5" />
+              <line x1="12" y1="1" x2="12" y2="3" />
+              <line x1="12" y1="21" x2="12" y2="23" />
+              <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
+              <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
+              <line x1="1" y1="12" x2="3" y2="12" />
+              <line x1="21" y1="12" x2="23" y2="12" />
+              <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
+              <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
             </svg>
           ) : (
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
             </svg>
           )}
         </button>
       </header>
 
       <main>
-        <section className="editor" style={{ flexBasis: `${editorWidth}%`, flexGrow: 0, flexShrink: 0 }}>
-          <div className="theme-selector">
-            <div>
-              <label htmlFor="sample-select">Sample:</label>
-              <select id="sample-select" onChange={handleSampleChange} defaultValue="">
-                <option value="">Select a diagram...</option>
-                <option value="flowchart">Flowchart</option>
-                <option value="sequence">Sequence Diagram</option>
-                <option value="class">Class Diagram</option>
-                <option value="state">State Diagram</option>
-                <option value="er">Entity Relationship</option>
-                <option value="journey">User Journey</option>
-                <option value="gantt">Gantt</option>
-                <option value="pie">Pie Chart</option>
-                <option value="quadrant">Quadrant Chart</option>
-                <option value="requirement">Requirement Diagram</option>
-                <option value="gitgraph">GitGraph</option>
-                <option value="mindmap">Mindmap</option>
-                <option value="timeline">Timeline</option>
-                <option value="sankey">Sankey</option>
-                <option value="xy">XY Chart</option>
-                <option value="block">Block Diagram</option>
-                <option value="kanban">Kanban</option>
-              </select>
-            </div>
-            <div>
-              <label htmlFor="theme-select">Theme:</label>
-              <select id="theme-select" value={theme} onChange={handleThemeChange}>
-                <option value="default">Default</option>
-                <option value="dark">Dark</option>
-                <option value="forest">Forest</option>
-                <option value="neutral">Neutral</option>
-                <option value="custom">Custom JSON</option>
-              </select>
+        <section
+          className="editor"
+          style={{ flexBasis: `${editorWidth}%`, flexGrow: 0, flexShrink: 0 }}
+        >
+          <div className="selectors-container">
+            <div className="sample-selector">
+              <div className="sample-grid">
+                {Object.keys(samples).map((type) => (
+                  <button
+                    key={type}
+                    onClick={() => handleSampleClick(type)}
+                    className="sample-button"
+                  >
+                    <Icon type={type} />
+                    <span>{type.charAt(0).toUpperCase() + type.slice(1)}</span>
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
           <CodeMirror
             value={code}
             height="100%"
-            theme={darkMode ? oneDark : 'light'}
+            theme={darkMode ? oneDark : "light"}
             extensions={[javascript(), indentationMarkers()]}
             onChange={(value) => setCode(value)}
             placeholder="Enter your Mermaid code here..."
@@ -847,13 +1127,13 @@ ${code}
               completionKeymap: true,
               lintKeymap: true,
             }}
-            style={{ flex: 1, overflow: 'auto' }}
+            style={{ flex: 1, overflow: "auto" }}
           />
           {showThemeConfig && (
             <CodeMirror
               value={themeConfig}
               height="80px"
-              theme={darkMode ? oneDark : 'light'}
+              theme={darkMode ? oneDark : "light"}
               extensions={[javascript(), indentationMarkers()]}
               onChange={(value) => setThemeConfig(value)}
               placeholder='{"theme": "base", "themeVariables": {"primaryColor": "#ff0000"}}'
@@ -862,17 +1142,27 @@ ${code}
                 foldGutter: false,
                 highlightActiveLine: false,
               }}
-              style={{ borderTop: '1px solid #e2e8f0' }}
+              style={{ borderTop: "1px solid #e2e8f0" }}
             />
           )}
           <div className="controls">
             <button onClick={downloadSvg}>Download SVG</button>
-            <button onClick={() => svgToRaster('png')}>Download PNG</button>
-            <button onClick={() => svgToRaster('jpg')}>Download JPG</button>
+            <button onClick={() => svgToRaster("png")}>Download PNG</button>
+            <button onClick={() => svgToRaster("jpg")}>Download JPG</button>
             <button onClick={handleShare} title="Copy shareable link">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ marginRight: '6px' }}>
-                <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/>
-                <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                style={{ marginRight: "6px" }}
+              >
+                <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
+                <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
               </svg>
               Share
             </button>
@@ -880,13 +1170,67 @@ ${code}
         </section>
 
         <div
-          className={`resize-handle ${isResizing ? 'dragging' : ''}`}
+          className={`resize-handle ${isResizing ? "dragging" : ""}`}
           onMouseDown={handleResizeStart}
         />
 
-        <section className="preview-container" style={{ flexBasis: `${100 - editorWidth}%`, flexGrow: 0, flexShrink: 0 }}>
+        <section
+          className="preview-container"
+          style={{
+            flexBasis: `${100 - editorWidth}%`,
+            flexGrow: 0,
+            flexShrink: 0,
+          }}
+        >
+          <div className="theme-selector">
+            <button
+              onClick={() => setTheme("default")}
+              className={theme === "default" ? "active" : ""}
+            >
+              Default
+            </button>
+            <button
+              onClick={() => setTheme("dark")}
+              className={theme === "dark" ? "active" : ""}
+            >
+              Dark
+            </button>
+            <button
+              onClick={() => setTheme("forest")}
+              className={theme === "forest" ? "active" : ""}
+            >
+              Forest
+            </button>
+            <button
+              onClick={() => setTheme("neutral")}
+              className={theme === "neutral" ? "active" : ""}
+            >
+              Neutral
+            </button>
+            <button
+              onClick={() => setTheme("custom")}
+              className={theme === "custom" ? "active" : ""}
+            >
+              Custom
+            </button>
+          </div>
+          {showThemeConfig && (
+            <CodeMirror
+              value={themeConfig}
+              height="120px"
+              theme={darkMode ? oneDark : "light"}
+              extensions={[javascript(), indentationMarkers()]}
+              onChange={(value) => setThemeConfig(value)}
+              placeholder='{"theme": "base", "themeVariables": {"primaryColor": "#ff0000"}}'
+              basicSetup={{
+                lineNumbers: false,
+                foldGutter: false,
+                highlightActiveLine: false,
+              }}
+            />
+          )}
           <div
-            className={`preview ${isDragging ? 'dragging' : ''}`}
+            className={`preview ${isDragging ? "dragging" : ""}`}
             onMouseDown={handleMouseDown}
             onWheel={handleWheel}
             ref={svgContainerRef}
@@ -895,30 +1239,57 @@ ${code}
               ref={previewRef}
               style={{
                 transform: `translate(${position.x}px, ${position.y}px) scale(${scale})`,
-                cursor: isDragging ? 'grabbing' : 'grab'
+                cursor: isDragging ? "grabbing" : "grab",
               }}
             />
             <div className="zoom-controls">
               <button onClick={zoomIn} title="Zoom In">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <circle cx="11" cy="11" r="8"/>
-                  <path d="m21 21-4.35-4.35"/>
-                  <line x1="11" y1="8" x2="11" y2="14"/>
-                  <line x1="8" y1="11" x2="14" y2="11"/>
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <circle cx="11" cy="11" r="8" />
+                  <path d="m21 21-4.35-4.35" />
+                  <line x1="11" y1="8" x2="11" y2="14" />
+                  <line x1="8" y1="11" x2="14" y2="11" />
                 </svg>
               </button>
               <button onClick={zoomOut} title="Zoom Out">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <circle cx="11" cy="11" r="8"/>
-                  <path d="m21 21-4.35-4.35"/>
-                  <line x1="8" y1="11" x2="14" y2="11"/>
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <circle cx="11" cy="11" r="8" />
+                  <path d="m21 21-4.35-4.35" />
+                  <line x1="8" y1="11" x2="14" y2="11" />
                 </svg>
               </button>
               <button onClick={resetZoom} title="Reset Zoom">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <polyline points="23 4 23 10 17 10"/>
-                  <polyline points="1 20 1 14 7 14"/>
-                  <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/>
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <polyline points="23 4 23 10 17 10" />
+                  <polyline points="1 20 1 14 7 14" />
+                  <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15" />
                 </svg>
               </button>
             </div>
@@ -928,11 +1299,7 @@ ${code}
               <label htmlFor="embed-code">Embed HTML:</label>
               <button onClick={copyEmbedHtml}>Copy embed HTML</button>
             </div>
-            <textarea
-              id="embed-code"
-              value={embedHtml}
-              readOnly
-            />
+            <textarea id="embed-code" value={embedHtml} readOnly />
           </div>
         </section>
       </main>
