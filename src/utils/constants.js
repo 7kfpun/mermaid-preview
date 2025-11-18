@@ -1,0 +1,198 @@
+export const STORAGE_KEYS = {
+  CODE: "mermaid_code",
+  THEME: "mermaid_theme",
+  THEME_CONFIG: "mermaid_theme_config",
+  DIVIDER_POS: "mermaid_divider_position",
+  DARK_MODE: "mermaid_dark_mode",
+};
+
+export const DEFAULT_CUSTOM_THEME = JSON.stringify(
+  {
+    theme: "base",
+    themeVariables: {
+      primaryColor: "#ff6b6b",
+      primaryTextColor: "#fff",
+      primaryBorderColor: "#ff5252",
+      lineColor: "#4ecdc4",
+      secondaryColor: "#ffe66d",
+      tertiaryColor: "#a8dadc",
+    },
+  },
+  null,
+  2,
+);
+
+export const samples = {
+  flowchart: `flowchart TD
+    A[Start] --> B{Is it?}
+    B -->|Yes| C[OK]
+    B -->|No| D[End]
+    C --> D`,
+  sequence: `sequenceDiagram
+    participant Alice
+    participant Bob
+    Alice->>John: Hello John, how are you?
+    loop Healthcheck
+        John->>John: Fight against hypochondria
+    end
+    Note right of John: Rational thoughts!
+    John-->>Alice: Great!
+    John->>Bob: How about you?
+    Bob-->>John: Jolly good!`,
+  class: `classDiagram
+    Animal <|-- Duck
+    Animal <|-- Fish
+    Animal <|-- Zebra
+    Animal : +int age
+    Animal : +String gender
+    Animal: +isMammal()
+    Animal: +mate()
+    class Duck{
+      +String beakColor
+      +swim()
+      +quack()
+    }
+    class Fish{
+      -int sizeInFeet
+      -canEat()
+    }
+    class Zebra{
+      +bool is_wild
+      +run()
+    }`,
+  state: `stateDiagram-v2
+    [*] --> Still
+    Still --> [*]
+    Still --> Moving
+    Moving --> Still
+    Moving --> Crash
+    Crash --> [*]`,
+  er: `erDiagram
+    CUSTOMER ||--o{ ORDER : places
+    ORDER ||--|{ LINE-ITEM : contains
+    CUSTOMER }|..|{ DELIVERY-ADDRESS : uses
+    CUSTOMER {
+        string name
+        string custNumber
+        string sector
+    }
+    ORDER {
+        int orderNumber
+        string deliveryAddress
+    }`,
+  journey: `journey
+    title My working day
+    section Go to work
+      Make tea: 5: Me
+      Go upstairs: 3: Me
+      Do work: 1: Me, Cat
+    section Go home
+      Go downstairs: 5: Me
+      Sit down: 5: Me`,
+  gantt: `gantt
+    title A Gantt Diagram
+    dateFormat YYYY-MM-DD
+    section Section
+        A task          :a1, 2014-01-01, 30d
+        Another task    :after a1, 20d
+    section Another
+        Task in Another :2014-01-12, 12d
+        another task    :24d`,
+  pie: `pie title Pets adopted by volunteers
+    "Dogs" : 386
+    "Cats" : 85
+    "Rats" : 15`,
+  quadrant: `quadrantChart
+    title Reach and engagement of campaigns
+    x-axis Low Reach --> High Reach
+    y-axis Low Engagement --> High Engagement
+    quadrant-1 We should expand
+    quadrant-2 Need to promote
+    quadrant-3 Re-evaluate
+    quadrant-4 May be improved
+    Campaign A: [0.3, 0.6]
+    Campaign B: [0.45, 0.23]
+    Campaign C: [0.57, 0.69]
+    Campaign D: [0.78, 0.34]
+    Campaign E: [0.40, 0.34]
+    Campaign F: [0.35, 0.78]`,
+  requirement: `requirementDiagram
+    requirement test_req {
+        id: 1
+        text: the test text.
+        risk: high
+        verifymethod: test
+    }
+    element test_entity {
+        type: simulation
+    }
+    test_entity - satisfies -> test_req`,
+  gitgraph: `gitGraph
+    commit
+    commit
+    branch develop
+    checkout develop
+    commit
+    commit
+    checkout main
+    merge develop
+    commit`,
+  mindmap: `mindmap
+  root((mindmap))
+    Origins
+      Long history
+      ::icon(fa fa-book)
+      Popularisation
+        British popular psychology author Tony Buzan
+    Research
+      On effectiveness<br/>and features
+      On Automatic creation
+        Uses
+            Creative techniques
+            Strategic planning
+            Argument mapping
+    Tools
+      Pen and paper
+      Mermaid`,
+  timeline: `timeline
+    title History of Social Media Platform
+    2002 : LinkedIn
+    2004 : Facebook
+         : Google
+    2005 : Youtube
+    2006 : Twitter`,
+  sankey: `sankey-beta
+    Agricultural 'waste',Bio-conversion,124.729
+    Bio-conversion,Liquid,0.597
+    Bio-conversion,Losses,26.862
+    Bio-conversion,Solid,280.322
+    Bio-conversion,Gas,81.144`,
+  xy: `xychart-beta
+    title "Sales Revenue"
+    x-axis [jan, feb, mar, apr, may, jun, jul, aug, sep, oct, nov, dec]
+    y-axis "Revenue (in $)" 4000 --> 11000
+    bar [5000, 6000, 7500, 8200, 9500, 10500, 11000, 10200, 9200, 8500, 7000, 6000]
+    line [5000, 6000, 7500, 8200, 9500, 10500, 11000, 10200, 9200, 8500, 7000, 6000]`,
+  block: `block-beta
+    columns 1
+    db(("DB"))
+    blockArrowId6<["&nbsp;&nbsp;&nbsp;"]>(down)
+    block:ID
+      A
+      B["A wide one in the middle"]
+      C
+    end
+    space
+    D
+    ID --> D
+    C --> D
+    style B fill:#969,stroke:#333,stroke-width:4px`,
+  kanban: `kanban
+    Todo
+      [Create Diagram]
+      [Design UI]
+    In Progress
+      [Implement Feature]
+    Done
+      [Testing]`,
+};
