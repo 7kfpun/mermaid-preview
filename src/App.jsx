@@ -267,11 +267,13 @@ ${code}
   }, [code, theme, themeConfig, renderDiagram]);
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      renderDiagram();
-    }, 0);
-    return () => clearTimeout(timer);
-  }, [editorWidth, renderDiagram]);
+    if (!code.trim()) return; // Don't render if code is empty
+
+    clearTimeout(debounceTimer.current);
+    debounceTimer.current = setTimeout(() => renderDiagram(), 300);
+
+    return () => clearTimeout(debounceTimer.current);
+  }, [editorWidth, code, renderDiagram]);
 
   // Handle RTL direction based on language
   useEffect(() => {
@@ -563,6 +565,13 @@ ${code}
     });
   };
 
+  const handleTouchMove = (e) => {
+    // Prevent pinch zoom (when there are 2 or more touches)
+    if (e.touches.length > 1) {
+      e.preventDefault();
+    }
+  };
+
   const zoomIn = () => {
     const newScale = Math.min(5, scale + 0.2);
     const scaleDiff = newScale / scale;
@@ -683,6 +692,7 @@ ${code}
           isDragging={isDragging}
           handleMouseDown={handleMouseDown}
           handleWheel={handleWheel}
+          handleTouchMove={handleTouchMove}
           svgContainerRef={svgContainerRef}
           previewRef={previewRef}
           position={position}

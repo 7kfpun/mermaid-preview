@@ -4,6 +4,7 @@ export const STORAGE_KEYS = {
   THEME_CONFIG: "mermaid_theme_config",
   DIVIDER_POS: "mermaid_divider_position",
   DARK_MODE: "mermaid_dark_mode",
+  LANGUAGE: "mermaid_language",
 };
 
 export const DEFAULT_CUSTOM_THEME = JSON.stringify(

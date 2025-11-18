@@ -16,6 +16,7 @@ const Preview = ({
   isDragging,
   handleMouseDown,
   handleWheel,
+  handleTouchMove,
   svgContainerRef,
   previewRef,
   position,
@@ -100,6 +101,7 @@ const Preview = ({
         className={`preview ${isDragging ? "dragging" : ""}`}
         onMouseDown={handleMouseDown}
         onWheel={handleWheel}
+        onTouchMove={handleTouchMove}
         ref={svgContainerRef}
       >
         <div

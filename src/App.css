@@ -86,7 +86,7 @@ main {
 }
 
 .resize-handle {
-  width: 8px;
+  width: 4px;
   cursor: col-resize;
   background: transparent;
   position: relative;
@@ -94,13 +94,13 @@ main {
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: 0 4px;
+  margin: 0 2px;
 }
 
 .resize-handle::before {
   content: "";
-  width: 2px;
-  height: 40px;
+  width: 1px;
+  height: 30px;
   background: #e2e8f0;
   border-radius: 1px;
 }
@@ -108,8 +108,8 @@ main {
 .resize-handle:hover::before,
 .resize-handle.dragging::before {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  width: 4px;
-  height: 60px;
+  width: 2px;
+  height: 40px;
 }
 
 .editor,
@@ -265,7 +265,7 @@ main {
 }
 
 .preview > div {
-  transition: transform 0.05s ease-out;
+  transform-origin: top left;
 }
 
 .preview svg {
