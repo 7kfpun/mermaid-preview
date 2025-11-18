@@ -1,6 +1,7 @@
 import { useEffect, useRef, useCallback } from "react";
 import mermaid from "mermaid";
 import toast, { Toaster } from "react-hot-toast";
+import { useTranslation } from "react-i18next";
 import "./App.css";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
@@ -15,8 +16,10 @@ import {
   samples,
 } from "./utils/constants";
 import { encodeState, decodeState } from "./utils/url";
+import { isRTL } from "./i18n";
 
 function App() {
+  const { i18n } = useTranslation();
   const { code, setCode, embedHtml, setEmbedHtml } = useMermaidCode();
   const {
     theme,
@@ -269,6 +272,12 @@ ${code}
     }, 0);
     return () => clearTimeout(timer);
   }, [editorWidth, renderDiagram]);
+
+  // Handle RTL direction based on language
+  useEffect(() => {
+    const direction = isRTL(i18n.language) ? "rtl" : "ltr";
+    document.documentElement.setAttribute("dir", direction);
+  }, [i18n.language]);
 
   useEffect(() => {
     const trimmed = code.trim();
@@ -523,61 +532,6 @@ ${code}
             success: `${type.toUpperCase()} copied to clipboard!`,
             error: `Failed to copy ${type.toUpperCase()}.`,
           });
-        },
-        type === "png" ? "image/png" : "image/jpeg",
-        type === "png" ? 1.0 : 0.9,
-      );
-    };
-
-    img.onerror = () => {
-      console.error("Failed to load SVG into image");
-    };
-
-    img.src = svgDataUrl;
-  };
-
-  const copyImage = (type) => {
-    const svgEl = previewRef.current?.querySelector("svg");
-    if (!svgEl) return;
-
-    const width = svgEl.width.baseVal.value || svgEl.clientWidth || 800;
-    const height = svgEl.height.baseVal.value || svgEl.clientHeight || 600;
-
-    const svgClone = svgEl.cloneNode(true);
-    svgClone.setAttribute("xmlns", "http://www.w3.org/2000/svg");
-    const svgText = new XMLSerializer().serializeToString(svgClone);
-
-    if (type === "svg") {
-      navigator.clipboard.writeText(svgText).catch(() => {});
-      return;
-    }
-
-    // Convert SVG to base64 using TextEncoder
-    const bytes = new TextEncoder().encode(svgText);
-    const binString = Array.from(bytes, (byte) =>
-      String.fromCodePoint(byte),
-    ).join("");
-    const svgDataUrl = "data:image/svg+xml;base64," + btoa(binString);
-
-    const img = new Image();
-    img.onload = () => {
-      const canvas = document.createElement("canvas");
-      canvas.width = width;
-      canvas.height = height;
-
-      const ctx = canvas.getContext("2d");
-
-      if (type === "jpg") {
-        ctx.fillStyle = "white";
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-      }
-
-      ctx.drawImage(img, 0, 0, width, height);
-
-      canvas.toBlob(
-        (blob) => {
-          if (!blob) return;
-          navigator.clipboard.write([new ClipboardItem({ [blob.type]: blob })]);
         },
         type === "png" ? "image/png" : "image/jpeg",
         type === "png" ? 1.0 : 0.9,
