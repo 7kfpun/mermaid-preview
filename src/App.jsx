@@ -281,6 +281,18 @@ ${code}
     document.documentElement.setAttribute("dir", direction);
   }, [i18n.language]);
 
+  // Automatically show theme config editor when custom theme is selected
+  useEffect(() => {
+    if (theme === "custom") {
+      setShowThemeConfig(true);
+      if (!themeConfig) {
+        setThemeConfig(DEFAULT_CUSTOM_THEME);
+      }
+    } else {
+      setShowThemeConfig(false);
+    }
+  }, [theme, themeConfig, setShowThemeConfig, setThemeConfig]);
+
   useEffect(() => {
     const trimmed = code.trim();
     const firstToken = trimmed.split(/\s+/)[0]?.toLowerCase() || "";
@@ -433,12 +445,34 @@ ${code}
 
       const ctx = canvas.getContext("2d");
 
-      if (type === "jpg") {
+      // Add white background for JPG (no transparency)
+      if (type === "jpg" || type === "jpeg") {
         ctx.fillStyle = "white";
         ctx.fillRect(0, 0, canvas.width, canvas.height);
       }
 
       ctx.drawImage(img, 0, 0, width, height);
+
+      // Determine mime type and quality
+      let mimeType, quality;
+      switch (type) {
+        case "png":
+          mimeType = "image/png";
+          quality = 1.0;
+          break;
+        case "jpg":
+        case "jpeg":
+          mimeType = "image/jpeg";
+          quality = 0.9;
+          break;
+        case "webp":
+          mimeType = "image/webp";
+          quality = 0.9;
+          break;
+        default:
+          mimeType = "image/png";
+          quality = 1.0;
+      }
 
       canvas.toBlob(
         (blobOut) => {
@@ -452,13 +486,14 @@ ${code}
           document.body.removeChild(a);
           URL.revokeObjectURL(outUrl);
         },
-        type === "png" ? "image/png" : "image/jpeg",
-        type === "png" ? 1.0 : 0.9,
+        mimeType,
+        quality,
       );
     };
 
     img.onerror = () => {
       console.error("Failed to load SVG into image");
+      toast.error("Failed to convert diagram.");
     };
 
     img.src = svgDataUrl;
@@ -513,12 +548,34 @@ ${code}
 
       const ctx = canvas.getContext("2d");
 
-      if (type === "jpg") {
+      // Add white background for JPG (no transparency)
+      if (type === "jpg" || type === "jpeg") {
         ctx.fillStyle = "white";
         ctx.fillRect(0, 0, canvas.width, canvas.height);
       }
 
       ctx.drawImage(img, 0, 0, width, height);
+
+      // Determine mime type and quality
+      let mimeType, quality;
+      switch (type) {
+        case "png":
+          mimeType = "image/png";
+          quality = 1.0;
+          break;
+        case "jpg":
+        case "jpeg":
+          mimeType = "image/jpeg";
+          quality = 0.9;
+          break;
+        case "webp":
+          mimeType = "image/webp";
+          quality = 0.9;
+          break;
+        default:
+          mimeType = "image/png";
+          quality = 1.0;
+      }
 
       canvas.toBlob(
         (blob) => {
@@ -527,7 +584,7 @@ ${code}
             return;
           }
           const promise = navigator.clipboard.write([
-            new ClipboardItem({ [blob.type]: blob }),
+            new ClipboardItem({ [mimeType]: blob }),
           ]);
           toast.promise(promise, {
             loading: "Copying...",
@@ -535,13 +592,14 @@ ${code}
             error: `Failed to copy ${type.toUpperCase()}.`,
           });
         },
-        type === "png" ? "image/png" : "image/jpeg",
-        type === "png" ? 1.0 : 0.9,
+        mimeType,
+        quality,
       );
     };
 
     img.onerror = () => {
       console.error("Failed to load SVG into image");
+      toast.error("Failed to convert diagram.");
     };
 
     img.src = svgDataUrl;
@@ -646,6 +704,23 @@ ${code}
       document.removeEventListener("mouseup", handleResizeEnd);
     };
   }, [isResizing, editorWidth, setEditorWidth, setIsResizing]);
+
+  // Close dropdown menus when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      // Check if click is outside dropdown menus
+      const isClickInsideDropdown = e.target.closest('.dropdown');
+      if (!isClickInsideDropdown) {
+        setDownloadMenuOpen(false);
+        setCopyMenuOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [setDownloadMenuOpen, setCopyMenuOpen]);
 
   return (
     <div className={`app ${darkMode ? "dark-mode" : ""}`}>
