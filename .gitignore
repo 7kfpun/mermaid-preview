@@ -9,3 +9,5 @@ coverage
 *.tsbuildinfo
 .vite
 /.husky/_/
+mobile-screenshot.png
+test-results/

@@ -93,7 +93,31 @@ header h1 {
 
 /* Mobile styles */
 @media (max-width: 768px) {
-  /* Add mobile specific styles here if needed */
+  .editor {
+    height: 40vh;
+  }
+
+  .preview-container {
+    height: 60vh;
+  }
+
+  .selectors-container {
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .sample-selector {
+    flex: 1;
+  }
+
+  .sample-grid {
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  }
+
+  .theme-selector {
+    flex-direction: column;
+    align-items: flex-start;
+  }
 }
 
 .dark-mode-toggle svg {

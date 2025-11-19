@@ -1,4 +1,5 @@
 import { useEffect, useRef, useCallback } from "react";
+import * as clipboard from "clipboard-polyfill";
 import mermaid from "mermaid";
 import toast, { Toaster } from "react-hot-toast";
 import { useTranslation } from "react-i18next";
@@ -594,12 +595,11 @@ ${code}
               toast.error("Failed to create image blob.");
               return;
             }
-            const promise = navigator.clipboard.write([
-              new ClipboardItem({ [mimeType]: blob }),
-            ]);
+            const item = new clipboard.ClipboardItem({ [mimeType]: blob });
+            const promise = clipboard.write([item]);
             toast.promise(promise, {
               loading: "Copying...",
-              success: `${type.toUpperCase()} copied to clipboard!`,
+              success: `${type.toUpperCase()} copied!`,
               error: `Failed to copy ${type.toUpperCase()}.`,
             });
           },
