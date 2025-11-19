@@ -187,6 +187,16 @@ function App() {
       // Update URL
       updateURL();
 
+      const embedTheme = theme !== "custom" ? theme : themeConfigObj?.theme || "default";
+      const themeVariablesSnippet =
+        theme === "custom" && themeConfigObj?.themeVariables
+          ? `,\n  themeVariables: ${JSON.stringify(
+              themeConfigObj.themeVariables,
+              null,
+              2,
+            )}`
+          : "";
+
       // Update embed HTML
       const newEmbedHtml = `<!-- Mermaid diagram -->
 <div class="mermaid">
@@ -194,7 +204,10 @@ ${code}
 </div>
 <script type="module">
   import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs";
-  mermaid.initialize({ startOnLoad: true, theme: "${theme !== "custom" ? theme : "default"}" });
+  mermaid.initialize({
+    startOnLoad: true,
+    theme: "${embedTheme}"${themeVariablesSnippet}
+  });
 </script>`;
 
       setEmbedHtml(newEmbedHtml);

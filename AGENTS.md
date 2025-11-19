@@ -41,6 +41,6 @@ Automate development, QA, and documentation work for the Mermaid Live Preview ap
 
 ## Operational Notes
 - Environment lives under `/Users/<user>/Documents/Workspace/mermaid-react`.
-- Node 18+ & Yarn classic (≥1.22) are assumed; Vite dev server listens on port 5173 by default.
+- Node 22+ & Yarn classic (≥1.22) are assumed; Vite dev server listens on port 5173 by default.
 - Husky hooks fire on commit; keep lint/format scripts green to avoid breaking the pipeline.
 - Production site is deployed via GitHub Pages at `https://mermaid-live-preview.wahthefox.com` using the committed `public/CNAME`.

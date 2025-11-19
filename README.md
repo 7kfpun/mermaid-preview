@@ -10,7 +10,7 @@ cd mermaid-preview
 yarn install
 yarn dev
 ```
-The app targets Node 18+ / Yarn 1.22+ (classic) and any modern browser. Diagram code, theme choice, divider position, and dark-mode preference persist locally so you can resume later.
+The app targets Node 22+ / Yarn 1.22+ (classic) and any modern browser. Diagram code, theme choice, divider position, and dark-mode preference persist locally so you can resume later.
 
 ## Everyday Use
 - Pick a sample (flowchart, sequence, ERD, Gantt, gitgraph, mindmap, etc.) or start typing.
