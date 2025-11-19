@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useTranslation } from "react-i18next";
 import CodeMirror from "@uiw/react-codemirror";
 import { javascript } from "@codemirror/lang-javascript";
@@ -75,7 +76,10 @@ const Preview = ({
         <button
           onClick={() => {
             setTheme("custom");
-            setThemeConfig(themeConfig || '{"theme": "base", "themeVariables": {"primaryColor": "#ff0000"}}');
+            setThemeConfig(
+              themeConfig ||
+                '{"theme": "base", "themeVariables": {"primaryColor": "#ff0000"}}',
+            );
             trackEvent("set_theme", { theme: "custom" });
           }}
           className={theme === "custom" ? "active" : ""}
@@ -189,4 +193,4 @@ const Preview = ({
   );
 };
 
-export default Preview;
+export default memo(Preview);

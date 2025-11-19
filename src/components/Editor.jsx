@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useTranslation } from "react-i18next";
 import CodeMirror from "@uiw/react-codemirror";
 import { javascript } from "@codemirror/lang-javascript";
@@ -41,10 +42,10 @@ const Editor = ({
             {Object.keys(samples).map((type) => (
               <button
                 key={type}
-              onClick={() => {
-                handleSampleClick(type);
-                trackEvent("select_sample", { sample_type: type });
-              }}
+                onClick={() => {
+                  handleSampleClick(type);
+                  trackEvent("select_sample", { sample_type: type });
+                }}
                 className="sample-button"
               >
                 <Icon type={type} />
@@ -249,4 +250,4 @@ const Editor = ({
   );
 };
 
-export default Editor;
+export default memo(Editor);
