@@ -16,7 +16,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 22
+          node-version: "22.x"
           cache: "yarn"
 
       - name: Install dependencies
@@ -26,7 +26,7 @@ jobs:
         run: yarn lint
 
       - name: Run unit tests
-        run: yarn test --runInBand
+        run: yarn test
 
       - name: Build application
         run: yarn build
