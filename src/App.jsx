@@ -55,7 +55,6 @@ function App() {
   const previewRef = useRef(null);
   const svgContainerRef = useRef(null);
   const debounceTimer = useRef(null);
-  const themeDebounceTimer = useRef(null);
   const resizeStartX = useRef(0);
   const resizeStartWidth = useRef(50);
 
@@ -248,32 +247,17 @@ ${code}
     };
   }, [loadFromURL, renderDiagram]);
 
+  // Debounced diagram rendering
   useEffect(() => {
-    if (!code.trim()) return; // Don't render if code is empty
+    if (!code.trim()) return;
 
     clearTimeout(debounceTimer.current);
-    debounceTimer.current = setTimeout(() => renderDiagram(), 500);
+    debounceTimer.current = setTimeout(() => {
+      renderDiagram();
+    }, 500);
 
     return () => clearTimeout(debounceTimer.current);
-  }, [code, renderDiagram]);
-
-  useEffect(() => {
-    if (!code.trim()) return; // Don't render if code is empty
-
-    clearTimeout(themeDebounceTimer.current);
-    themeDebounceTimer.current = setTimeout(() => renderDiagram(), 500);
-
-    return () => clearTimeout(themeDebounceTimer.current);
-  }, [code, theme, themeConfig, renderDiagram]);
-
-  useEffect(() => {
-    if (!code.trim()) return; // Don't render if code is empty
-
-    clearTimeout(debounceTimer.current);
-    debounceTimer.current = setTimeout(() => renderDiagram(), 300);
-
-    return () => clearTimeout(debounceTimer.current);
-  }, [editorWidth, code, renderDiagram]);
+  }, [code, theme, themeConfig, editorWidth, renderDiagram]);
 
   // Handle RTL direction based on language
   useEffect(() => {

@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, memo } from "react";
 import { useTranslation } from "react-i18next";
 import { trackEvent } from "../utils/ga";
 import { STORAGE_KEYS } from "../utils/constants";
@@ -104,4 +104,4 @@ const Header = ({ toggleDarkMode, darkMode }) => {
   );
 };
 
-export default Header;
+export default memo(Header);
