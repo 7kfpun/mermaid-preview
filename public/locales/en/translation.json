@@ -48,5 +48,8 @@
   "failedToCopySVG": "Failed to copy SVG.",
   "copying": "Copying...",
   "copiedToClipboard": "{{type}} copied to clipboard!",
-  "failedToCopy": "Failed to copy {{type}}."
+  "failedToCopy": "Failed to copy {{type}}.",
+  "bgColor": "Bg:",
+  "embedHTML": "Embed HTML",
+  "base": "Base"
 }

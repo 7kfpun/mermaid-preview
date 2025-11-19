@@ -14,9 +14,6 @@ const Editor = ({
   samples,
   handleSampleClick,
   darkMode,
-  themeConfig,
-  setThemeConfig,
-  showThemeConfig,
   editorWidth,
   imageSize,
   setImageSize,
@@ -29,6 +26,8 @@ const Editor = ({
   copyImage,
   handleShare,
   copyEmbedHtml,
+  backgroundColor,
+  setBackgroundColor,
 }) => {
   const { t } = useTranslation();
   return (
@@ -86,22 +85,6 @@ const Editor = ({
         }}
         style={{ flex: 1, overflow: "auto" }}
       />
-      {showThemeConfig && (
-        <CodeMirror
-          value={themeConfig}
-          height="80px"
-          theme={darkMode ? oneDark : "light"}
-          extensions={[javascript(), indentationMarkers()]}
-          onChange={(value) => setThemeConfig(value)}
-          placeholder='{"theme": "base", "themeVariables": {"primaryColor": "#ff0000"}}'
-          basicSetup={{
-            lineNumbers: false,
-            foldGutter: false,
-            highlightActiveLine: false,
-          }}
-          style={{ borderTop: "1px solid #e2e8f0" }}
-        />
-      )}
       <div className="controls">
         <div className="size-input">
           <label htmlFor="image-size">{t("size")}</label>
@@ -115,10 +98,22 @@ const Editor = ({
             aria-label="Image size in pixels"
           />
         </div>
+        <div className="size-input">
+          <label htmlFor="bg-color">{t("bgColor")}</label>
+          <input
+            type="color"
+            id="bg-color"
+            value={backgroundColor}
+            onChange={(e) => setBackgroundColor(e.target.value)}
+            aria-label="Background color for exports"
+            style={{ width: "60px", height: "38px", cursor: "pointer" }}
+          />
+        </div>
         <div className="dropdown">
           <button
             onClick={() => {
               setDownloadMenuOpen(!downloadMenuOpen);
+              setCopyMenuOpen(false); // Close copy menu
               trackEvent("open_download_menu");
             }}
             className="dropdown-toggle"
@@ -168,6 +163,7 @@ const Editor = ({
           <button
             onClick={() => {
               setCopyMenuOpen(!copyMenuOpen);
+              setDownloadMenuOpen(false); // Close download menu
               trackEvent("open_copy_menu");
             }}
             className="dropdown-toggle"
@@ -243,7 +239,7 @@ const Editor = ({
             trackEvent("copy_embed_html");
           }}
         >
-          {t("copyEmbedHTML")}
+          {t("embedHTML")}
         </button>
       </div>
     </section>

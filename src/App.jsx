@@ -46,6 +46,14 @@ function App() {
     setImageSize,
     editorWidth,
     setEditorWidth,
+    hasManuallyAdjusted,
+    setHasManuallyAdjusted,
+    isLoading,
+    setIsLoading,
+    editorHeight,
+    setEditorHeight,
+    backgroundColor,
+    setBackgroundColor,
   } = useUIState();
 
   const previewRef = useRef(null);
@@ -144,6 +152,7 @@ function App() {
   const renderDiagram = useCallback(async () => {
     if (!code.trim() || !previewRef.current) return;
 
+    setIsLoading(true);
     try {
       // Apply theme before rendering
       let themeConfigObj = null;
@@ -190,27 +199,31 @@ ${code}
 
       setEmbedHtml(newEmbedHtml);
 
-      // Auto-fit the diagram
-      const svgEl = previewRef.current.querySelector("svg");
-      if (svgEl && svgContainerRef.current) {
-        const containerWidth = svgContainerRef.current.offsetWidth;
-        const containerHeight = svgContainerRef.current.offsetHeight;
-        const svgWidth = svgEl.width.baseVal.value;
-        const svgHeight = svgEl.height.baseVal.value;
+      // Auto-fit the diagram only if user hasn't manually adjusted view
+      if (!hasManuallyAdjusted) {
+        const svgEl = previewRef.current.querySelector("svg");
+        if (svgEl && svgContainerRef.current) {
+          const containerWidth = svgContainerRef.current.offsetWidth;
+          const containerHeight = svgContainerRef.current.offsetHeight;
+          const svgWidth = svgEl.width.baseVal.value;
+          const svgHeight = svgEl.height.baseVal.value;
 
-        const scaleX = containerWidth / svgWidth;
-        const scaleY = containerHeight / svgHeight;
-        const newScale = Math.min(scaleX, scaleY) * 0.95; // 95% padding
+          const scaleX = containerWidth / svgWidth;
+          const scaleY = containerHeight / svgHeight;
+          const newScale = Math.min(scaleX, scaleY) * 0.95; // 95% padding
 
-        const newX = (containerWidth - svgWidth * newScale) / 2;
-        const newY = (containerHeight - svgHeight * newScale) / 2;
+          const newX = (containerWidth - svgWidth * newScale) / 2;
+          const newY = (containerHeight - svgHeight * newScale) / 2;
 
-        setScale(newScale);
-        setPosition({ x: newX, y: newY });
+          setScale(newScale);
+          setPosition({ x: newX, y: newY });
+        }
       }
     } catch (error) {
       console.error("Mermaid rendering error:", error);
       previewRef.current.innerHTML = `<div style="color: #e53e3e; padding: 20px;">Error rendering diagram. Check your syntax.</div>`;
+    } finally {
+      setIsLoading(false);
     }
   }, [
     code,
@@ -220,28 +233,23 @@ ${code}
     setEmbedHtml,
     setPosition,
     setScale,
+    hasManuallyAdjusted,
   ]);
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      if (loadFromURL()) {
-        renderDiagram();
-      }
-    }, 100);
+    // Initial load
+    loadFromURL();
 
     const handleHashChange = () => {
-      if (loadFromURL()) {
-        renderDiagram();
-      }
+      loadFromURL();
     };
 
     window.addEventListener("hashchange", handleHashChange);
 
     return () => {
-      clearTimeout(timer);
       window.removeEventListener("hashchange", handleHashChange);
     };
-  }, [loadFromURL, renderDiagram]);
+  }, [loadFromURL]);
 
   // Debounced diagram rendering
   useEffect(() => {
@@ -261,17 +269,17 @@ ${code}
     document.documentElement.setAttribute("dir", direction);
   }, [i18n.language]);
 
-  // Automatically show theme config editor when custom theme is selected
+  // Sync background color with dark mode
   useEffect(() => {
-    if (theme === "custom") {
-      setShowThemeConfig(true);
-      if (!themeConfig) {
-        setThemeConfig(DEFAULT_CUSTOM_THEME);
-      }
-    } else {
-      setShowThemeConfig(false);
+    setBackgroundColor(darkMode ? "#1a1a1a" : "#ffffff");
+  }, [darkMode, setBackgroundColor]);
+
+  // Initialize theme config when custom theme is selected
+  useEffect(() => {
+    if (theme === "custom" && !themeConfig) {
+      setThemeConfig(DEFAULT_CUSTOM_THEME);
     }
-  }, [theme, themeConfig, setShowThemeConfig, setThemeConfig]);
+  }, [theme, themeConfig, setThemeConfig]);
 
   useEffect(() => {
     const trimmed = code.trim();
@@ -362,9 +370,10 @@ ${code}
           x: e.clientX - dragOffset.x,
           y: e.clientY - dragOffset.y,
         });
+        setHasManuallyAdjusted(true);
       }
     },
-    [isDragging, dragOffset, setPosition],
+    [isDragging, dragOffset, setPosition, setHasManuallyAdjusted],
   );
 
   const handleMouseUp = useCallback(() => {
@@ -433,11 +442,9 @@ ${code}
 
         const ctx = canvas.getContext("2d");
 
-        // Add white background for JPG (no transparency)
-        if (type === "jpg" || type === "jpeg") {
-          ctx.fillStyle = "white";
-          ctx.fillRect(0, 0, canvas.width, canvas.height);
-        }
+        // Add background color (for JPG always, for PNG/WebP if not transparent)
+        ctx.fillStyle = backgroundColor;
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
 
         ctx.drawImage(img, 0, 0, width, height);
 
@@ -540,11 +547,9 @@ ${code}
 
         const ctx = canvas.getContext("2d");
 
-        // Add white background for JPG (no transparency)
-        if (type === "jpg" || type === "jpeg") {
-          ctx.fillStyle = "white";
-          ctx.fillRect(0, 0, canvas.width, canvas.height);
-        }
+        // Add background color (for JPG always, for PNG/WebP if not transparent)
+        ctx.fillStyle = backgroundColor;
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
 
         ctx.drawImage(img, 0, 0, width, height);
 
@@ -607,17 +612,21 @@ ${code}
       const delta = e.deltaY > 0 ? -0.03 : 0.03; // Slower zoom for better control
       const newScale = Math.max(0.1, Math.min(5, scale + delta));
 
-      // Calculate scale difference to maintain chart center
-      const scaleDiff = newScale / scale;
+      if (!svgContainerRef.current) return;
 
-      // Update scale and adjust position to keep chart centered during zoom
+      const container = svgContainerRef.current;
+      const centerX = container.offsetWidth / 2;
+      const centerY = container.offsetHeight / 2;
+      const ratio = newScale / scale;
+
       setScale(newScale);
       setPosition({
-        x: position.x * scaleDiff,
-        y: position.y * scaleDiff,
+        x: centerX * (1 - ratio) + position.x * ratio,
+        y: centerY * (1 - ratio) + position.y * ratio,
       });
+      setHasManuallyAdjusted(true);
     },
-    [scale, setScale, position.x, position.y, setPosition],
+    [scale, setScale, position.x, position.y, setPosition, setHasManuallyAdjusted],
   );
 
   const handleTouchMove = useCallback((e) => {
@@ -629,30 +638,63 @@ ${code}
 
   const zoomIn = useCallback(() => {
     const newScale = Math.min(5, scale + 0.2);
-    const scaleDiff = newScale / scale;
+    if (!svgContainerRef.current) return;
+
+    const container = svgContainerRef.current;
+    const centerX = container.offsetWidth / 2;
+    const centerY = container.offsetHeight / 2;
+    const ratio = newScale / scale;
 
     setScale(newScale);
     setPosition({
-      x: position.x * scaleDiff,
-      y: position.y * scaleDiff,
+      x: centerX * (1 - ratio) + position.x * ratio,
+      y: centerY * (1 - ratio) + position.y * ratio,
     });
-  }, [scale, setScale, position.x, position.y, setPosition]);
+    setHasManuallyAdjusted(true);
+  }, [scale, setScale, position.x, position.y, setPosition, setHasManuallyAdjusted]);
 
   const zoomOut = useCallback(() => {
     const newScale = Math.max(0.1, scale - 0.2);
-    const scaleDiff = newScale / scale;
+    if (!svgContainerRef.current) return;
+
+    const container = svgContainerRef.current;
+    const centerX = container.offsetWidth / 2;
+    const centerY = container.offsetHeight / 2;
+    const ratio = newScale / scale;
 
     setScale(newScale);
     setPosition({
-      x: position.x * scaleDiff,
-      y: position.y * scaleDiff,
+      x: centerX * (1 - ratio) + position.x * ratio,
+      y: centerY * (1 - ratio) + position.y * ratio,
     });
-  }, [scale, setScale, position.x, position.y, setPosition]);
+    setHasManuallyAdjusted(true);
+  }, [scale, setScale, position.x, position.y, setPosition, setHasManuallyAdjusted]);
 
   const resetZoom = useCallback(() => {
-    setScale(1);
-    setPosition({ x: 0, y: 0 });
-  }, [setScale, setPosition]);
+    // Auto-fit the diagram to panel
+    const svgEl = previewRef.current?.querySelector("svg");
+    if (svgEl && svgContainerRef.current) {
+      const containerWidth = svgContainerRef.current.offsetWidth;
+      const containerHeight = svgContainerRef.current.offsetHeight;
+      const svgWidth = svgEl.width.baseVal.value;
+      const svgHeight = svgEl.height.baseVal.value;
+
+      const scaleX = containerWidth / svgWidth;
+      const scaleY = containerHeight / svgHeight;
+      const newScale = Math.min(scaleX, scaleY) * 0.95; // 95% padding
+
+      const newX = (containerWidth - svgWidth * newScale) / 2;
+      const newY = (containerHeight - svgHeight * newScale) / 2;
+
+      setScale(newScale);
+      setPosition({ x: newX, y: newY });
+    } else {
+      // Fallback to default
+      setScale(1);
+      setPosition({ x: 0, y: 0 });
+    }
+    setHasManuallyAdjusted(false);
+  }, [setScale, setPosition, setHasManuallyAdjusted]);
 
   // Resize handlers
   const handleResizeStart = useCallback(
@@ -733,12 +775,11 @@ ${code}
           samples={samples}
           handleSampleClick={handleSampleClick}
           darkMode={darkMode}
-          themeConfig={themeConfig}
-          setThemeConfig={setThemeConfig}
-          showThemeConfig={showThemeConfig}
           editorWidth={editorWidth}
           imageSize={imageSize}
           setImageSize={setImageSize}
+          backgroundColor={backgroundColor}
+          setBackgroundColor={setBackgroundColor}
           downloadMenuOpen={downloadMenuOpen}
           setDownloadMenuOpen={setDownloadMenuOpen}
           downloadSvg={downloadSvg}
@@ -774,6 +815,11 @@ ${code}
           zoomIn={zoomIn}
           zoomOut={zoomOut}
           resetZoom={resetZoom}
+          isLoading={isLoading}
+          setShowThemeConfig={setShowThemeConfig}
+          editorHeight={editorHeight}
+          setEditorHeight={setEditorHeight}
+          backgroundColor={backgroundColor}
         />
       </main>
       <Footer />

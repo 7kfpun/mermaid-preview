@@ -9,7 +9,7 @@ const useUIState = () => {
   const [isResizing, setIsResizing] = useState(false);
   const [downloadMenuOpen, setDownloadMenuOpen] = useState(false);
   const [copyMenuOpen, setCopyMenuOpen] = useState(false);
-  const [imageSize, setImageSize] = useState(1024);
+  const [imageSize, setImageSize] = useState(4096);
   const [editorWidth, setEditorWidth] = useState(() => {
     try {
       const saved = localStorage.getItem(STORAGE_KEYS.DIVIDER_POS);
@@ -18,6 +18,11 @@ const useUIState = () => {
       return 50;
     }
   });
+
+  const [hasManuallyAdjusted, setHasManuallyAdjusted] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [editorHeight, setEditorHeight] = useState(120);
+  const [backgroundColor, setBackgroundColor] = useState("#ffffff");
 
   return {
     isDragging,
@@ -38,6 +43,14 @@ const useUIState = () => {
     setImageSize,
     editorWidth,
     setEditorWidth,
+    hasManuallyAdjusted,
+    setHasManuallyAdjusted,
+    isLoading,
+    setIsLoading,
+    editorHeight,
+    setEditorHeight,
+    backgroundColor,
+    setBackgroundColor,
   };
 };
 

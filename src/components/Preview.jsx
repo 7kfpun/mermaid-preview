@@ -1,4 +1,4 @@
-import { memo } from "react";
+import { memo, useState, useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import CodeMirror from "@uiw/react-codemirror";
 import { javascript } from "@codemirror/lang-javascript";
@@ -25,8 +25,49 @@ const Preview = ({
   zoomIn,
   zoomOut,
   resetZoom,
+  isLoading,
+  setShowThemeConfig,
+  editorHeight,
+  setEditorHeight,
+  backgroundColor,
 }) => {
   const { t } = useTranslation();
+  const [isResizingEditor, setIsResizingEditor] = useState(false);
+  const resizeStartY = useRef(0);
+  const resizeStartHeight = useRef(120);
+
+  useEffect(() => {
+    if (!isResizingEditor) return;
+
+    const handleMouseMove = (e) => {
+      const diff = e.clientY - resizeStartY.current;
+      const newHeight = Math.max(80, Math.min(400, resizeStartHeight.current + diff));
+      setEditorHeight(newHeight);
+    };
+
+    const handleMouseUp = () => {
+      setIsResizingEditor(false);
+      document.body.style.cursor = "";
+      document.body.style.userSelect = "";
+    };
+
+    document.addEventListener("mousemove", handleMouseMove);
+    document.addEventListener("mouseup", handleMouseUp);
+
+    return () => {
+      document.removeEventListener("mousemove", handleMouseMove);
+      document.removeEventListener("mouseup", handleMouseUp);
+    };
+  }, [isResizingEditor, setEditorHeight]);
+
+  const handleResizeStart = (e) => {
+    setIsResizingEditor(true);
+    resizeStartY.current = e.clientY;
+    resizeStartHeight.current = editorHeight;
+    document.body.style.cursor = "row-resize";
+    document.body.style.userSelect = "none";
+  };
+
   return (
     <section
       className="preview-container"
@@ -40,6 +81,7 @@ const Preview = ({
         <button
           onClick={() => {
             setTheme("default");
+            setShowThemeConfig(false);
             trackEvent("set_theme", { theme: "default" });
           }}
           className={theme === "default" ? "active" : ""}
@@ -49,6 +91,7 @@ const Preview = ({
         <button
           onClick={() => {
             setTheme("dark");
+            setShowThemeConfig(false);
             trackEvent("set_theme", { theme: "dark" });
           }}
           className={theme === "dark" ? "active" : ""}
@@ -58,6 +101,7 @@ const Preview = ({
         <button
           onClick={() => {
             setTheme("forest");
+            setShowThemeConfig(false);
             trackEvent("set_theme", { theme: "forest" });
           }}
           className={theme === "forest" ? "active" : ""}
@@ -67,6 +111,7 @@ const Preview = ({
         <button
           onClick={() => {
             setTheme("neutral");
+            setShowThemeConfig(false);
             trackEvent("set_theme", { theme: "neutral" });
           }}
           className={theme === "neutral" ? "active" : ""}
@@ -75,32 +120,59 @@ const Preview = ({
         </button>
         <button
           onClick={() => {
-            setTheme("custom");
-            setThemeConfig(
-              themeConfig ||
+            setTheme("base");
+            setShowThemeConfig(false);
+            trackEvent("set_theme", { theme: "base" });
+          }}
+          className={theme === "base" ? "active" : ""}
+        >
+          {t("base")}
+        </button>
+        <button
+          onClick={() => {
+            if (theme === "custom") {
+              // Toggle JSON editor if already on custom
+              setShowThemeConfig(!showThemeConfig);
+              trackEvent("toggle_theme_config");
+            } else {
+              // Switch to custom theme and show editor
+              setTheme("custom");
+              setThemeConfig(
+                themeConfig ||
                 '{"theme": "base", "themeVariables": {"primaryColor": "#ff0000"}}',
-            );
-            trackEvent("set_theme", { theme: "custom" });
+              );
+              setShowThemeConfig(true);
+              trackEvent("set_theme", { theme: "custom" });
+            }
           }}
           className={theme === "custom" ? "active" : ""}
         >
+          {theme === "custom" && (showThemeConfig ? "▼ " : "▶ ")}
           {t("custom")}
         </button>
       </div>
       {showThemeConfig && (
-        <CodeMirror
-          value={themeConfig}
-          height="120px"
-          theme={darkMode ? oneDark : "light"}
-          extensions={[javascript(), indentationMarkers()]}
-          onChange={(value) => setThemeConfig(value)}
-          placeholder='{"theme": "base", "themeVariables": {"primaryColor": "#ff0000"}}'
-          basicSetup={{
-            lineNumbers: false,
-            foldGutter: false,
-            highlightActiveLine: false,
-          }}
-        />
+        <div className="theme-config-wrapper">
+          <CodeMirror
+            value={themeConfig}
+            height={`${editorHeight}px`}
+            theme={darkMode ? oneDark : "light"}
+            extensions={[javascript(), indentationMarkers()]}
+            onChange={(value) => setThemeConfig(value)}
+            placeholder='{"theme": "base", "themeVariables": {"primaryColor": "#ff0000"}}'
+            basicSetup={{
+              lineNumbers: false,
+              foldGutter: false,
+              highlightActiveLine: false,
+            }}
+          />
+          <div
+            className="editor-resize-handle"
+            onMouseDown={handleResizeStart}
+          >
+            <div className="editor-resize-line" />
+          </div>
+        </div>
       )}
       <div
         className={`preview ${isDragging ? "dragging" : ""}`}
@@ -108,9 +180,16 @@ const Preview = ({
         onWheel={handleWheel}
         onTouchMove={handleTouchMove}
         ref={svgContainerRef}
+        style={{ background: backgroundColor }}
       >
+        {isLoading && (
+          <div className="loading-overlay">
+            <div className="spinner"></div>
+          </div>
+        )}
         <div
           ref={previewRef}
+          className="diagram-container"
           style={{
             transform: `translate(${position.x}px, ${position.y}px) scale(${scale})`,
             cursor: isDragging ? "grabbing" : "grab",
