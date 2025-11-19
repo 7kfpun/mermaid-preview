@@ -32,7 +32,7 @@ const Editor = ({
   return (
     <section
       className="editor"
-      style={{ flexBasis: `${editorWidth}%`, flexGrow: 0, flexShrink: 0 }}
+      style={{ flexGrow: editorWidth, flexBasis: 0, flexShrink: 1 }}
     >
       <div className="selectors-container">
         <div className="sample-selector">

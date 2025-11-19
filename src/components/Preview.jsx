@@ -72,9 +72,9 @@ const Preview = ({
     <section
       className="preview-container"
       style={{
-        flexBasis: `${100 - editorWidth}%`,
-        flexGrow: 0,
-        flexShrink: 0,
+        flexGrow: 100 - editorWidth,
+        flexBasis: 0,
+        flexShrink: 1,
       }}
     >
       <div className="theme-selector">
