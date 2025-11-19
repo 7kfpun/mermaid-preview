@@ -5,6 +5,7 @@ import { javascript } from "@codemirror/lang-javascript";
 import { oneDark } from "@codemirror/theme-one-dark";
 import { indentationMarkers } from "@replit/codemirror-indentation-markers";
 import { trackEvent } from "../utils/ga";
+import { DEFAULT_CUSTOM_THEME } from "../utils/constants";
 
 const Preview = ({
   editorWidth,
@@ -137,10 +138,7 @@ const Preview = ({
             } else {
               // Switch to custom theme and show editor
               setTheme("custom");
-              setThemeConfig(
-                themeConfig ||
-                '{"theme": "base", "themeVariables": {"primaryColor": "#ff0000"}}',
-              );
+              setThemeConfig(themeConfig || DEFAULT_CUSTOM_THEME);
               setShowThemeConfig(true);
               trackEvent("set_theme", { theme: "custom" });
             }
@@ -159,7 +157,7 @@ const Preview = ({
             theme={darkMode ? oneDark : "light"}
             extensions={[javascript(), indentationMarkers()]}
             onChange={(value) => setThemeConfig(value)}
-            placeholder='{"theme": "base", "themeVariables": {"primaryColor": "#ff0000"}}'
+            placeholder={DEFAULT_CUSTOM_THEME}
             basicSetup={{
               lineNumbers: false,
               foldGutter: false,
