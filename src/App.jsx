@@ -234,6 +234,7 @@ ${code}
     setPosition,
     setScale,
     hasManuallyAdjusted,
+    setIsLoading,
   ]);
 
   useEffect(() => {
@@ -493,7 +494,7 @@ ${code}
 
       img.src = svgDataUrl;
     },
-    [imageSize],
+    [imageSize, backgroundColor],
   );
 
   const copyEmbedHtml = useCallback(() => {
@@ -601,7 +602,7 @@ ${code}
 
       img.src = svgDataUrl;
     },
-    [imageSize],
+    [imageSize, backgroundColor],
   );
 
   const handleWheel = useCallback(

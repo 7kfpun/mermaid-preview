@@ -46,10 +46,10 @@
   "noDiagramToCopy": "No diagram to copy.",
   "svgCopied": "SVG copied!",
   "failedToCopySVG": "Failed to copy SVG.",
-  "copying": "Copiando...",
+  "copying": "Copying...",
   "copiedToClipboard": "{{type}} copied to clipboard!",
   "failedToCopy": "Failed to copy {{type}}.",
   "bgColor": "Bg:",
-  "embedHTML": "Insertar HTML",
+  "embedHTML": "Embed HTML",
   "base": "Base"
 }

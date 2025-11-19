@@ -1,7 +1,6 @@
 import { memo } from "react";
 import { useTranslation } from "react-i18next";
 import CodeMirror from "@uiw/react-codemirror";
-import { javascript } from "@codemirror/lang-javascript";
 import { oneDark } from "@codemirror/theme-one-dark";
 import { indentationMarkers } from "@replit/codemirror-indentation-markers";
 import { mermaid as mermaidLang } from "codemirror-lang-mermaid";

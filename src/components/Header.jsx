@@ -16,6 +16,16 @@ const Header = ({ toggleDarkMode, darkMode }) => {
     ru: "Русский",
     pt: "Português",
     id: "Bahasa Indonesia",
+    ja: "日本語",
+    de: "Deutsch",
+    ko: "한국어",
+    tr: "Türkçe",
+    it: "Italiano",
+    vi: "Tiếng Việt",
+    pl: "Polski",
+    uk: "Українська",
+    th: "ไทย",
+    nl: "Nederlands",
   };
 
   // Load saved language on mount

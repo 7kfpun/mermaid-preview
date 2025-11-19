@@ -48,5 +48,8 @@
   "failedToCopySVG": "複製 SVG 失敗。",
   "copying": "複製中...",
   "copiedToClipboard": "{{type}} 已複製到剪貼簿！",
-  "failedToCopy": "複製 {{type}} 失敗。"
+  "failedToCopy": "複製 {{type}} 失敗。",
+  "bgColor": "背景：",
+  "embedHTML": "嵌入 HTML",
+  "base": "基本"
 }
