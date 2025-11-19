@@ -10,11 +10,7 @@ import Preview from "./components/Preview";
 import useMermaidCode from "./hooks/useMermaidCode";
 import useTheme from "./hooks/useTheme";
 import useUIState from "./hooks/useUIState";
-import {
-  STORAGE_KEYS,
-  DEFAULT_CUSTOM_THEME,
-  samples,
-} from "./utils/constants";
+import { STORAGE_KEYS, DEFAULT_CUSTOM_THEME, samples } from "./utils/constants";
 import { encodeState, decodeState } from "./utils/url";
 import { isRTL } from "./i18n";
 
@@ -257,7 +253,7 @@ ${code}
     }, 500);
 
     return () => clearTimeout(debounceTimer.current);
-  }, [code, theme, themeConfig, editorWidth, renderDiagram]);
+  }, [code, theme, themeConfig, renderDiagram]);
 
   // Handle RTL direction based on language
   useEffect(() => {
@@ -324,14 +320,17 @@ ${code}
     updateMeta('link[rel="canonical"]', currentUrl, "href");
   }, [code, theme]);
 
-  const handleSampleClick = (sampleType) => {
-    if (sampleType && samples[sampleType]) {
-      const newCode = samples[sampleType];
-      setCode(newCode);
-    }
-  };
+  const handleSampleClick = useCallback(
+    (sampleType) => {
+      if (sampleType && samples[sampleType]) {
+        const newCode = samples[sampleType];
+        setCode(newCode);
+      }
+    },
+    [setCode],
+  );
 
-  const handleShare = () => {
+  const handleShare = useCallback(() => {
     const url = window.location.href;
     navigator.clipboard
       .writeText(url)
@@ -341,17 +340,20 @@ ${code}
       .catch(() => {
         toast.error("Failed to copy link.");
       });
-  };
+  }, []);
 
-  const handleMouseDown = (e) => {
-    if (e.target.closest("svg")) {
-      setIsDragging(true);
-      setDragOffset({
-        x: e.clientX - position.x,
-        y: e.clientY - position.y,
-      });
-    }
-  };
+  const handleMouseDown = useCallback(
+    (e) => {
+      if (e.target.closest("svg")) {
+        setIsDragging(true);
+        setDragOffset({
+          x: e.clientX - position.x,
+          y: e.clientY - position.y,
+        });
+      }
+    },
+    [position.x, position.y, setIsDragging, setDragOffset],
+  );
 
   const handleMouseMove = useCallback(
     (e) => {
@@ -381,7 +383,7 @@ ${code}
     }
   }, [isDragging, dragOffset, handleMouseMove, handleMouseUp]);
 
-  const downloadSvg = () => {
+  const downloadSvg = useCallback(() => {
     const svgEl = previewRef.current?.querySelector("svg");
     if (!svgEl) return;
 
@@ -396,225 +398,236 @@ ${code}
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
-  };
+  }, []);
 
-  const svgToRaster = (type) => {
-    const svgEl = previewRef.current?.querySelector("svg");
-    if (!svgEl) return;
+  const svgToRaster = useCallback(
+    (type) => {
+      const svgEl = previewRef.current?.querySelector("svg");
+      if (!svgEl) return;
 
-    const originalWidth = svgEl.width.baseVal.value || svgEl.clientWidth || 800;
-    const originalHeight =
-      svgEl.height.baseVal.value || svgEl.clientHeight || 600;
-    const aspectRatio = originalWidth / originalHeight;
+      const originalWidth =
+        svgEl.width.baseVal.value || svgEl.clientWidth || 800;
+      const originalHeight =
+        svgEl.height.baseVal.value || svgEl.clientHeight || 600;
+      const aspectRatio = originalWidth / originalHeight;
 
-    const width = imageSize;
-    const height = imageSize / aspectRatio;
+      const width = imageSize;
+      const height = imageSize / aspectRatio;
 
-    const svgClone = svgEl.cloneNode(true);
-    svgClone.setAttribute("xmlns", "http://www.w3.org/2000/svg");
-    const svgText = new XMLSerializer().serializeToString(svgClone);
+      const svgClone = svgEl.cloneNode(true);
+      svgClone.setAttribute("xmlns", "http://www.w3.org/2000/svg");
+      const svgText = new XMLSerializer().serializeToString(svgClone);
 
-    // Convert SVG to base64 using TextEncoder
-    const bytes = new TextEncoder().encode(svgText);
-    const binString = Array.from(bytes, (byte) =>
-      String.fromCodePoint(byte),
-    ).join("");
-    const svgDataUrl = "data:image/svg+xml;base64," + btoa(binString);
+      // Convert SVG to base64 using TextEncoder
+      const bytes = new TextEncoder().encode(svgText);
+      const binString = Array.from(bytes, (byte) =>
+        String.fromCodePoint(byte),
+      ).join("");
+      const svgDataUrl = "data:image/svg+xml;base64," + btoa(binString);
 
-    const img = new Image();
-    img.onload = () => {
-      const canvas = document.createElement("canvas");
-      canvas.width = width;
-      canvas.height = height;
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement("canvas");
+        canvas.width = width;
+        canvas.height = height;
 
-      const ctx = canvas.getContext("2d");
+        const ctx = canvas.getContext("2d");
 
-      // Add white background for JPG (no transparency)
-      if (type === "jpg" || type === "jpeg") {
-        ctx.fillStyle = "white";
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-      }
+        // Add white background for JPG (no transparency)
+        if (type === "jpg" || type === "jpeg") {
+          ctx.fillStyle = "white";
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+        }
 
-      ctx.drawImage(img, 0, 0, width, height);
+        ctx.drawImage(img, 0, 0, width, height);
 
-      // Determine mime type and quality
-      let mimeType, quality;
-      switch (type) {
-        case "png":
-          mimeType = "image/png";
-          quality = 1.0;
-          break;
-        case "jpg":
-        case "jpeg":
-          mimeType = "image/jpeg";
-          quality = 0.9;
-          break;
-        case "webp":
-          mimeType = "image/webp";
-          quality = 0.9;
-          break;
-        default:
-          mimeType = "image/png";
-          quality = 1.0;
-      }
+        // Determine mime type and quality
+        let mimeType, quality;
+        switch (type) {
+          case "png":
+            mimeType = "image/png";
+            quality = 1.0;
+            break;
+          case "jpg":
+          case "jpeg":
+            mimeType = "image/jpeg";
+            quality = 0.9;
+            break;
+          case "webp":
+            mimeType = "image/webp";
+            quality = 0.9;
+            break;
+          default:
+            mimeType = "image/png";
+            quality = 1.0;
+        }
 
-      canvas.toBlob(
-        (blobOut) => {
-          if (!blobOut) return;
-          const outUrl = URL.createObjectURL(blobOut);
-          const a = document.createElement("a");
-          a.href = outUrl;
-          a.download = `diagram.${type}`;
-          document.body.appendChild(a);
-          a.click();
-          document.body.removeChild(a);
-          URL.revokeObjectURL(outUrl);
-        },
-        mimeType,
-        quality,
-      );
-    };
+        canvas.toBlob(
+          (blobOut) => {
+            if (!blobOut) return;
+            const outUrl = URL.createObjectURL(blobOut);
+            const a = document.createElement("a");
+            a.href = outUrl;
+            a.download = `diagram.${type}`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(outUrl);
+          },
+          mimeType,
+          quality,
+        );
+      };
 
-    img.onerror = () => {
-      console.error("Failed to load SVG into image");
-      toast.error("Failed to convert diagram.");
-    };
+      img.onerror = () => {
+        console.error("Failed to load SVG into image");
+        toast.error("Failed to convert diagram.");
+      };
 
-    img.src = svgDataUrl;
-  };
+      img.src = svgDataUrl;
+    },
+    [imageSize],
+  );
 
-  const copyEmbedHtml = () => {
+  const copyEmbedHtml = useCallback(() => {
     navigator.clipboard
       .writeText(embedHtml)
       .then(() => toast.success("Embed HTML copied!"))
       .catch(() => toast.error("Failed to copy embed HTML."));
-  };
+  }, [embedHtml]);
 
-  const copyImage = (type) => {
-    const svgEl = previewRef.current?.querySelector("svg");
-    if (!svgEl) {
-      toast.error("No diagram to copy.");
-      return;
-    }
-
-    const originalWidth = svgEl.width.baseVal.value || svgEl.clientWidth || 800;
-    const originalHeight =
-      svgEl.height.baseVal.value || svgEl.clientHeight || 600;
-    const aspectRatio = originalWidth / originalHeight;
-
-    const width = imageSize;
-    const height = imageSize / aspectRatio;
-
-    const svgClone = svgEl.cloneNode(true);
-    svgClone.setAttribute("xmlns", "http://www.w3.org/2000/svg");
-    const svgText = new XMLSerializer().serializeToString(svgClone);
-
-    if (type === "svg") {
-      navigator.clipboard
-        .writeText(svgText)
-        .then(() => toast.success("SVG copied!"))
-        .catch(() => toast.error("Failed to copy SVG."));
-      return;
-    }
-
-    // Convert SVG to base64 using TextEncoder
-    const bytes = new TextEncoder().encode(svgText);
-    const binString = Array.from(bytes, (byte) =>
-      String.fromCodePoint(byte),
-    ).join("");
-    const svgDataUrl = "data:image/svg+xml;base64," + btoa(binString);
-
-    const img = new Image();
-    img.onload = () => {
-      const canvas = document.createElement("canvas");
-      canvas.width = width;
-      canvas.height = height;
-
-      const ctx = canvas.getContext("2d");
-
-      // Add white background for JPG (no transparency)
-      if (type === "jpg" || type === "jpeg") {
-        ctx.fillStyle = "white";
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
+  const copyImage = useCallback(
+    (type) => {
+      const svgEl = previewRef.current?.querySelector("svg");
+      if (!svgEl) {
+        toast.error("No diagram to copy.");
+        return;
       }
 
-      ctx.drawImage(img, 0, 0, width, height);
+      const originalWidth =
+        svgEl.width.baseVal.value || svgEl.clientWidth || 800;
+      const originalHeight =
+        svgEl.height.baseVal.value || svgEl.clientHeight || 600;
+      const aspectRatio = originalWidth / originalHeight;
 
-      // Determine mime type and quality
-      let mimeType, quality;
-      switch (type) {
-        case "png":
-          mimeType = "image/png";
-          quality = 1.0;
-          break;
-        case "jpg":
-        case "jpeg":
-          mimeType = "image/jpeg";
-          quality = 0.9;
-          break;
-        case "webp":
-          mimeType = "image/webp";
-          quality = 0.9;
-          break;
-        default:
-          mimeType = "image/png";
-          quality = 1.0;
+      const width = imageSize;
+      const height = imageSize / aspectRatio;
+
+      const svgClone = svgEl.cloneNode(true);
+      svgClone.setAttribute("xmlns", "http://www.w3.org/2000/svg");
+      const svgText = new XMLSerializer().serializeToString(svgClone);
+
+      if (type === "svg") {
+        navigator.clipboard
+          .writeText(svgText)
+          .then(() => toast.success("SVG copied!"))
+          .catch(() => toast.error("Failed to copy SVG."));
+        return;
       }
 
-      canvas.toBlob(
-        (blob) => {
-          if (!blob) {
-            toast.error("Failed to create image blob.");
-            return;
-          }
-          const promise = navigator.clipboard.write([
-            new ClipboardItem({ [mimeType]: blob }),
-          ]);
-          toast.promise(promise, {
-            loading: "Copying...",
-            success: `${type.toUpperCase()} copied to clipboard!`,
-            error: `Failed to copy ${type.toUpperCase()}.`,
-          });
-        },
-        mimeType,
-        quality,
-      );
-    };
+      // Convert SVG to base64 using TextEncoder
+      const bytes = new TextEncoder().encode(svgText);
+      const binString = Array.from(bytes, (byte) =>
+        String.fromCodePoint(byte),
+      ).join("");
+      const svgDataUrl = "data:image/svg+xml;base64," + btoa(binString);
 
-    img.onerror = () => {
-      console.error("Failed to load SVG into image");
-      toast.error("Failed to convert diagram.");
-    };
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement("canvas");
+        canvas.width = width;
+        canvas.height = height;
 
-    img.src = svgDataUrl;
-  };
+        const ctx = canvas.getContext("2d");
 
-  const handleWheel = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
+        // Add white background for JPG (no transparency)
+        if (type === "jpg" || type === "jpeg") {
+          ctx.fillStyle = "white";
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+        }
 
-    const delta = e.deltaY > 0 ? -0.03 : 0.03; // Slower zoom for better control
-    const newScale = Math.max(0.1, Math.min(5, scale + delta));
+        ctx.drawImage(img, 0, 0, width, height);
 
-    // Calculate scale difference to maintain chart center
-    const scaleDiff = newScale / scale;
+        // Determine mime type and quality
+        let mimeType, quality;
+        switch (type) {
+          case "png":
+            mimeType = "image/png";
+            quality = 1.0;
+            break;
+          case "jpg":
+          case "jpeg":
+            mimeType = "image/jpeg";
+            quality = 0.9;
+            break;
+          case "webp":
+            mimeType = "image/webp";
+            quality = 0.9;
+            break;
+          default:
+            mimeType = "image/png";
+            quality = 1.0;
+        }
 
-    // Update scale and adjust position to keep chart centered during zoom
-    setScale(newScale);
-    setPosition({
-      x: position.x * scaleDiff,
-      y: position.y * scaleDiff,
-    });
-  };
+        canvas.toBlob(
+          (blob) => {
+            if (!blob) {
+              toast.error("Failed to create image blob.");
+              return;
+            }
+            const promise = navigator.clipboard.write([
+              new ClipboardItem({ [mimeType]: blob }),
+            ]);
+            toast.promise(promise, {
+              loading: "Copying...",
+              success: `${type.toUpperCase()} copied to clipboard!`,
+              error: `Failed to copy ${type.toUpperCase()}.`,
+            });
+          },
+          mimeType,
+          quality,
+        );
+      };
 
-  const handleTouchMove = (e) => {
+      img.onerror = () => {
+        console.error("Failed to load SVG into image");
+        toast.error("Failed to convert diagram.");
+      };
+
+      img.src = svgDataUrl;
+    },
+    [imageSize],
+  );
+
+  const handleWheel = useCallback(
+    (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+
+      const delta = e.deltaY > 0 ? -0.03 : 0.03; // Slower zoom for better control
+      const newScale = Math.max(0.1, Math.min(5, scale + delta));
+
+      // Calculate scale difference to maintain chart center
+      const scaleDiff = newScale / scale;
+
+      // Update scale and adjust position to keep chart centered during zoom
+      setScale(newScale);
+      setPosition({
+        x: position.x * scaleDiff,
+        y: position.y * scaleDiff,
+      });
+    },
+    [scale, setScale, position.x, position.y, setPosition],
+  );
+
+  const handleTouchMove = useCallback((e) => {
     // Prevent pinch zoom (when there are 2 or more touches)
     if (e.touches.length > 1) {
       e.preventDefault();
     }
-  };
+  }, []);
 
-  const zoomIn = () => {
+  const zoomIn = useCallback(() => {
     const newScale = Math.min(5, scale + 0.2);
     const scaleDiff = newScale / scale;
 
@@ -623,9 +636,9 @@ ${code}
       x: position.x * scaleDiff,
       y: position.y * scaleDiff,
     });
-  };
+  }, [scale, setScale, position.x, position.y, setPosition]);
 
-  const zoomOut = () => {
+  const zoomOut = useCallback(() => {
     const newScale = Math.max(0.1, scale - 0.2);
     const scaleDiff = newScale / scale;
 
@@ -634,22 +647,24 @@ ${code}
       x: position.x * scaleDiff,
       y: position.y * scaleDiff,
     });
-  };
+  }, [scale, setScale, position.x, position.y, setPosition]);
 
-  const resetZoom = () => {
+  const resetZoom = useCallback(() => {
     setScale(1);
     setPosition({ x: 0, y: 0 });
-  };
-
+  }, [setScale, setPosition]);
 
   // Resize handlers
-  const handleResizeStart = (e) => {
-    setIsResizing(true);
-    resizeStartX.current = e.clientX;
-    resizeStartWidth.current = editorWidth;
-    document.body.style.cursor = "col-resize";
-    document.body.style.userSelect = "none";
-  };
+  const handleResizeStart = useCallback(
+    (e) => {
+      setIsResizing(true);
+      resizeStartX.current = e.clientX;
+      resizeStartWidth.current = editorWidth;
+      document.body.style.cursor = "col-resize";
+      document.body.style.userSelect = "none";
+    },
+    [editorWidth, setIsResizing],
+  );
 
   useEffect(() => {
     if (!isResizing) return;
@@ -693,16 +708,16 @@ ${code}
   useEffect(() => {
     const handleClickOutside = (e) => {
       // Check if click is outside dropdown menus
-      const isClickInsideDropdown = e.target.closest('.dropdown');
+      const isClickInsideDropdown = e.target.closest(".dropdown");
       if (!isClickInsideDropdown) {
         setDownloadMenuOpen(false);
         setCopyMenuOpen(false);
       }
     };
 
-    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside);
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [setDownloadMenuOpen, setCopyMenuOpen]);
 
