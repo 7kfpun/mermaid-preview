@@ -394,6 +394,24 @@ ${code}
     setIsDragging(false);
   }, [setIsDragging]);
 
+  // Touch event handlers for mobile diagram dragging
+  const handleTouchStart = useCallback(
+    (e) => {
+      if (e.target.closest("svg") && e.touches.length === 1) {
+        setIsDragging(true);
+        setDragOffset({
+          x: e.touches[0].clientX - position.x,
+          y: e.touches[0].clientY - position.y,
+        });
+      }
+    },
+    [position.x, position.y, setIsDragging, setDragOffset],
+  );
+
+  const handleTouchEnd = useCallback(() => {
+    setIsDragging(false);
+  }, [setIsDragging]);
+
   useEffect(() => {
     if (isDragging) {
       document.addEventListener("mousemove", handleMouseMove);
@@ -588,24 +606,31 @@ ${code}
             quality = 1.0;
         }
 
-        canvas.toBlob(
-          (blob) => {
-            if (!blob) {
-              toast.error("Failed to create image blob.");
-              return;
-            }
-            const promise = navigator.clipboard.write([
-              new ClipboardItem({ [mimeType]: blob }),
-            ]);
-            toast.promise(promise, {
-              loading: "Copying...",
-              success: `${type.toUpperCase()} copied to clipboard!`,
-              error: `Failed to copy ${type.toUpperCase()}.`,
-            });
-          },
-          mimeType,
-          quality,
-        );
+        // For iOS Safari compatibility, create ClipboardItem with a Promise
+        // that resolves to the blob. This keeps the clipboard write synchronous
+        // within the user gesture event handler.
+        const blobPromise = new Promise((resolve, reject) => {
+          canvas.toBlob(
+            (blob) => {
+              if (!blob) {
+                reject(new Error("Failed to create image blob."));
+                return;
+              }
+              resolve(blob);
+            },
+            mimeType,
+            quality,
+          );
+        });
+
+        const clipboardItem = new ClipboardItem({ [mimeType]: blobPromise });
+        const promise = navigator.clipboard.write([clipboardItem]);
+
+        toast.promise(promise, {
+          loading: "Copying...",
+          success: `${type.toUpperCase()} copied to clipboard!`,
+          error: `Failed to copy ${type.toUpperCase()}.`,
+        });
       };
 
       img.onerror = () => {
@@ -643,12 +668,24 @@ ${code}
     [scale, setScale, position.x, position.y, setPosition, setHasManuallyAdjusted],
   );
 
-  const handleTouchMove = useCallback((e) => {
-    // Prevent pinch zoom (when there are 2 or more touches)
-    if (e.touches.length > 1) {
-      e.preventDefault();
-    }
-  }, []);
+  const handleTouchMove = useCallback(
+    (e) => {
+      // Handle single-touch dragging
+      if (isDragging && e.touches.length === 1) {
+        e.preventDefault();
+        setPosition({
+          x: e.touches[0].clientX - dragOffset.x,
+          y: e.touches[0].clientY - dragOffset.y,
+        });
+        setHasManuallyAdjusted(true);
+      }
+      // Prevent pinch zoom (when there are 2 or more touches)
+      else if (e.touches.length > 1) {
+        e.preventDefault();
+      }
+    },
+    [isDragging, dragOffset, setPosition, setHasManuallyAdjusted],
+  );
 
   const zoomIn = useCallback(() => {
     const newScale = Math.min(5, scale + 0.2);
@@ -714,7 +751,8 @@ ${code}
   const handleResizeStart = useCallback(
     (e) => {
       setIsResizing(true);
-      resizeStartX.current = e.clientX;
+      const clientX = e.clientX || (e.touches && e.touches[0].clientX);
+      resizeStartX.current = clientX;
       resizeStartWidth.current = editorWidth;
       document.body.style.cursor = "col-resize";
       document.body.style.userSelect = "none";
@@ -729,8 +767,9 @@ ${code}
       const mainElement = document.querySelector("main");
       if (!mainElement) return;
 
+      const clientX = e.clientX || (e.touches && e.touches[0].clientX);
       const mainWidth = mainElement.offsetWidth;
-      const diff = e.clientX - resizeStartX.current;
+      const diff = clientX - resizeStartX.current;
       const diffPercent = (diff / mainWidth) * 100;
       const newWidth = resizeStartWidth.current + diffPercent;
 
@@ -753,10 +792,14 @@ ${code}
 
     document.addEventListener("mousemove", handleResizeMove);
     document.addEventListener("mouseup", handleResizeEnd);
+    document.addEventListener("touchmove", handleResizeMove);
+    document.addEventListener("touchend", handleResizeEnd);
 
     return () => {
       document.removeEventListener("mousemove", handleResizeMove);
       document.removeEventListener("mouseup", handleResizeEnd);
+      document.removeEventListener("touchmove", handleResizeMove);
+      document.removeEventListener("touchend", handleResizeEnd);
     };
   }, [isResizing, editorWidth, setEditorWidth, setIsResizing]);
 
@@ -808,6 +851,7 @@ ${code}
         <div
           className={`resize-handle ${isResizing ? "dragging" : ""}`}
           onMouseDown={handleResizeStart}
+          onTouchStart={handleResizeStart}
         />
 
         <Preview
@@ -820,6 +864,8 @@ ${code}
           darkMode={darkMode}
           isDragging={isDragging}
           handleMouseDown={handleMouseDown}
+          handleTouchStart={handleTouchStart}
+          handleTouchEnd={handleTouchEnd}
           handleWheel={handleWheel}
           handleTouchMove={handleTouchMove}
           svgContainerRef={svgContainerRef}
