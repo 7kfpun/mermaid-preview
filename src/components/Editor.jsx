@@ -27,6 +27,8 @@ const Editor = ({
   copyEmbedHtml,
   backgroundColor,
   setBackgroundColor,
+  showSamples,
+  setShowSamples,
 }) => {
   const { t } = useTranslation();
   return (
@@ -36,21 +38,49 @@ const Editor = ({
     >
       <div className="selectors-container">
         <div className="sample-selector">
-          <div className="sample-grid">
-            {Object.keys(samples).map((type) => (
-              <button
-                key={type}
-                onClick={() => {
-                  handleSampleClick(type);
-                  trackEvent("select_sample", { sample_type: type });
-                }}
-                className="sample-button"
-              >
-                <Icon type={type} />
-                <span>{t(type)}</span>
-              </button>
-            ))}
-          </div>
+          {showSamples && (
+            <div className="sample-grid">
+              {Object.keys(samples).map((type) => (
+                <button
+                  key={type}
+                  onClick={() => {
+                    handleSampleClick(type);
+                    trackEvent("select_sample", { sample_type: type });
+                  }}
+                  className="sample-button"
+                >
+                  <Icon type={type} />
+                  <span>{t(type)}</span>
+                </button>
+              ))}
+            </div>
+          )}
+          <button
+            className="sample-toggle-btn"
+            onClick={() => {
+              setShowSamples(!showSamples);
+              trackEvent("toggle_samples", { visible: !showSamples });
+            }}
+            aria-expanded={showSamples}
+          >
+            <span>{t("sampleDiagrams")}</span>
+            <svg
+              width="12"
+              height="12"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              style={{
+                transform: showSamples ? "rotate(180deg)" : "rotate(0deg)",
+                transition: "transform 0.2s ease",
+              }}
+            >
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+          </button>
         </div>
       </div>
       <CodeMirror

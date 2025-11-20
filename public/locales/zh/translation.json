@@ -51,5 +51,6 @@
   "failedToCopy": "複製 {{type}} 失敗。",
   "bgColor": "背景：",
   "embedHTML": "嵌入 HTML",
-  "base": "基本"
+  "base": "基本",
+  "sampleDiagrams": "範例圖表"
 }

@@ -23,6 +23,7 @@ const useUIState = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [editorHeight, setEditorHeight] = useState(120);
   const [backgroundColor, setBackgroundColor] = useState("#ffffff");
+  const [showSamples, setShowSamples] = useState(true);
 
   return {
     isDragging,
@@ -51,6 +52,8 @@ const useUIState = () => {
     setEditorHeight,
     backgroundColor,
     setBackgroundColor,
+    showSamples,
+    setShowSamples,
   };
 };
 

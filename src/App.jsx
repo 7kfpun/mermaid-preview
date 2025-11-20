@@ -54,6 +54,8 @@ function App() {
     setEditorHeight,
     backgroundColor,
     setBackgroundColor,
+    showSamples,
+    setShowSamples,
   } = useUIState();
 
   const previewRef = useRef(null);
@@ -191,10 +193,10 @@ function App() {
       const themeVariablesSnippet =
         theme === "custom" && themeConfigObj?.themeVariables
           ? `,\n  themeVariables: ${JSON.stringify(
-              themeConfigObj.themeVariables,
-              null,
-              2,
-            )}`
+            themeConfigObj.themeVariables,
+            null,
+            2,
+          )}`
           : "";
 
       // Update embed HTML
@@ -571,74 +573,83 @@ ${code}
       ).join("");
       const svgDataUrl = "data:image/svg+xml;base64," + btoa(binString);
 
-      const img = new Image();
-      img.onload = () => {
-        const canvas = document.createElement("canvas");
-        canvas.width = width;
-        canvas.height = height;
+      // Determine mime type and quality
+      let mimeType, quality;
+      switch (type) {
+        case "png":
+          mimeType = "image/png";
+          quality = 1.0;
+          break;
+        case "jpg":
+        case "jpeg":
+          mimeType = "image/jpeg";
+          quality = 0.9;
+          break;
+        case "webp":
+          mimeType = "image/webp";
+          quality = 0.9;
+          break;
+        default:
+          mimeType = "image/png";
+          quality = 1.0;
+      }
 
-        const ctx = canvas.getContext("2d");
+      // Create a Promise that resolves to the image blob
+      // This allows us to call navigator.clipboard.write immediately
+      const blobPromise = new Promise((resolve, reject) => {
+        const img = new Image();
+        img.onload = () => {
+          try {
+            const canvas = document.createElement("canvas");
+            canvas.width = width;
+            canvas.height = height;
 
-        // Add background color (for JPG always, for PNG/WebP if not transparent)
-        ctx.fillStyle = backgroundColor;
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
+            const ctx = canvas.getContext("2d");
 
-        ctx.drawImage(img, 0, 0, width, height);
+            // Add background color
+            ctx.fillStyle = backgroundColor;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-        // Determine mime type and quality
-        let mimeType, quality;
-        switch (type) {
-          case "png":
-            mimeType = "image/png";
-            quality = 1.0;
-            break;
-          case "jpg":
-          case "jpeg":
-            mimeType = "image/jpeg";
-            quality = 0.9;
-            break;
-          case "webp":
-            mimeType = "image/webp";
-            quality = 0.9;
-            break;
-          default:
-            mimeType = "image/png";
-            quality = 1.0;
-        }
+            ctx.drawImage(img, 0, 0, width, height);
 
-        // For iOS Safari compatibility, create ClipboardItem with a Promise
-        // that resolves to the blob. This keeps the clipboard write synchronous
-        // within the user gesture event handler.
-        const blobPromise = new Promise((resolve, reject) => {
-          canvas.toBlob(
-            (blob) => {
-              if (!blob) {
-                reject(new Error("Failed to create image blob."));
-                return;
-              }
-              resolve(blob);
-            },
-            mimeType,
-            quality,
-          );
-        });
+            canvas.toBlob(
+              (blob) => {
+                if (!blob) {
+                  reject(new Error("Failed to create image blob."));
+                  return;
+                }
+                resolve(blob);
+              },
+              mimeType,
+              quality,
+            );
+          } catch (e) {
+            reject(e);
+          }
+        };
 
+        img.onerror = () => {
+          reject(new Error("Failed to load SVG into image"));
+        };
+
+        img.src = svgDataUrl;
+      });
+
+      // Create ClipboardItem with the promise
+      // This must be done synchronously within the event handler
+      try {
         const clipboardItem = new ClipboardItem({ [mimeType]: blobPromise });
         const promise = navigator.clipboard.write([clipboardItem]);
 
         toast.promise(promise, {
           loading: "Copying...",
           success: `${type.toUpperCase()} copied to clipboard!`,
-          error: `Failed to copy ${type.toUpperCase()}.`,
+          error: (err) => `Failed to copy: ${err.message || "Unknown error"}`,
         });
-      };
-
-      img.onerror = () => {
-        console.error("Failed to load SVG into image");
-        toast.error("Failed to convert diagram.");
-      };
-
-      img.src = svgDataUrl;
+      } catch (e) {
+        console.error("Clipboard write failed:", e);
+        toast.error("Failed to initiate copy. Browser might not support this.");
+      }
     },
     [imageSize, backgroundColor],
   );
@@ -846,6 +857,8 @@ ${code}
           copyImage={copyImage}
           handleShare={handleShare}
           copyEmbedHtml={copyEmbedHtml}
+          showSamples={showSamples}
+          setShowSamples={setShowSamples}
         />
 
         <div

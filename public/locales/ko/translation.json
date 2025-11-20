@@ -51,5 +51,6 @@
     "failedToCopy": "{{type}} 복사에 실패했습니다.",
     "bgColor": "배경:",
     "embedHTML": "HTML 삽입",
-    "base": "베이스"
+    "base": "베이스",
+    "sampleDiagrams": "샘플 다이어그램"
 }
