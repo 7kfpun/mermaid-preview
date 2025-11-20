@@ -126,6 +126,7 @@ main {
   justify-content: center;
   margin: 0;
   z-index: 10;
+  touch-action: pan-y;
 }
 
 .resize-handle::before {
@@ -319,6 +320,7 @@ main {
   background: #f8fafc;
   border-top: 1px solid #e2e8f0;
   transition: background 0.2s ease;
+  touch-action: pan-x;
 }
 
 .editor-resize-handle:hover {
@@ -360,6 +362,7 @@ main {
   background: #f8fafc;
   position: relative;
   user-select: none;
+  touch-action: none;
 }
 
 .preview.dragging {
@@ -371,6 +374,7 @@ main {
   position: absolute;
   top: 0;
   left: 0;
+  touch-action: none;
 }
 
 .preview svg {
@@ -482,7 +486,7 @@ button {
   align-items: center;
   justify-content: center;
   white-space: nowrap;
-  min-height: 38px;
+  min-height: 44px;
 }
 
 button svg {
@@ -515,8 +519,8 @@ button:disabled {
 }
 
 .zoom-controls button {
-  width: 40px;
-  height: 40px;
+  width: 44px;
+  height: 44px;
   padding: 0;
   display: flex;
   align-items: center;
@@ -733,8 +737,8 @@ button svg {
   }
 
   .dark-mode-toggle {
-    width: 32px;
-    height: 32px;
+    width: 44px;
+    height: 44px;
   }
 
   .sample-grid {
@@ -808,8 +812,8 @@ button svg {
   }
 
   .zoom-controls button {
-    width: 36px;
-    height: 36px;
+    width: 44px;
+    height: 44px;
     font-size: 16px;
   }
 

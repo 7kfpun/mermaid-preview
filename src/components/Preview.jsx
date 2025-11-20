@@ -17,6 +17,8 @@ const Preview = ({
   darkMode,
   isDragging,
   handleMouseDown,
+  handleTouchStart,
+  handleTouchEnd,
   handleWheel,
   handleTouchMove,
   svgContainerRef,
@@ -46,24 +48,38 @@ const Preview = ({
       setEditorHeight(newHeight);
     };
 
-    const handleMouseUp = () => {
+    const handleTouchMove = (e) => {
+      if (e.touches.length === 1) {
+        const diff = e.touches[0].clientY - resizeStartY.current;
+        const newHeight = Math.max(80, Math.min(400, resizeStartHeight.current + diff));
+        setEditorHeight(newHeight);
+        e.preventDefault();
+      }
+    };
+
+    const handleEnd = () => {
       setIsResizingEditor(false);
       document.body.style.cursor = "";
       document.body.style.userSelect = "";
     };
 
     document.addEventListener("mousemove", handleMouseMove);
-    document.addEventListener("mouseup", handleMouseUp);
+    document.addEventListener("mouseup", handleEnd);
+    document.addEventListener("touchmove", handleTouchMove);
+    document.addEventListener("touchend", handleEnd);
 
     return () => {
       document.removeEventListener("mousemove", handleMouseMove);
-      document.removeEventListener("mouseup", handleMouseUp);
+      document.removeEventListener("mouseup", handleEnd);
+      document.removeEventListener("touchmove", handleTouchMove);
+      document.removeEventListener("touchend", handleEnd);
     };
   }, [isResizingEditor, setEditorHeight]);
 
   const handleResizeStart = (e) => {
     setIsResizingEditor(true);
-    resizeStartY.current = e.clientY;
+    const clientY = e.clientY || (e.touches && e.touches[0].clientY);
+    resizeStartY.current = clientY;
     resizeStartHeight.current = editorHeight;
     document.body.style.cursor = "row-resize";
     document.body.style.userSelect = "none";
@@ -167,6 +183,7 @@ const Preview = ({
           <div
             className="editor-resize-handle"
             onMouseDown={handleResizeStart}
+            onTouchStart={handleResizeStart}
           >
             <div className="editor-resize-line" />
           </div>
@@ -175,8 +192,10 @@ const Preview = ({
       <div
         className={`preview ${isDragging ? "dragging" : ""}`}
         onMouseDown={handleMouseDown}
-        onWheel={handleWheel}
+        onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
+        onWheel={handleWheel}
         ref={svgContainerRef}
         style={{ background: backgroundColor }}
       >
