@@ -52,5 +52,135 @@
   "bgColor": "Achtergrond:",
   "embedHTML": "HTML insluiten",
   "base": "Basis",
-  "sampleDiagrams": "Voorbeelddiagrammen"
+  "sampleDiagrams": "Voorbeelddiagrammen",
+  "importedToEditor": "{{title}} geïmporteerd naar editor",
+  "mermaidGpt": "AI Hulp",
+  "mermaidGptHelp": "Krijg AI-hulp met Mermaid-syntaxis",
+  "architecture": "Architectuur",
+  "radar": "Radar",
+  "packet": "Pakket",
+  "c4": "C4 Model",
+  "nav": {
+    "editor": "Editor",
+    "gallery": "Galerij"
+  },
+  "gallery": {
+    "title": "Mermaid Diagram Galerij",
+    "subtitle": "Systeemontwerpconcepten Gevisualiseerd",
+    "import": "Klik om te importeren in de editor",
+    "items": {
+      "caching": {
+        "title": "Caching",
+        "description": "Meerlaagse cachingstrategie om applicatieprestaties te verbeteren"
+      },
+      "cdn": {
+        "title": "Content Delivery Network (CDN)",
+        "description": "Wereldwijde CDN-architectuur voor snelle levering van inhoud"
+      },
+      "load-balancing": {
+        "title": "Load Balancing",
+        "description": "Verkeersdistributie over meerdere servers"
+      },
+      "scalability": {
+        "title": "Schaalbaarheid",
+        "description": "Strategieën voor horizontale en verticale schaling"
+      },
+      "microservices": {
+        "title": "Microservices Architectuur",
+        "description": "Gedistribueerd systeem met onafhankelijke services"
+      },
+      "availability": {
+        "title": "Hoge Beschikbaarheid",
+        "description": "Systeemontwerp voor 99,99% uptime"
+      },
+      "cap-theorem": {
+        "title": "CAP-stelling",
+        "description": "Databasesystemen gecategoriseerd op CAP-eigenschappen (cijfers tonen relatieve adoptie)"
+      },
+      "consistent-hashing": {
+        "title": "Consistent Hashing",
+        "description": "Gedistribueerde cache en datapartitioneringstrategie"
+      },
+      "database-sharding": {
+        "title": "Database Sharding",
+        "description": "Horizontale partitionering van database over meerdere servers"
+      },
+      "sql-vs-nosql": {
+        "title": "SQL vs NoSQL",
+        "description": "Vergelijking van relationele en niet-relationele databases"
+      },
+      "throughput": {
+        "title": "Doorvoeroptimalisatie",
+        "description": "Strategieën voor optimalisatie van systeemdoorvoer en prestaties"
+      },
+      "api-gateway": {
+        "title": "API Gateway",
+        "description": "Gecentraliseerde API-beheer- en routeringslaag"
+      },
+      "database-replication": {
+        "title": "Databasereplicatie",
+        "description": "Master-slave replicatie voor hoge beschikbaarheid en leesschaalbaarheid"
+      },
+      "event-driven": {
+        "title": "Event-Driven Architectuur",
+        "description": "Asynchrone event-gebaseerde communicatie tussen services"
+      },
+      "load-balancing-algorithms": {
+        "title": "Load Balancing Algoritmen",
+        "description": "Verschillende strategieën om verkeer over servers te verdelen"
+      },
+      "partitioning": {
+        "title": "Datapartitionering",
+        "description": "Strategieën om data over meerdere knooppunten te verdelen"
+      },
+      "security": {
+        "title": "Beveiligingsarchitectuur",
+        "description": "Meerlaagse beveiligingsaanpak om systemen te beschermen"
+      },
+      "distributed-systems": {
+        "title": "Gedistribueerde Systemen",
+        "description": "Kernconcepten en uitdagingen in gedistribueerd computergebruik"
+      },
+      "proxy": {
+        "title": "Forward Proxy vs Reverse Proxy",
+        "description": "Het verschil begrijpen tussen forward en reverse proxies"
+      },
+      "indexing": {
+        "title": "Database Indexering",
+        "description": "Indextypen en hun impact op queryprestaties"
+      },
+      "fault-tolerance": {
+        "title": "Beschikbaarheid en Fouttolerantie",
+        "description": "Bouwen van veerkrachtige systemen met strategieën voor foutafhandeling"
+      },
+      "data-storage": {
+        "title": "Gegevensopslag en Databases",
+        "description": "Verschillende soorten gegevensopslagoplossingen en hun gebruiksscenario's"
+      },
+      "design-patterns": {
+        "title": "Software Ontwerppatronen",
+        "description": "Veelvoorkomende architecturale en ontwerppatronen voor softwaresystemen"
+      },
+      "architectural-patterns": {
+        "title": "Architecturaal Begrip",
+        "description": "Moderne softwarearchitectuurpatronen en -stijlen"
+      },
+      "architecture-beta": {
+        "title": "Cloud Infrastructuur Architectuur",
+        "description": "Moderne cloudarchitectuur met API-services en opslag"
+      },
+      "radar-beta": {
+        "title": "Radardiagram",
+        "description": "Multidimensionale gegevensvergelijking met behulp van radarvisualisatie"
+      },
+      "packet-diagram": {
+        "title": "TCP Pakketstructuur",
+        "description": "Visuele weergave van TCP-pakketkopvelden"
+      },
+      "c4-context": {
+        "title": "C4 Contextdiagram",
+        "description": "Internetbankieren Systeemarchitectuur met behulp van C4-model"
+      }
+    }
+  }
 }

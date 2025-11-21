@@ -33,6 +33,7 @@ const Preview = ({
   editorHeight,
   setEditorHeight,
   backgroundColor,
+  error,
 }) => {
   const { t } = useTranslation();
   const [isResizingEditor, setIsResizingEditor] = useState(false);
@@ -204,14 +205,62 @@ const Preview = ({
             <div className="spinner"></div>
           </div>
         )}
-        <div
-          ref={previewRef}
-          className="diagram-container"
-          style={{
-            transform: `translate(${position.x}px, ${position.y}px) scale(${scale})`,
-            cursor: isDragging ? "grabbing" : "grab",
-          }}
-        />
+        {error ? (
+          <div
+            style={{
+              position: "absolute",
+              top: 0,
+              left: 0,
+              width: "100%",
+              height: "100%",
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+              alignItems: "center",
+              backgroundColor: "rgba(255, 255, 255, 0.8)",
+              zIndex: 10,
+              color: "#e53e3e",
+              textAlign: "center",
+              padding: "20px",
+            }}
+          >
+            <div style={{ fontSize: "18px", fontWeight: "bold", marginBottom: "10px" }}>
+              ⚠️ Error rendering diagram
+            </div>
+            <div style={{ marginBottom: "15px" }}>Check your syntax and try again.</div>
+            <a
+              href="https://chatgpt.com/g/g-684cc36f30208191b21383b88650a45d-mermaid-chart-diagrams-and-charts"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "6px",
+                backgroundColor: "#10a37f",
+                color: "white",
+                padding: "8px 16px",
+                borderRadius: "6px",
+                textDecoration: "none",
+                fontWeight: 500,
+                fontSize: "14px",
+                transition: "background-color 0.2s",
+              }}
+              onMouseOver={(e) => (e.currentTarget.style.backgroundColor = "#0d8c6f")}
+              onMouseOut={(e) => (e.currentTarget.style.backgroundColor = "#10a37f")}
+            >
+              <span style={{ fontSize: "16px" }}>🤖</span> Get AI Help
+            </a>
+          </div>
+        ) : (
+          <div
+            ref={previewRef}
+            className="diagram-container"
+            style={{
+              transform: `translate(${position.x}px, ${position.y}px) scale(${scale})`,
+              cursor: isDragging ? "grabbing" : "grab",
+            }}
+          />
+        )}
         <div className="zoom-controls">
           <button
             onClick={() => {

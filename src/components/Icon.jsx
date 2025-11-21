@@ -238,6 +238,67 @@ const Icon = ({ type }) => {
         <path d="M3 15h18" />
       </svg>
     ),
+    architecture: (
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
+        <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
+      </svg>
+    ),
+    radar: (
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
+        <path d="M12 2l8.66 5v10L12 22l-8.66-5V7L12 2z" />
+        <path d="M12 12l8.66-5" />
+        <path d="M12 12l8.66 5" />
+        <path d="M12 12l-8.66 5" />
+        <path d="M12 12l-8.66-5" />
+        <path d="M12 12v-10" />
+        <path d="M12 12v10" />
+      </svg>
+    ),
+    packet: (
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
+        <rect x="2" y="4" width="20" height="16" rx="2" />
+        <path d="M2 10h20" />
+        <path d="M2 16h20" />
+        <path d="M8 4v16" />
+        <path d="M16 4v16" />
+      </svg>
+    ),
+    c4: (
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
+        <rect x="3" y="3" width="7" height="7" />
+        <rect x="14" y="3" width="7" height="7" />
+        <rect x="14" y="14" width="7" height="7" />
+        <rect x="3" y="14" width="7" height="7" />
+      </svg>
+    ),
     kanban: (
       <svg
         viewBox="0 0 24 24"

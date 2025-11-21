@@ -52,5 +52,135 @@
   "bgColor": "Arka Plan:",
   "embedHTML": "HTML Göm",
   "base": "Temel",
-  "sampleDiagrams": "Örnek Diyagramlar"
+  "sampleDiagrams": "Örnek Diyagramlar",
+  "importedToEditor": "{{title}} editöre aktarıldı",
+  "mermaidGpt": "YZ Yardımı",
+  "mermaidGptHelp": "Mermaid sözdizimi ile YZ yardımı alın",
+  "architecture": "Mimari",
+  "radar": "Radar",
+  "packet": "Paket",
+  "c4": "C4 Modeli",
+  "nav": {
+    "editor": "Editör",
+    "gallery": "Galeri"
+  },
+  "gallery": {
+    "title": "Mermaid Diyagram Galerisi",
+    "subtitle": "Sistem Tasarım Kavramları Görselleştirildi",
+    "import": "Editöre aktarmak için tıklayın",
+    "items": {
+      "caching": {
+        "title": "Önbellekleme",
+        "description": "Uygulama performansını artırmak için çok katmanlı önbellekleme stratejisi"
+      },
+      "cdn": {
+        "title": "İçerik Dağıtım Ağı (CDN)",
+        "description": "Hızlı içerik dağıtımı için küresel CDN mimarisi"
+      },
+      "load-balancing": {
+        "title": "Yük Dengeleme",
+        "description": "Trafiğin birden fazla sunucuya dağıtılması"
+      },
+      "scalability": {
+        "title": "Ölçeklenebilirlik",
+        "description": "Yatay ve dikey ölçekleme stratejileri"
+      },
+      "microservices": {
+        "title": "Mikroservis Mimarisi",
+        "description": "Bağımsız servislere sahip dağıtık sistem"
+      },
+      "availability": {
+        "title": "Yüksek Erişilebilirlik",
+        "description": "%99.99 çalışma süresi için sistem tasarımı"
+      },
+      "cap-theorem": {
+        "title": "CAP Teoremi",
+        "description": "CAP özelliklerine göre kategorize edilmiş veritabanı sistemleri (sayılar göreceli benimsemeyi gösterir)"
+      },
+      "consistent-hashing": {
+        "title": "Tutarlı Hashing",
+        "description": "Dağıtık önbellek ve veri bölümleme stratejisi"
+      },
+      "database-sharding": {
+        "title": "Veritabanı Parçalama",
+        "description": "Veritabanının birden fazla sunucuya yatay olarak bölümlenmesi"
+      },
+      "sql-vs-nosql": {
+        "title": "SQL vs NoSQL",
+        "description": "İlişkisel ve ilişkisel olmayan veritabanlarının karşılaştırılması"
+      },
+      "throughput": {
+        "title": "Verim Optimizasyonu",
+        "description": "Sistem verimi ve performans optimizasyon stratejileri"
+      },
+      "api-gateway": {
+        "title": "API Ağ Geçidi",
+        "description": "Merkezi API yönetimi ve yönlendirme katmanı"
+      },
+      "database-replication": {
+        "title": "Veritabanı Replikasyonu",
+        "description": "Yüksek erişilebilirlik ve okuma ölçeklenebilirliği için master-slave replikasyonu"
+      },
+      "event-driven": {
+        "title": "Olay Güdümlü Mimari",
+        "description": "Servisler arasında asenkron olay tabanlı iletişim"
+      },
+      "load-balancing-algorithms": {
+        "title": "Yük Dengeleme Algoritmaları",
+        "description": "Trafiği sunucular arasında dağıtmak için farklı stratejiler"
+      },
+      "partitioning": {
+        "title": "Veri Bölümleme",
+        "description": "Verileri birden fazla düğüme bölmek için stratejiler"
+      },
+      "security": {
+        "title": "Güvenlik Mimarisi",
+        "description": "Sistemleri korumak için çok katmanlı güvenlik yaklaşımı"
+      },
+      "distributed-systems": {
+        "title": "Dağıtık Sistemler",
+        "description": "Dağıtık bilgi işlemde temel kavramlar ve zorluklar"
+      },
+      "proxy": {
+        "title": "İleri Proxy vs Ters Proxy",
+        "description": "İleri ve ters proxy'ler arasındaki farkı anlama"
+      },
+      "indexing": {
+        "title": "Veritabanı İndeksleme",
+        "description": "İndeks türleri ve sorgu performansına etkileri"
+      },
+      "fault-tolerance": {
+        "title": "Erişilebilirlik ve Hata Toleransı",
+        "description": "Hata işleme stratejileri ile dayanıklı sistemler oluşturma"
+      },
+      "data-storage": {
+        "title": "Veri Depolama ve Veritabanları",
+        "description": "Farklı veri depolama çözümleri ve kullanım durumları"
+      },
+      "design-patterns": {
+        "title": "Yazılım Tasarım Desenleri",
+        "description": "Yazılım sistemleri için yaygın mimari ve tasarım desenleri"
+      },
+      "architectural-patterns": {
+        "title": "Mimari Anlayış",
+        "description": "Modern yazılım mimarisi desenleri ve stilleri"
+      },
+      "architecture-beta": {
+        "title": "Bulut Altyapı Mimarisi",
+        "description": "API servisleri ve depolama ile modern bulut mimarisi"
+      },
+      "radar-beta": {
+        "title": "Radar Grafiği",
+        "description": "Radar görselleştirmesi kullanarak çok boyutlu veri karşılaştırması"
+      },
+      "packet-diagram": {
+        "title": "TCP Paket Yapısı",
+        "description": "TCP paket başlığı alanlarının görsel temsili"
+      },
+      "c4-context": {
+        "title": "C4 Bağlam Diyagramı",
+        "description": "C4 modelini kullanarak İnternet Bankacılığı Sistemi mimarisi"
+      }
+    }
+  }
 }

@@ -49,6 +49,7 @@
   "copying": "Copying...",
   "copiedToClipboard": "{{type}} copied to clipboard!",
   "failedToCopy": "Failed to copy {{type}}.",
+  "importedToEditor": "{{title}} imported to editor",
   "bgColor": "Bg:",
   "embedHTML": "Embed HTML",
   "base": "Base",
@@ -58,7 +59,7 @@
   "architecture": "Architecture",
   "radar": "Radar",
   "packet": "Packet",
-  "zenuml": "ZenUML",
+
   "c4": "C4",
   "nav": {
     "editor": "Editor",
@@ -67,6 +68,120 @@
   "gallery": {
     "title": "Mermaid Diagram Gallery",
     "subtitle": "System Design Concepts Visualized",
-    "import": "Click to import to editor"
+    "import": "Click to import to editor",
+    "items": {
+      "caching": {
+        "title": "Caching",
+        "description": "Multi-layer caching strategy for improving application performance"
+      },
+      "cdn": {
+        "title": "Content Delivery Network",
+        "description": "Global CDN architecture for fast content delivery"
+      },
+      "load-balancing": {
+        "title": "Load Balancing",
+        "description": "Traffic distribution across multiple servers"
+      },
+      "scalability": {
+        "title": "Scalability",
+        "description": "Horizontal and vertical scaling strategies"
+      },
+      "microservices": {
+        "title": "Microservices Architecture",
+        "description": "Distributed system with independent services"
+      },
+      "availability": {
+        "title": "High Availability",
+        "description": "System design for 99.99% uptime"
+      },
+      "cap-theorem": {
+        "title": "CAP Theorem",
+        "description": "Database systems categorized by CAP properties (numbers show relative adoption)"
+      },
+      "consistent-hashing": {
+        "title": "Consistent Hashing",
+        "description": "Distributed cache and data partitioning strategy"
+      },
+      "database-sharding": {
+        "title": "Database Sharding",
+        "description": "Horizontal partitioning of database across multiple servers"
+      },
+      "sql-vs-nosql": {
+        "title": "SQL vs NoSQL",
+        "description": "Comparison of relational and non-relational databases"
+      },
+      "throughput": {
+        "title": "Throughput Optimization",
+        "description": "System throughput and performance optimization strategies"
+      },
+      "api-gateway": {
+        "title": "API Gateway",
+        "description": "Centralized API management and routing layer"
+      },
+      "database-replication": {
+        "title": "Database Replication",
+        "description": "Master-slave replication for high availability and read scalability"
+      },
+      "event-driven": {
+        "title": "Event-Driven Architecture",
+        "description": "Asynchronous event-based communication between services"
+      },
+      "load-balancing-algorithms": {
+        "title": "Load Balancing Algorithms",
+        "description": "Different strategies for distributing traffic across servers"
+      },
+      "partitioning": {
+        "title": "Data Partitioning",
+        "description": "Strategies for dividing data across multiple nodes"
+      },
+      "security": {
+        "title": "Security Architecture",
+        "description": "Multi-layered security approach for protecting systems"
+      },
+      "distributed-systems": {
+        "title": "Distributed Systems",
+        "description": "Core concepts and challenges in distributed computing"
+      },
+      "proxy": {
+        "title": "Forward Proxy vs Reverse Proxy",
+        "description": "Understanding the difference between forward and reverse proxies"
+      },
+      "indexing": {
+        "title": "Database Indexing",
+        "description": "Index types and their impact on query performance"
+      },
+      "fault-tolerance": {
+        "title": "Availability and Fault Tolerance",
+        "description": "Building resilient systems with failure handling strategies"
+      },
+      "data-storage": {
+        "title": "Data Storage and Databases",
+        "description": "Different types of data storage solutions and their use cases"
+      },
+      "design-patterns": {
+        "title": "Software Design Patterns",
+        "description": "Common architectural and design patterns for software systems"
+      },
+      "architectural-patterns": {
+        "title": "Architectural Understanding",
+        "description": "Modern software architecture patterns and styles"
+      },
+      "architecture-beta": {
+        "title": "Cloud Infrastructure Architecture",
+        "description": "Modern cloud architecture with API services and storage"
+      },
+      "radar-beta": {
+        "title": "Radar Chart",
+        "description": "Multi-dimensional data comparison using radar visualization"
+      },
+      "packet-diagram": {
+        "title": "TCP Packet Structure",
+        "description": "Visual representation of TCP packet header fields"
+      },
+      "c4-context": {
+        "title": "C4 Context Diagram",
+        "description": "Internet Banking System architecture using C4 model"
+      }
+    }
   }
 }

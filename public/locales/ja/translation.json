@@ -52,5 +52,135 @@
     "bgColor": "背景:",
     "embedHTML": "HTML埋め込み",
     "base": "ベース",
-    "sampleDiagrams": "サンプルダイアグラム"
+    "sampleDiagrams": "サンプルダイアグラム",
+  "importedToEditor": "{{title}} をエディタにインポートしました",
+  "mermaidGpt": "AI ヘルプ",
+  "mermaidGptHelp": "Mermaid 構文の AI ヘルプを取得",
+  "architecture": "アーキテクチャ",
+  "radar": "レーダー",
+  "packet": "パケット",
+  "c4": "C4 モデル",
+  "nav": {
+    "editor": "エディタ",
+    "gallery": "ギャラリー"
+  },
+  "gallery": {
+    "title": "Mermaid ダイアグラムギャラリー",
+    "subtitle": "システム設計コンセプトの可視化",
+    "import": "クリックしてエディタにインポート",
+    "items": {
+      "caching": {
+        "title": "キャッシング",
+        "description": "アプリケーションのパフォーマンスを向上させるための多層キャッシュ戦略"
+      },
+      "cdn": {
+        "title": "コンテンツ配信ネットワーク (CDN)",
+        "description": "高速なコンテンツ配信のためのグローバル CDN アーキテクチャ"
+      },
+      "load-balancing": {
+        "title": "ロードバランシング",
+        "description": "複数のサーバーへのトラフィック分散"
+      },
+      "scalability": {
+        "title": "スケーラビリティ",
+        "description": "水平および垂直スケーリング戦略"
+      },
+      "microservices": {
+        "title": "マイクロサービスアーキテクチャ",
+        "description": "独立したサービスを持つ分散システム"
+      },
+      "availability": {
+        "title": "高可用性",
+        "description": "99.99% の稼働時間を実現するシステム設計"
+      },
+      "cap-theorem": {
+        "title": "CAP 定理",
+        "description": "CAP 特性によって分類されたデータベースシステム（数値は相対的な採用率を示す）"
+      },
+      "consistent-hashing": {
+        "title": "コンシステントハッシュ",
+        "description": "分散キャッシュおよびデータパーティショニング戦略"
+      },
+      "database-sharding": {
+        "title": "データベースシャーディング",
+        "description": "複数のサーバーにわたるデータベースの水平パーティショニング"
+      },
+      "sql-vs-nosql": {
+        "title": "SQL 対 NoSQL",
+        "description": "リレーショナルデータベースと非リレーショナルデータベースの比較"
+      },
+      "throughput": {
+        "title": "スループット最適化",
+        "description": "システムスループットとパフォーマンスの最適化戦略"
+      },
+      "api-gateway": {
+        "title": "API ゲートウェイ",
+        "description": "一元化された API 管理およびルーティング層"
+      },
+      "database-replication": {
+        "title": "データベースレプリケーション",
+        "description": "高可用性と読み取りスケーラビリティのためのマスタースレーブレプリケーション"
+      },
+      "event-driven": {
+        "title": "イベント駆動アーキテクチャ",
+        "description": "サービス間の非同期イベントベース通信"
+      },
+      "load-balancing-algorithms": {
+        "title": "ロードバランシングアルゴリズム",
+        "description": "サーバー間でトラフィックを分散するためのさまざまな戦略"
+      },
+      "partitioning": {
+        "title": "データパーティショニング",
+        "description": "複数のノードにデータを分割するための戦略"
+      },
+      "security": {
+        "title": "セキュリティアーキテクチャ",
+        "description": "システムを保護するための多層セキュリティアプローチ"
+      },
+      "distributed-systems": {
+        "title": "分散システム",
+        "description": "分散コンピューティングにおける中心的な概念と課題"
+      },
+      "proxy": {
+        "title": "フォワードプロキシ対リバースプロキシ",
+        "description": "フォワードプロキシとリバースプロキシの違いを理解する"
+      },
+      "indexing": {
+        "title": "データベースインデックス",
+        "description": "インデックスの種類とクエリパフォーマンスへの影響"
+      },
+      "fault-tolerance": {
+        "title": "可用性と耐障害性",
+        "description": "障害処理戦略を備えた回復力のあるシステムの構築"
+      },
+      "data-storage": {
+        "title": "データストレージとデータベース",
+        "description": "さまざまな種類のデータストレージソリューションとその使用例"
+      },
+      "design-patterns": {
+        "title": "ソフトウェアデザインパターン",
+        "description": "ソフトウェアシステムの一般的なアーキテクチャおよびデザインパターン"
+      },
+      "architectural-patterns": {
+        "title": "アーキテクチャの理解",
+        "description": "最新のソフトウェアアーキテクチャパターンとスタイル"
+      },
+      "architecture-beta": {
+        "title": "クラウドインフラストラクチャアーキテクチャ",
+        "description": "API サービスとストレージを備えた最新のクラウドアーキテクチャ"
+      },
+      "radar-beta": {
+        "title": "レーダーチャート",
+        "description": "レーダー視覚化を使用した多次元データ比較"
+      },
+      "packet-diagram": {
+        "title": "TCP パケット構造",
+        "description": "TCP パケットヘッダーフィールドの視覚的表現"
+      },
+      "c4-context": {
+        "title": "C4 コンテキスト図",
+        "description": "C4 モデルを使用したインターネットバンキングシステムアーキテクチャ"
+      }
+    }
+  }
 }

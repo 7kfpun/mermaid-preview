@@ -138,51 +138,51 @@ const GALLERY_DIAGRAMS = [
     title: 'Microservices Architecture',
     description: 'Distributed system with independent services',
     diagram: `erDiagram
-    API-GATEWAY ||--o{ USER-SERVICE : routes
-    API-GATEWAY ||--o{ ORDER-SERVICE : routes
-    API-GATEWAY ||--o{ PAYMENT-SERVICE : routes
-    API-GATEWAY ||--o{ AUTH-SERVICE : routes
+    API_GATEWAY ||--o{ USER_SERVICE : routes
+    API_GATEWAY ||--o{ ORDER_SERVICE : routes
+    API_GATEWAY ||--o{ PAYMENT_SERVICE : routes
+    API_GATEWAY ||--o{ AUTH_SERVICE : routes
 
-    USER-SERVICE ||--|| USER-DB : stores
-    ORDER-SERVICE ||--|| ORDER-DB : stores
-    PAYMENT-SERVICE ||--|| PAYMENT-DB : stores
-    AUTH-SERVICE ||--|| AUTH-DB : stores
+    USER_SERVICE ||--|| USER_DB : stores
+    ORDER_SERVICE ||--|| ORDER_DB : stores
+    PAYMENT_SERVICE ||--|| PAYMENT_DB : stores
+    AUTH_SERVICE ||--|| AUTH_DB : stores
 
-    ORDER-SERVICE }o--|| USER-SERVICE : "calls API"
-    PAYMENT-SERVICE }o--|| USER-SERVICE : "calls API"
-    ORDER-SERVICE }o--|| PAYMENT-SERVICE : "calls API"
+    ORDER_SERVICE }o--|| USER_SERVICE : "calls API"
+    PAYMENT_SERVICE }o--|| USER_SERVICE : "calls API"
+    ORDER_SERVICE }o--|| PAYMENT_SERVICE : "calls API"
 
-    ORDER-SERVICE ||--o{ MESSAGE-QUEUE : publishes
-    PAYMENT-SERVICE ||--o{ MESSAGE-QUEUE : publishes
-    MESSAGE-QUEUE ||--o{ NOTIFICATION-SERVICE : subscribes
+    ORDER_SERVICE ||--o{ MESSAGE_QUEUE : publishes
+    PAYMENT_SERVICE ||--o{ MESSAGE_QUEUE : publishes
+    MESSAGE_QUEUE ||--o{ NOTIFICATION_SERVICE : subscribes
 
-    API-GATEWAY {
+    API_GATEWAY {
         string routing
         string authentication
-        string rate-limiting
+        string rate_limiting
     }
 
-    USER-SERVICE {
+    USER_SERVICE {
         uuid user_id PK
         string name
         string email
     }
 
-    ORDER-SERVICE {
+    ORDER_SERVICE {
         uuid order_id PK
         uuid user_id FK
         decimal total
         string status
     }
 
-    PAYMENT-SERVICE {
+    PAYMENT_SERVICE {
         uuid payment_id PK
         uuid order_id FK
         decimal amount
         string status
     }
 
-    NOTIFICATION-SERVICE {
+    NOTIFICATION_SERVICE {
         uuid notification_id PK
         uuid user_id FK
         string message
@@ -862,17 +862,7 @@ packet
 160-191: "(Options and Padding)"
 192-255: "Data (variable length)"`
   },
-  {
-    id: 'zenuml',
-    title: 'ZenUML Sequence Diagram',
-    description: 'Simple and intuitive sequence diagram with ZenUML syntax',
-    diagram: `zenuml
-    title Declare participant (optional)
-    Bob
-    Alice
-    Alice->Bob: Hi Bob
-    Bob->Alice: Hi Alice`
-  },
+
   {
     id: 'c4-context',
     title: 'C4 Context Diagram',
@@ -961,7 +951,7 @@ const Gallery = memo(({ darkMode }) => {
     navigate('/', {
       state: {
         diagramCode: diagram.diagram,
-        diagramTitle: diagram.title
+        diagramTitle: t(`gallery.items.${diagram.id}.title`, diagram.title)
       }
     });
   };
@@ -979,8 +969,8 @@ const Gallery = memo(({ darkMode }) => {
         {GALLERY_DIAGRAMS.map((item) => (
           <div key={item.id} className="gallery-card" onClick={() => handleDiagramClick(item)}>
             <div className="card-header">
-              <h2>{item.title}</h2>
-              <p className="card-description">{item.description}</p>
+              <h2>{t(`gallery.items.${item.id}.title`, item.title)}</h2>
+              <p className="card-description">{t(`gallery.items.${item.id}.description`, item.description)}</p>
             </div>
             <div className="card-diagram">
               {renderedDiagrams[item.id] ? (

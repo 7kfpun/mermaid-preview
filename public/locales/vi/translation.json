@@ -52,5 +52,135 @@
   "bgColor": "Nền:",
   "embedHTML": "Nhúng HTML",
   "base": "Cơ bản",
-  "sampleDiagrams": "Sơ đồ mẫu"
+  "sampleDiagrams": "Sơ đồ mẫu",
+  "importedToEditor": "{{title}} đã được nhập vào trình soạn thảo",
+  "mermaidGpt": "Trợ giúp AI",
+  "mermaidGptHelp": "Nhận trợ giúp AI với cú pháp Mermaid",
+  "architecture": "Kiến trúc",
+  "radar": "Radar",
+  "packet": "Gói",
+  "c4": "Mô hình C4",
+  "nav": {
+    "editor": "Trình soạn thảo",
+    "gallery": "Thư viện"
+  },
+  "gallery": {
+    "title": "Thư viện Sơ đồ Mermaid",
+    "subtitle": "Khái niệm Thiết kế Hệ thống được Trực quan hóa",
+    "import": "Nhấp để nhập vào trình soạn thảo",
+    "items": {
+      "caching": {
+        "title": "Lưu trữ đệm (Caching)",
+        "description": "Chiến lược lưu trữ đệm đa lớp để cải thiện hiệu suất ứng dụng"
+      },
+      "cdn": {
+        "title": "Mạng phân phối nội dung (CDN)",
+        "description": "Kiến trúc CDN toàn cầu để phân phối nội dung nhanh chóng"
+      },
+      "load-balancing": {
+        "title": "Cân bằng tải",
+        "description": "Phân phối lưu lượng truy cập qua nhiều máy chủ"
+      },
+      "scalability": {
+        "title": "Khả năng mở rộng",
+        "description": "Chiến lược mở rộng theo chiều ngang và chiều dọc"
+      },
+      "microservices": {
+        "title": "Kiến trúc Microservices",
+        "description": "Hệ thống phân tán với các dịch vụ độc lập"
+      },
+      "availability": {
+        "title": "Tính sẵn sàng cao",
+        "description": "Thiết kế hệ thống cho thời gian hoạt động 99,99%"
+      },
+      "cap-theorem": {
+        "title": "Định lý CAP",
+        "description": "Hệ thống cơ sở dữ liệu được phân loại theo thuộc tính CAP (số liệu hiển thị mức độ chấp nhận tương đối)"
+      },
+      "consistent-hashing": {
+        "title": "Băm nhất quán",
+        "description": "Bộ nhớ đệm phân tán và chiến lược phân vùng dữ liệu"
+      },
+      "database-sharding": {
+        "title": "Sharding cơ sở dữ liệu",
+        "description": "Phân vùng ngang cơ sở dữ liệu qua nhiều máy chủ"
+      },
+      "sql-vs-nosql": {
+        "title": "SQL so với NoSQL",
+        "description": "So sánh cơ sở dữ liệu quan hệ và phi quan hệ"
+      },
+      "throughput": {
+        "title": "Tối ưu hóa thông lượng",
+        "description": "Chiến lược tối ưu hóa thông lượng và hiệu suất hệ thống"
+      },
+      "api-gateway": {
+        "title": "Cổng API",
+        "description": "Quản lý API tập trung và lớp định tuyến"
+      },
+      "database-replication": {
+        "title": "Sao chép cơ sở dữ liệu",
+        "description": "Sao chép master-slave cho tính sẵn sàng cao và khả năng mở rộng đọc"
+      },
+      "event-driven": {
+        "title": "Kiến trúc hướng sự kiện",
+        "description": "Giao tiếp dựa trên sự kiện không đồng bộ giữa các dịch vụ"
+      },
+      "load-balancing-algorithms": {
+        "title": "Thuật toán cân bằng tải",
+        "description": "Các chiến lược khác nhau để phân phối lưu lượng truy cập qua các máy chủ"
+      },
+      "partitioning": {
+        "title": "Phân vùng dữ liệu",
+        "description": "Chiến lược chia dữ liệu qua nhiều nút"
+      },
+      "security": {
+        "title": "Kiến trúc bảo mật",
+        "description": "Cách tiếp cận bảo mật đa lớp để bảo vệ hệ thống"
+      },
+      "distributed-systems": {
+        "title": "Hệ thống phân tán",
+        "description": "Các khái niệm cốt lõi và thách thức trong điện toán phân tán"
+      },
+      "proxy": {
+        "title": "Proxy chuyển tiếp so với Proxy ngược",
+        "description": "Hiểu sự khác biệt giữa proxy chuyển tiếp và proxy ngược"
+      },
+      "indexing": {
+        "title": "Lập chỉ mục cơ sở dữ liệu",
+        "description": "Các loại chỉ mục và tác động của chúng đến hiệu suất truy vấn"
+      },
+      "fault-tolerance": {
+        "title": "Tính sẵn sàng và khả năng chịu lỗi",
+        "description": "Xây dựng hệ thống linh hoạt với các chiến lược xử lý lỗi"
+      },
+      "data-storage": {
+        "title": "Lưu trữ dữ liệu và Cơ sở dữ liệu",
+        "description": "Các loại giải pháp lưu trữ dữ liệu khác nhau và trường hợp sử dụng của chúng"
+      },
+      "design-patterns": {
+        "title": "Mẫu thiết kế phần mềm",
+        "description": "Các mẫu kiến trúc và thiết kế phổ biến cho các hệ thống phần mềm"
+      },
+      "architectural-patterns": {
+        "title": "Hiểu biết về kiến trúc",
+        "description": "Các mẫu và phong cách kiến trúc phần mềm hiện đại"
+      },
+      "architecture-beta": {
+        "title": "Kiến trúc cơ sở hạ tầng đám mây",
+        "description": "Kiến trúc đám mây hiện đại với các dịch vụ API và lưu trữ"
+      },
+      "radar-beta": {
+        "title": "Biểu đồ Radar",
+        "description": "So sánh dữ liệu đa chiều bằng cách sử dụng trực quan hóa radar"
+      },
+      "packet-diagram": {
+        "title": "Cấu trúc gói TCP",
+        "description": "Biểu diễn trực quan các trường tiêu đề gói TCP"
+      },
+      "c4-context": {
+        "title": "Sơ đồ ngữ cảnh C4",
+        "description": "Kiến trúc hệ thống ngân hàng trực tuyến sử dụng mô hình C4"
+      }
+    }
+  }
 }

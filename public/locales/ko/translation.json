@@ -52,5 +52,135 @@
     "bgColor": "배경:",
     "embedHTML": "HTML 삽입",
     "base": "베이스",
-    "sampleDiagrams": "샘플 다이어그램"
+    "sampleDiagrams": "샘플 다이어그램",
+  "importedToEditor": "{{title}} 에디터로 가져옴",
+  "mermaidGpt": "AI 도움말",
+  "mermaidGptHelp": "Mermaid 구문에 대한 AI 도움말 받기",
+  "architecture": "아키텍처",
+  "radar": "레이더",
+  "packet": "패킷",
+  "c4": "C4 모델",
+  "nav": {
+    "editor": "에디터",
+    "gallery": "갤러리"
+  },
+  "gallery": {
+    "title": "Mermaid 다이어그램 갤러리",
+    "subtitle": "시스템 디자인 개념 시각화",
+    "import": "클릭하여 에디터로 가져오기",
+    "items": {
+      "caching": {
+        "title": "캐싱",
+        "description": "애플리케이션 성능 향상을 위한 다계층 캐싱 전략"
+      },
+      "cdn": {
+        "title": "콘텐츠 전송 네트워크 (CDN)",
+        "description": "빠른 콘텐츠 전송을 위한 글로벌 CDN 아키텍처"
+      },
+      "load-balancing": {
+        "title": "로드 밸런싱",
+        "description": "여러 서버에 트래픽 분산"
+      },
+      "scalability": {
+        "title": "확장성",
+        "description": "수평 및 수직 확장 전략"
+      },
+      "microservices": {
+        "title": "마이크로서비스 아키텍처",
+        "description": "독립적인 서비스를 갖춘 분산 시스템"
+      },
+      "availability": {
+        "title": "고가용성",
+        "description": "99.99% 가동 시간을 위한 시스템 설계"
+      },
+      "cap-theorem": {
+        "title": "CAP 정리",
+        "description": "CAP 속성으로 분류된 데이터베이스 시스템 (숫자는 상대적 채택률을 나타냄)"
+      },
+      "consistent-hashing": {
+        "title": "일관된 해싱",
+        "description": "분산 캐시 및 데이터 파티셔닝 전략"
+      },
+      "database-sharding": {
+        "title": "데이터베이스 샤딩",
+        "description": "여러 서버에 걸친 데이터베이스의 수평 파티셔닝"
+      },
+      "sql-vs-nosql": {
+        "title": "SQL 대 NoSQL",
+        "description": "관계형 데이터베이스와 비관계형 데이터베이스 비교"
+      },
+      "throughput": {
+        "title": "처리량 최적화",
+        "description": "시스템 처리량 및 성능 최적화 전략"
+      },
+      "api-gateway": {
+        "title": "API 게이트웨이",
+        "description": "중앙 집중식 API 관리 및 라우팅 계층"
+      },
+      "database-replication": {
+        "title": "데이터베이스 복제",
+        "description": "고가용성 및 읽기 확장성을 위한 마스터-슬레이브 복제"
+      },
+      "event-driven": {
+        "title": "이벤트 기반 아키텍처",
+        "description": "서비스 간의 비동기 이벤트 기반 통신"
+      },
+      "load-balancing-algorithms": {
+        "title": "로드 밸런싱 알고리즘",
+        "description": "서버 간 트래픽 분산을 위한 다양한 전략"
+      },
+      "partitioning": {
+        "title": "데이터 파티셔닝",
+        "description": "여러 노드에 데이터를 분할하기 위한 전략"
+      },
+      "security": {
+        "title": "보안 아키텍처",
+        "description": "시스템 보호를 위한 다계층 보안 접근 방식"
+      },
+      "distributed-systems": {
+        "title": "분산 시스템",
+        "description": "분산 컴퓨팅의 핵심 개념 및 과제"
+      },
+      "proxy": {
+        "title": "포워드 프록시 대 리버스 프록시",
+        "description": "포워드 프록시와 리버스 프록시의 차이점 이해"
+      },
+      "indexing": {
+        "title": "데이터베이스 인덱싱",
+        "description": "인덱스 유형 및 쿼리 성능에 미치는 영향"
+      },
+      "fault-tolerance": {
+        "title": "가용성 및 내결함성",
+        "description": "장애 처리 전략을 갖춘 탄력적인 시스템 구축"
+      },
+      "data-storage": {
+        "title": "데이터 저장소 및 데이터베이스",
+        "description": "다양한 유형의 데이터 저장 솔루션 및 사용 사례"
+      },
+      "design-patterns": {
+        "title": "소프트웨어 디자인 패턴",
+        "description": "소프트웨어 시스템을 위한 일반적인 아키텍처 및 디자인 패턴"
+      },
+      "architectural-patterns": {
+        "title": "아키텍처 이해",
+        "description": "현대 소프트웨어 아키텍처 패턴 및 스타일"
+      },
+      "architecture-beta": {
+        "title": "클라우드 인프라 아키텍처",
+        "description": "API 서비스 및 스토리지를 갖춘 현대적인 클라우드 아키텍처"
+      },
+      "radar-beta": {
+        "title": "레이더 차트",
+        "description": "레이더 시각화를 사용한 다차원 데이터 비교"
+      },
+      "packet-diagram": {
+        "title": "TCP 패킷 구조",
+        "description": "TCP 패킷 헤더 필드의 시각적 표현"
+      },
+      "c4-context": {
+        "title": "C4 컨텍스트 다이어그램",
+        "description": "C4 모델을 사용한 인터넷 뱅킹 시스템 아키텍처"
+      }
+    }
+  }
 }

@@ -255,12 +255,7 @@ packet
 144-159: "Urgent Pointer"
 160-191: "(Options and Padding)"
 192-255: "Data (variable length)"`,
-  zenuml: `zenuml
-    title Declare participant (optional)
-    Bob
-    Alice
-    Alice->Bob: Hi Bob
-    Bob->Alice: Hi Alice`,
+
   c4: `C4Context
       title System Context diagram for Internet Banking System
       Enterprise_Boundary(b0, "BankBoundary0") {

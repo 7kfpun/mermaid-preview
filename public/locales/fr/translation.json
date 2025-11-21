@@ -52,5 +52,135 @@
   "bgColor": "Fond :",
   "embedHTML": "Intégrer HTML",
   "base": "Base",
-  "sampleDiagrams": "Exemples de diagrammes"
+  "sampleDiagrams": "Exemples de diagrammes",
+  "importedToEditor": "{{title}} importé dans l'éditeur",
+  "mermaidGpt": "Aide IA",
+  "mermaidGptHelp": "Obtenir de l'aide IA avec la syntaxe Mermaid",
+  "architecture": "Architecture",
+  "radar": "Radar",
+  "packet": "Paquet",
+  "c4": "Modèle C4",
+  "nav": {
+    "editor": "Éditeur",
+    "gallery": "Galerie"
+  },
+  "gallery": {
+    "title": "Galerie de Diagrammes Mermaid",
+    "subtitle": "Concepts de Conception de Systèmes Visualisés",
+    "import": "Cliquer pour importer dans l'éditeur",
+    "items": {
+      "caching": {
+        "title": "Mise en cache",
+        "description": "Stratégie de mise en cache multicouche pour améliorer les performances de l'application"
+      },
+      "cdn": {
+        "title": "Réseau de Diffusion de Contenu (CDN)",
+        "description": "Architecture CDN mondiale pour une livraison rapide de contenu"
+      },
+      "load-balancing": {
+        "title": "Équilibrage de Charge",
+        "description": "Distribution du trafic sur plusieurs serveurs"
+      },
+      "scalability": {
+        "title": "Évolutivité",
+        "description": "Stratégies d'échelle horizontale et verticale"
+      },
+      "microservices": {
+        "title": "Architecture Microservices",
+        "description": "Système distribué avec des services indépendants"
+      },
+      "availability": {
+        "title": "Haute Disponibilité",
+        "description": "Conception de système pour 99,99% de disponibilité"
+      },
+      "cap-theorem": {
+        "title": "Théorème CAP",
+        "description": "Systèmes de bases de données classés par propriétés CAP (les chiffres montrent l'adoption relative)"
+      },
+      "consistent-hashing": {
+        "title": "Hachage Cohérent",
+        "description": "Stratégie de cache distribué et de partitionnement de données"
+      },
+      "database-sharding": {
+        "title": "Sharding de Base de Données",
+        "description": "Partitionnement horizontal de la base de données sur plusieurs serveurs"
+      },
+      "sql-vs-nosql": {
+        "title": "SQL vs NoSQL",
+        "description": "Comparaison des bases de données relationnelles et non relationnelles"
+      },
+      "throughput": {
+        "title": "Optimisation du Débit",
+        "description": "Stratégies d'optimisation du débit et des performances du système"
+      },
+      "api-gateway": {
+        "title": "Passerelle API",
+        "description": "Gestion centralisée des API et couche de routage"
+      },
+      "database-replication": {
+        "title": "Réplication de Base de Données",
+        "description": "Réplication maître-esclave pour la haute disponibilité et l'évolutivité de lecture"
+      },
+      "event-driven": {
+        "title": "Architecture Orientée Événements",
+        "description": "Communication asynchrone basée sur des événements entre services"
+      },
+      "load-balancing-algorithms": {
+        "title": "Algorithmes d'Équilibrage de Charge",
+        "description": "Différentes stratégies pour distribuer le trafic sur les serveurs"
+      },
+      "partitioning": {
+        "title": "Partitionnement de Données",
+        "description": "Stratégies pour diviser les données sur plusieurs nœuds"
+      },
+      "security": {
+        "title": "Architecture de Sécurité",
+        "description": "Approche de sécurité multicouche pour protéger les systèmes"
+      },
+      "distributed-systems": {
+        "title": "Systèmes Distribués",
+        "description": "Concepts fondamentaux et défis de l'informatique distribuée"
+      },
+      "proxy": {
+        "title": "Proxy Direct vs Proxy Inverse",
+        "description": "Comprendre la différence entre les proxys directs et inverses"
+      },
+      "indexing": {
+        "title": "Indexation de Base de Données",
+        "description": "Types d'index et leur impact sur les performances des requêtes"
+      },
+      "fault-tolerance": {
+        "title": "Disponibilité et Tolérance aux Pannes",
+        "description": "Construction de systèmes résilients avec des stratégies de gestion des pannes"
+      },
+      "data-storage": {
+        "title": "Stockage de Données et Bases de Données",
+        "description": "Différents types de solutions de stockage de données et leurs cas d'utilisation"
+      },
+      "design-patterns": {
+        "title": "Modèles de Conception Logicielle",
+        "description": "Modèles architecturaux et de conception courants pour les systèmes logiciels"
+      },
+      "architectural-patterns": {
+        "title": "Compréhension Architecturale",
+        "description": "Modèles et styles d'architecture logicielle moderne"
+      },
+      "architecture-beta": {
+        "title": "Architecture d'Infrastructure Cloud",
+        "description": "Architecture cloud moderne avec services API et stockage"
+      },
+      "radar-beta": {
+        "title": "Graphique Radar",
+        "description": "Comparaison de données multidimensionnelles utilisant la visualisation radar"
+      },
+      "packet-diagram": {
+        "title": "Structure de Paquet TCP",
+        "description": "Représentation visuelle des champs d'en-tête de paquet TCP"
+      },
+      "c4-context": {
+        "title": "Diagramme de Contexte C4",
+        "description": "Architecture de système bancaire par Internet utilisant le modèle C4"
+      }
+    }
+  }
 }

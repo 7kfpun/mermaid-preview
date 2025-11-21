@@ -52,5 +52,135 @@
   "bgColor": "Sfondo:",
   "embedHTML": "Incorpora HTML",
   "base": "Base",
-  "sampleDiagrams": "Diagrammi di esempio"
+  "sampleDiagrams": "Diagrammi di esempio",
+  "importedToEditor": "{{title}} importato nell'editor",
+  "mermaidGpt": "Aiuto IA",
+  "mermaidGptHelp": "Ottieni aiuto dall'IA con la sintassi Mermaid",
+  "architecture": "Architettura",
+  "radar": "Radar",
+  "packet": "Pacchetto",
+  "c4": "Modello C4",
+  "nav": {
+    "editor": "Editor",
+    "gallery": "Galleria"
+  },
+  "gallery": {
+    "title": "Galleria Diagrammi Mermaid",
+    "subtitle": "Concetti di Progettazione di Sistemi Visualizzati",
+    "import": "Clicca per importare nell'editor",
+    "items": {
+      "caching": {
+        "title": "Caching",
+        "description": "Strategia di caching multilivello per migliorare le prestazioni dell'applicazione"
+      },
+      "cdn": {
+        "title": "Rete di Distribuzione dei Contenuti (CDN)",
+        "description": "Architettura CDN globale per una rapida distribuzione dei contenuti"
+      },
+      "load-balancing": {
+        "title": "Bilanciamento del Carico",
+        "description": "Distribuzione del traffico su più server"
+      },
+      "scalability": {
+        "title": "Scalabilità",
+        "description": "Strategie di scalabilità orizzontale e verticale"
+      },
+      "microservices": {
+        "title": "Architettura a Microservizi",
+        "description": "Sistema distribuito con servizi indipendenti"
+      },
+      "availability": {
+        "title": "Alta Disponibilità",
+        "description": "Progettazione di sistemi per il 99,99% di uptime"
+      },
+      "cap-theorem": {
+        "title": "Teorema CAP",
+        "description": "Sistemi di database classificati per proprietà CAP (i numeri mostrano l'adozione relativa)"
+      },
+      "consistent-hashing": {
+        "title": "Hashing Consistente",
+        "description": "Strategia di cache distribuita e partizionamento dei dati"
+      },
+      "database-sharding": {
+        "title": "Sharding del Database",
+        "description": "Partizionamento orizzontale del database su più server"
+      },
+      "sql-vs-nosql": {
+        "title": "SQL vs NoSQL",
+        "description": "Confronto tra database relazionali e non relazionali"
+      },
+      "throughput": {
+        "title": "Ottimizzazione del Throughput",
+        "description": "Strategie di ottimizzazione del throughput e delle prestazioni del sistema"
+      },
+      "api-gateway": {
+        "title": "API Gateway",
+        "description": "Livello centralizzato di gestione e routing delle API"
+      },
+      "database-replication": {
+        "title": "Replica del Database",
+        "description": "Replica master-slave per alta disponibilità e scalabilità di lettura"
+      },
+      "event-driven": {
+        "title": "Architettura Guidata dagli Eventi",
+        "description": "Comunicazione asincrona basata su eventi tra servizi"
+      },
+      "load-balancing-algorithms": {
+        "title": "Algoritmi di Bilanciamento del Carico",
+        "description": "Diverse strategie per distribuire il traffico tra i server"
+      },
+      "partitioning": {
+        "title": "Partizionamento dei Dati",
+        "description": "Strategie per dividere i dati su più nodi"
+      },
+      "security": {
+        "title": "Architettura di Sicurezza",
+        "description": "Approccio di sicurezza multilivello per proteggere i sistemi"
+      },
+      "distributed-systems": {
+        "title": "Sistemi Distribuiti",
+        "description": "Concetti fondamentali e sfide nel calcolo distribuito"
+      },
+      "proxy": {
+        "title": "Forward Proxy vs Reverse Proxy",
+        "description": "Comprendere la differenza tra forward e reverse proxy"
+      },
+      "indexing": {
+        "title": "Indicizzazione del Database",
+        "description": "Tipi di indici e il loro impatto sulle prestazioni delle query"
+      },
+      "fault-tolerance": {
+        "title": "Disponibilità e Tolleranza ai Guasti",
+        "description": "Costruire sistemi resilienti con strategie di gestione dei guasti"
+      },
+      "data-storage": {
+        "title": "Archiviazione Dati e Database",
+        "description": "Diversi tipi di soluzioni di archiviazione dati e i loro casi d'uso"
+      },
+      "design-patterns": {
+        "title": "Pattern di Progettazione Software",
+        "description": "Pattern architetturali e di progettazione comuni per sistemi software"
+      },
+      "architectural-patterns": {
+        "title": "Comprensione Architetturale",
+        "description": "Pattern e stili di architettura software moderna"
+      },
+      "architecture-beta": {
+        "title": "Architettura dell'Infrastruttura Cloud",
+        "description": "Architettura cloud moderna con servizi API e storage"
+      },
+      "radar-beta": {
+        "title": "Grafico Radar",
+        "description": "Confronto dati multidimensionale utilizzando la visualizzazione radar"
+      },
+      "packet-diagram": {
+        "title": "Struttura Pacchetto TCP",
+        "description": "Rappresentazione visiva dei campi dell'intestazione del pacchetto TCP"
+      },
+      "c4-context": {
+        "title": "Diagramma di Contesto C4",
+        "description": "Architettura del Sistema di Internet Banking utilizzando il modello C4"
+      }
+    }
+  }
 }

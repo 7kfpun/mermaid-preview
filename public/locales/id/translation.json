@@ -52,5 +52,135 @@
   "bgColor": "Latar:",
   "embedHTML": "Sematkan HTML",
   "base": "Dasar",
-  "sampleDiagrams": "Contoh Diagram"
+  "sampleDiagrams": "Contoh Diagram",
+  "importedToEditor": "{{title}} diimpor ke editor",
+  "mermaidGpt": "Bantuan AI",
+  "mermaidGptHelp": "Dapatkan bantuan AI dengan sintaks Mermaid",
+  "architecture": "Arsitektur",
+  "radar": "Radar",
+  "packet": "Paket",
+  "c4": "Model C4",
+  "nav": {
+    "editor": "Editor",
+    "gallery": "Galeri"
+  },
+  "gallery": {
+    "title": "Galeri Diagram Mermaid",
+    "subtitle": "Konsep Desain Sistem Divisualisasikan",
+    "import": "Klik untuk mengimpor ke editor",
+    "items": {
+      "caching": {
+        "title": "Caching",
+        "description": "Strategi caching multi-layer untuk meningkatkan kinerja aplikasi"
+      },
+      "cdn": {
+        "title": "Jaringan Pengiriman Konten (CDN)",
+        "description": "Arsitektur CDN global untuk pengiriman konten cepat"
+      },
+      "load-balancing": {
+        "title": "Penyeimbangan Beban",
+        "description": "Distribusi lalu lintas di beberapa server"
+      },
+      "scalability": {
+        "title": "Skalabilitas",
+        "description": "Strategi penskalaan horizontal dan vertikal"
+      },
+      "microservices": {
+        "title": "Arsitektur Layanan Mikro",
+        "description": "Sistem terdistribusi dengan layanan independen"
+      },
+      "availability": {
+        "title": "Ketersediaan Tinggi",
+        "description": "Desain sistem untuk waktu aktif 99,99%"
+      },
+      "cap-theorem": {
+        "title": "Teorema CAP",
+        "description": "Sistem basis data dikategorikan berdasarkan properti CAP (angka menunjukkan adopsi relatif)"
+      },
+      "consistent-hashing": {
+        "title": "Hashing Konsisten",
+        "description": "Cache terdistribusi dan strategi partisi data"
+      },
+      "database-sharding": {
+        "title": "Sharding Basis Data",
+        "description": "Partisi horizontal basis data di beberapa server"
+      },
+      "sql-vs-nosql": {
+        "title": "SQL vs NoSQL",
+        "description": "Perbandingan basis data relasional dan non-relasional"
+      },
+      "throughput": {
+        "title": "Optimasi Throughput",
+        "description": "Strategi optimasi throughput sistem dan kinerja"
+      },
+      "api-gateway": {
+        "title": "Gerbang API",
+        "description": "Manajemen API terpusat dan lapisan perutean"
+      },
+      "database-replication": {
+        "title": "Replikasi Basis Data",
+        "description": "Replikasi master-slave untuk ketersediaan tinggi dan skalabilitas baca"
+      },
+      "event-driven": {
+        "title": "Arsitektur Berbasis Peristiwa",
+        "description": "Komunikasi berbasis peristiwa asinkron antar layanan"
+      },
+      "load-balancing-algorithms": {
+        "title": "Algoritma Penyeimbangan Beban",
+        "description": "Berbagai strategi untuk mendistribusikan lalu lintas di seluruh server"
+      },
+      "partitioning": {
+        "title": "Partisi Data",
+        "description": "Strategi untuk membagi data di beberapa node"
+      },
+      "security": {
+        "title": "Arsitektur Keamanan",
+        "description": "Pendekatan keamanan multi-layer untuk melindungi sistem"
+      },
+      "distributed-systems": {
+        "title": "Sistem Terdistribusi",
+        "description": "Konsep inti dan tantangan dalam komputasi terdistribusi"
+      },
+      "proxy": {
+        "title": "Proksi Maju vs Proksi Terbalik",
+        "description": "Memahami perbedaan antara proksi maju dan terbalik"
+      },
+      "indexing": {
+        "title": "Pengindeksan Basis Data",
+        "description": "Jenis indeks dan dampaknya terhadap kinerja kueri"
+      },
+      "fault-tolerance": {
+        "title": "Ketersediaan dan Toleransi Kesalahan",
+        "description": "Membangun sistem yang tangguh dengan strategi penanganan kegagalan"
+      },
+      "data-storage": {
+        "title": "Penyimpanan Data dan Basis Data",
+        "description": "Berbagai jenis solusi penyimpanan data dan kasus penggunaannya"
+      },
+      "design-patterns": {
+        "title": "Pola Desain Perangkat Lunak",
+        "description": "Pola arsitektur dan desain umum untuk sistem perangkat lunak"
+      },
+      "architectural-patterns": {
+        "title": "Pemahaman Arsitektur",
+        "description": "Pola dan gaya arsitektur perangkat lunak modern"
+      },
+      "architecture-beta": {
+        "title": "Arsitektur Infrastruktur Cloud",
+        "description": "Arsitektur cloud modern dengan layanan API dan penyimpanan"
+      },
+      "radar-beta": {
+        "title": "Bagan Radar",
+        "description": "Perbandingan data multidimensi menggunakan visualisasi radar"
+      },
+      "packet-diagram": {
+        "title": "Struktur Paket TCP",
+        "description": "Representasi visual dari bidang header paket TCP"
+      },
+      "c4-context": {
+        "title": "Diagram Konteks C4",
+        "description": "Arsitektur Sistem Perbankan Internet menggunakan model C4"
+      }
+    }
+  }
 }

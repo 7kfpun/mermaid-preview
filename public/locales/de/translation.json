@@ -52,5 +52,135 @@
     "bgColor": "Hintergrund:",
     "embedHTML": "HTML einbetten",
     "base": "Basis",
-    "sampleDiagrams": "Beispieldiagramme"
+    "sampleDiagrams": "Beispieldiagramme",
+  "importedToEditor": "{{title}} in den Editor importiert",
+  "mermaidGpt": "KI-Hilfe",
+  "mermaidGptHelp": "KI-Hilfe für Mermaid-Syntax erhalten",
+  "architecture": "Architektur",
+  "radar": "Radar",
+  "packet": "Paket",
+  "c4": "C4-Modell",
+  "nav": {
+    "editor": "Editor",
+    "gallery": "Galerie"
+  },
+  "gallery": {
+    "title": "Mermaid Diagramm Galerie",
+    "subtitle": "Systemdesign-Konzepte Visualisiert",
+    "import": "Klicken zum Importieren in den Editor",
+    "items": {
+      "caching": {
+        "title": "Caching",
+        "description": "Mehrschichtige Caching-Strategie zur Verbesserung der Anwendungsleistung"
+      },
+      "cdn": {
+        "title": "Content Delivery Network (CDN)",
+        "description": "Globale CDN-Architektur für schnelle Inhaltsbereitstellung"
+      },
+      "load-balancing": {
+        "title": "Lastverteilung",
+        "description": "Verkehrsverteilung über mehrere Server"
+      },
+      "scalability": {
+        "title": "Skalierbarkeit",
+        "description": "Strategien für horizontale und vertikale Skalierung"
+      },
+      "microservices": {
+        "title": "Microservices-Architektur",
+        "description": "Verteiltes System mit unabhängigen Diensten"
+      },
+      "availability": {
+        "title": "Hochverfügbarkeit",
+        "description": "Systemdesign für 99,99% Betriebszeit"
+      },
+      "cap-theorem": {
+        "title": "CAP-Theorem",
+        "description": "Datenbanksysteme kategorisiert nach CAP-Eigenschaften (Zahlen zeigen relative Verbreitung)"
+      },
+      "consistent-hashing": {
+        "title": "Konsistentes Hashing",
+        "description": "Verteilte Cache- und Datenpartitionierungsstrategie"
+      },
+      "database-sharding": {
+        "title": "Datenbank-Sharding",
+        "description": "Horizontale Partitionierung der Datenbank über mehrere Server"
+      },
+      "sql-vs-nosql": {
+        "title": "SQL vs NoSQL",
+        "description": "Vergleich von relationalen und nicht-relationalen Datenbanken"
+      },
+      "throughput": {
+        "title": "Durchsatzoptimierung",
+        "description": "Strategien zur Optimierung von Systemdurchsatz und Leistung"
+      },
+      "api-gateway": {
+        "title": "API-Gateway",
+        "description": "Zentralisierte API-Verwaltungs- und Routing-Schicht"
+      },
+      "database-replication": {
+        "title": "Datenbankreplikation",
+        "description": "Master-Slave-Replikation für Hochverfügbarkeit und Leseskalierbarkeit"
+      },
+      "event-driven": {
+        "title": "Ereignisgesteuerte Architektur",
+        "description": "Asynchrone ereignisbasierte Kommunikation zwischen Diensten"
+      },
+      "load-balancing-algorithms": {
+        "title": "Lastverteilungsalgorithmen",
+        "description": "Verschiedene Strategien zur Verteilung des Verkehrs auf Server"
+      },
+      "partitioning": {
+        "title": "Datenpartitionierung",
+        "description": "Strategien zur Aufteilung von Daten auf mehrere Knoten"
+      },
+      "security": {
+        "title": "Sicherheitsarchitektur",
+        "description": "Mehrschichtiger Sicherheitsansatz zum Schutz von Systemen"
+      },
+      "distributed-systems": {
+        "title": "Verteilte Systeme",
+        "description": "Kernkonzepte und Herausforderungen im verteilten Rechnen"
+      },
+      "proxy": {
+        "title": "Forward Proxy vs Reverse Proxy",
+        "description": "Verständnis des Unterschieds zwischen Forward- und Reverse-Proxys"
+      },
+      "indexing": {
+        "title": "Datenbankindizierung",
+        "description": "Indextypen und ihre Auswirkungen auf die Abfrageleistung"
+      },
+      "fault-tolerance": {
+        "title": "Verfügbarkeit und Fehlertoleranz",
+        "description": "Aufbau robuster Systeme mit Fehlerbehandlungsstrategien"
+      },
+      "data-storage": {
+        "title": "Datenspeicherung und Datenbanken",
+        "description": "Verschiedene Arten von Datenspeicherlösungen und ihre Anwendungsfälle"
+      },
+      "design-patterns": {
+        "title": "Software-Entwurfsmuster",
+        "description": "Gängige Architektur- und Entwurfsmuster für Softwaresysteme"
+      },
+      "architectural-patterns": {
+        "title": "Architekturverständnis",
+        "description": "Moderne Softwarearchitekturmuster und -stile"
+      },
+      "architecture-beta": {
+        "title": "Cloud-Infrastrukturarchitektur",
+        "description": "Moderne Cloud-Architektur mit API-Diensten und Speicher"
+      },
+      "radar-beta": {
+        "title": "Radardiagramm",
+        "description": "Mehrdimensionaler Datenvergleich mittels Radarvisualisierung"
+      },
+      "packet-diagram": {
+        "title": "TCP-Paketstruktur",
+        "description": "Visuelle Darstellung von TCP-Paket-Header-Feldern"
+      },
+      "c4-context": {
+        "title": "C4-Kontextdiagramm",
+        "description": "Internet-Banking-Systemarchitektur unter Verwendung des C4-Modells"
+      }
+    }
+  }
 }

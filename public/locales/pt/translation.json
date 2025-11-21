@@ -52,5 +52,135 @@
   "bgColor": "Fundo:",
   "embedHTML": "Incorporar HTML",
   "base": "Base",
-  "sampleDiagrams": "Diagramas de exemplo"
+  "sampleDiagrams": "Diagramas de exemplo",
+  "importedToEditor": "{{title}} importado para o editor",
+  "mermaidGpt": "Ajuda IA",
+  "mermaidGptHelp": "Obter ajuda da IA com a sintaxe Mermaid",
+  "architecture": "Arquitetura",
+  "radar": "Radar",
+  "packet": "Pacote",
+  "c4": "Modelo C4",
+  "nav": {
+    "editor": "Editor",
+    "gallery": "Galeria"
+  },
+  "gallery": {
+    "title": "Galeria de Diagramas Mermaid",
+    "subtitle": "Conceitos de Design de Sistemas Visualizados",
+    "import": "Clique para importar para o editor",
+    "items": {
+      "caching": {
+        "title": "Cache",
+        "description": "Estratégia de cache multicamada para melhorar o desempenho do aplicativo"
+      },
+      "cdn": {
+        "title": "Rede de Entrega de Conteúdo (CDN)",
+        "description": "Arquitetura global de CDN para entrega rápida de conteúdo"
+      },
+      "load-balancing": {
+        "title": "Balanceamento de Carga",
+        "description": "Distribuição de tráfego entre vários servidores"
+      },
+      "scalability": {
+        "title": "Escalabilidade",
+        "description": "Estratégias de escalabilidade horizontal e vertical"
+      },
+      "microservices": {
+        "title": "Arquitetura de Microsserviços",
+        "description": "Sistema distribuído com serviços independentes"
+      },
+      "availability": {
+        "title": "Alta Disponibilidade",
+        "description": "Design de sistema para 99,99% de tempo de atividade"
+      },
+      "cap-theorem": {
+        "title": "Teorema CAP",
+        "description": "Sistemas de banco de dados categorizados por propriedades CAP (números mostram adoção relativa)"
+      },
+      "consistent-hashing": {
+        "title": "Hashing Consistente",
+        "description": "Estratégia de cache distribuído e particionamento de dados"
+      },
+      "database-sharding": {
+        "title": "Sharding de Banco de Dados",
+        "description": "Particionamento horizontal de banco de dados em vários servidores"
+      },
+      "sql-vs-nosql": {
+        "title": "SQL vs NoSQL",
+        "description": "Comparação de bancos de dados relacionais e não relacionais"
+      },
+      "throughput": {
+        "title": "Otimização de Taxa de Transferência",
+        "description": "Estratégias de otimização de taxa de transferência e desempenho do sistema"
+      },
+      "api-gateway": {
+        "title": "API Gateway",
+        "description": "Camada centralizada de gerenciamento e roteamento de API"
+      },
+      "database-replication": {
+        "title": "Replicação de Banco de Dados",
+        "description": "Replicação mestre-escravo para alta disponibilidade e escalabilidade de leitura"
+      },
+      "event-driven": {
+        "title": "Arquitetura Orientada a Eventos",
+        "description": "Comunicação assíncrona baseada em eventos entre serviços"
+      },
+      "load-balancing-algorithms": {
+        "title": "Algoritmos de Balanceamento de Carga",
+        "description": "Diferentes estratégias para distribuir tráfego entre servidores"
+      },
+      "partitioning": {
+        "title": "Particionamento de Dados",
+        "description": "Estratégias para dividir dados em vários nós"
+      },
+      "security": {
+        "title": "Arquitetura de Segurança",
+        "description": "Abordagem de segurança multicamada para proteger sistemas"
+      },
+      "distributed-systems": {
+        "title": "Sistemas Distribuídos",
+        "description": "Conceitos centrais e desafios na computação distribuída"
+      },
+      "proxy": {
+        "title": "Proxy Direto vs Proxy Reverso",
+        "description": "Entendendo a diferença entre proxies diretos e reversos"
+      },
+      "indexing": {
+        "title": "Indexação de Banco de Dados",
+        "description": "Tipos de índice e seu impacto no desempenho da consulta"
+      },
+      "fault-tolerance": {
+        "title": "Disponibilidade e Tolerância a Falhas",
+        "description": "Construindo sistemas resilientes com estratégias de tratamento de falhas"
+      },
+      "data-storage": {
+        "title": "Armazenamento de Dados e Bancos de Dados",
+        "description": "Diferentes tipos de soluções de armazenamento de dados e seus casos de uso"
+      },
+      "design-patterns": {
+        "title": "Padrões de Design de Software",
+        "description": "Padrões arquitetônicos e de design comuns para sistemas de software"
+      },
+      "architectural-patterns": {
+        "title": "Compreensão Arquitetônica",
+        "description": "Padrões e estilos de arquitetura de software moderna"
+      },
+      "architecture-beta": {
+        "title": "Arquitetura de Infraestrutura em Nuvem",
+        "description": "Arquitetura de nuvem moderna com serviços de API e armazenamento"
+      },
+      "radar-beta": {
+        "title": "Gráfico de Radar",
+        "description": "Comparação de dados multidimensionais usando visualização de radar"
+      },
+      "packet-diagram": {
+        "title": "Estrutura de Pacote TCP",
+        "description": "Representação visual dos campos de cabeçalho de pacote TCP"
+      },
+      "c4-context": {
+        "title": "Diagrama de Contexto C4",
+        "description": "Arquitetura de Sistema de Internet Banking usando modelo C4"
+      }
+    }
+  }
 }

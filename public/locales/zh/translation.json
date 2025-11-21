@@ -52,5 +52,135 @@
   "bgColor": "背景：",
   "embedHTML": "嵌入 HTML",
   "base": "基本",
-  "sampleDiagrams": "範例圖表"
+  "sampleDiagrams": "範例圖表",
+  "importedToEditor": "{{title}} 已匯入編輯器",
+  "mermaidGpt": "AI 協助",
+  "mermaidGptHelp": "取得 Mermaid 語法的 AI 協助",
+  "architecture": "架構圖",
+  "radar": "雷達圖",
+  "packet": "封包圖",
+  "c4": "C4 模型",
+  "nav": {
+    "editor": "編輯器",
+    "gallery": "圖庫"
+  },
+  "gallery": {
+    "title": "Mermaid 圖表圖庫",
+    "subtitle": "系統設計概念視覺化",
+    "import": "點擊匯入編輯器",
+    "items": {
+      "caching": {
+        "title": "快取",
+        "description": "用於提高應用程式效能的多層快取策略"
+      },
+      "cdn": {
+        "title": "內容傳遞網路 (CDN)",
+        "description": "用於快速傳遞內容的全球 CDN 架構"
+      },
+      "load-balancing": {
+        "title": "負載平衡",
+        "description": "跨多個伺服器的流量分配"
+      },
+      "scalability": {
+        "title": "可擴展性",
+        "description": "水平和垂直擴展策略"
+      },
+      "microservices": {
+        "title": "微服務架構",
+        "description": "具有獨立服務的分散式系統"
+      },
+      "availability": {
+        "title": "高可用性",
+        "description": "99.99% 正常運行時間的系統設計"
+      },
+      "cap-theorem": {
+        "title": "CAP 定理",
+        "description": "按 CAP 屬性分類的資料庫系統（數字顯示相對採用率）"
+      },
+      "consistent-hashing": {
+        "title": "一致性雜湊",
+        "description": "分散式快取和資料分區策略"
+      },
+      "database-sharding": {
+        "title": "資料庫分片",
+        "description": "跨多個伺服器的資料庫水平分區"
+      },
+      "sql-vs-nosql": {
+        "title": "SQL 與 NoSQL",
+        "description": "關聯式與非關聯式資料庫的比較"
+      },
+      "throughput": {
+        "title": "吞吐量優化",
+        "description": "系統吞吐量和效能優化策略"
+      },
+      "api-gateway": {
+        "title": "API 閘道",
+        "description": "集中式 API 管理和路由層"
+      },
+      "database-replication": {
+        "title": "資料庫複製",
+        "description": "用於高可用性和讀取擴展的主從複製"
+      },
+      "event-driven": {
+        "title": "事件驅動架構",
+        "description": "服務之間的非同步事件通訊"
+      },
+      "load-balancing-algorithms": {
+        "title": "負載平衡演算法",
+        "description": "跨伺服器分配流量的不同策略"
+      },
+      "partitioning": {
+        "title": "資料分區",
+        "description": "跨多個節點劃分資料的策略"
+      },
+      "security": {
+        "title": "安全架構",
+        "description": "保護系統的多層安全方法"
+      },
+      "distributed-systems": {
+        "title": "分散式系統",
+        "description": "分散式計算的核心概念和挑戰"
+      },
+      "proxy": {
+        "title": "正向代理與反向代理",
+        "description": "了解正向代理和反向代理之間的區別"
+      },
+      "indexing": {
+        "title": "資料庫索引",
+        "description": "索引類型及其對查詢效能的影響"
+      },
+      "fault-tolerance": {
+        "title": "可用性和容錯",
+        "description": "具有故障處理策略的彈性系統構建"
+      },
+      "data-storage": {
+        "title": "資料儲存和資料庫",
+        "description": "不同類型的資料儲存解決方案及其用例"
+      },
+      "design-patterns": {
+        "title": "軟體設計模式",
+        "description": "軟體系統的常見架構和設計模式"
+      },
+      "architectural-patterns": {
+        "title": "架構理解",
+        "description": "現代軟體架構模式和風格"
+      },
+      "architecture-beta": {
+        "title": "雲端基礎設施架構",
+        "description": "具有 API 服務和儲存的現代雲端架構"
+      },
+      "radar-beta": {
+        "title": "雷達圖",
+        "description": "使用雷達視覺化的多維資料比較"
+      },
+      "packet-diagram": {
+        "title": "TCP 封包結構",
+        "description": "TCP 封包標頭欄位的視覺化表示"
+      },
+      "c4-context": {
+        "title": "C4 上下文圖",
+        "description": "使用 C4 模型的網際網路銀行系統架構"
+      }
+    }
+  }
 }

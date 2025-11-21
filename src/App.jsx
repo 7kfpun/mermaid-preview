@@ -1,5 +1,5 @@
-import { useEffect, useRef, useCallback } from "react";
-import { useLocation } from "react-router-dom";
+import { useState, useEffect, useRef, useCallback } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import mermaid from "mermaid";
 import toast, { Toaster } from "react-hot-toast";
 import { useTranslation } from "react-i18next";
@@ -16,8 +16,9 @@ import { encodeState, decodeState } from "./utils/url";
 import { isRTL } from "./i18n";
 
 function App() {
-  const { i18n } = useTranslation();
+  const { t, i18n } = useTranslation();
   const location = useLocation();
+  const navigate = useNavigate();
   const { code, setCode, embedHtml, setEmbedHtml } = useMermaidCode();
   const {
     theme,
@@ -59,6 +60,8 @@ function App() {
     showSamples,
     setShowSamples,
   } = useUIState();
+
+  const [error, setError] = useState(null);
 
   const previewRef = useRef(null);
   const svgContainerRef = useRef(null);
@@ -157,6 +160,7 @@ function App() {
     if (!code.trim() || !previewRef.current) return;
 
     setIsLoading(true);
+    setError(null);
     try {
       // Apply theme before rendering
       let themeConfigObj = null;
@@ -236,33 +240,9 @@ ${code}
           setPosition({ x: newX, y: newY });
         }
       }
-    } catch (error) {
-      console.error("Mermaid rendering error:", error);
-      previewRef.current.innerHTML = `
-        <div style="color: #e53e3e; padding: 20px; text-align: center;">
-          <div style="font-size: 18px; font-weight: bold; margin-bottom: 10px;">⚠️ Error rendering diagram</div>
-          <div style="margin-bottom: 15px;">Check your syntax and try again.</div>
-          <a
-            href="https://chatgpt.com/g/g-684cc36f30208191b21383b88650a45d-mermaid-chart-diagrams-and-charts"
-            target="_blank"
-            rel="noopener noreferrer"
-            style="
-              display: inline-block;
-              background-color: #10a37f;
-              color: white;
-              padding: 10px 20px;
-              border-radius: 6px;
-              text-decoration: none;
-              font-weight: 500;
-              transition: background-color 0.2s;
-            "
-            onmouseover="this.style.backgroundColor='#0d8c6f'"
-            onmouseout="this.style.backgroundColor='#10a37f'"
-          >
-            🤖 Get AI Help with Mermaid Chart GPT
-          </a>
-        </div>
-      `;
+    } catch (err) {
+      console.error("Mermaid rendering error:", err);
+      setError(err);
     } finally {
       setIsLoading(false);
     }
@@ -293,17 +273,23 @@ ${code}
     };
   }, [loadFromURL]);
 
+  const processedCodeRef = useRef(null);
+
   // Handle diagram import from gallery
   useEffect(() => {
-    if (location.state?.diagramCode) {
-      setCode(location.state.diagramCode);
+    const codeToImport = location.state?.diagramCode;
+    if (codeToImport && codeToImport !== processedCodeRef.current) {
+      setCode(codeToImport);
+      processedCodeRef.current = codeToImport;
+      
       // Clear the state to prevent re-importing on subsequent renders
-      window.history.replaceState({}, document.title);
+      navigate(location.pathname, { replace: true, state: {} });
+      
       // Show toast notification
       const title = location.state.diagramTitle || "Diagram";
-      toast.success(`${title} imported to editor`);
+      toast.success(t('importedToEditor', { title, defaultValue: `${title} imported to editor` }));
     }
-  }, [location.state, setCode]);
+  }, [location.state, setCode, navigate, location.pathname, t]);
 
   // Debounced diagram rendering
   useEffect(() => {
@@ -931,6 +917,7 @@ ${code}
           editorHeight={editorHeight}
           setEditorHeight={setEditorHeight}
           backgroundColor={backgroundColor}
+          error={error}
         />
       </main>
       <Footer />

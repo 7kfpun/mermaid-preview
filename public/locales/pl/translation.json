@@ -52,5 +52,135 @@
   "bgColor": "Tło:",
   "embedHTML": "Osadź HTML",
   "base": "Bazowy",
-  "sampleDiagrams": "Przykładowe diagramy"
+  "sampleDiagrams": "Przykładowe diagramy",
+  "importedToEditor": "{{title}} zaimportowano do edytora",
+  "mermaidGpt": "Pomoc AI",
+  "mermaidGptHelp": "Uzyskaj pomoc AI ze składnią Mermaid",
+  "architecture": "Architektura",
+  "radar": "Radar",
+  "packet": "Pakiet",
+  "c4": "Model C4",
+  "nav": {
+    "editor": "Edytor",
+    "gallery": "Galeria"
+  },
+  "gallery": {
+    "title": "Galeria Diagramów Mermaid",
+    "subtitle": "Wizualizacja Koncepcji Projektowania Systemów",
+    "import": "Kliknij, aby zaimportować do edytora",
+    "items": {
+      "caching": {
+        "title": "Buforowanie (Caching)",
+        "description": "Wielowarstwowa strategia buforowania w celu poprawy wydajności aplikacji"
+      },
+      "cdn": {
+        "title": "Sieć dostarczania treści (CDN)",
+        "description": "Globalna architektura CDN do szybkiego dostarczania treści"
+      },
+      "load-balancing": {
+        "title": "Równoważenie obciążenia",
+        "description": "Dystrybucja ruchu na wiele serwerów"
+      },
+      "scalability": {
+        "title": "Skalowalność",
+        "description": "Strategie skalowania poziomego i pionowego"
+      },
+      "microservices": {
+        "title": "Architektura mikrousług",
+        "description": "System rozproszony z niezależnymi usługami"
+      },
+      "availability": {
+        "title": "Wysoka dostępność",
+        "description": "Projektowanie systemu dla 99,99% czasu sprawności"
+      },
+      "cap-theorem": {
+        "title": "Twierdzenie CAP",
+        "description": "Systemy baz danych podzielone na kategorie według właściwości CAP (liczby pokazują względną adopcję)"
+      },
+      "consistent-hashing": {
+        "title": "Spójne haszowanie",
+        "description": "Rozproszona pamięć podręczna i strategia partycjonowania danych"
+      },
+      "database-sharding": {
+        "title": "Sharding bazy danych",
+        "description": "Poziome partycjonowanie bazy danych na wiele serwerów"
+      },
+      "sql-vs-nosql": {
+        "title": "SQL vs NoSQL",
+        "description": "Porównanie relacyjnych i nierelacyjnych baz danych"
+      },
+      "throughput": {
+        "title": "Optymalizacja przepustowości",
+        "description": "Strategie optymalizacji przepustowości i wydajności systemu"
+      },
+      "api-gateway": {
+        "title": "Brama API",
+        "description": "Scentralizowane zarządzanie API i warstwa routingu"
+      },
+      "database-replication": {
+        "title": "Replikacja bazy danych",
+        "description": "Replikacja master-slave dla wysokiej dostępności i skalowalności odczytu"
+      },
+      "event-driven": {
+        "title": "Architektura sterowana zdarzeniami",
+        "description": "Asynchroniczna komunikacja oparta na zdarzeniach między usługami"
+      },
+      "load-balancing-algorithms": {
+        "title": "Algorytmy równoważenia obciążenia",
+        "description": "Różne strategie dystrybucji ruchu na serwery"
+      },
+      "partitioning": {
+        "title": "Partycjonowanie danych",
+        "description": "Strategie dzielenia danych na wiele węzłów"
+      },
+      "security": {
+        "title": "Architektura bezpieczeństwa",
+        "description": "Wielowarstwowe podejście do bezpieczeństwa w celu ochrony systemów"
+      },
+      "distributed-systems": {
+        "title": "Systemy rozproszone",
+        "description": "Podstawowe pojęcia i wyzwania w obliczeniach rozproszonych"
+      },
+      "proxy": {
+        "title": "Forward Proxy vs Reverse Proxy",
+        "description": "Zrozumienie różnicy między forward proxy a reverse proxy"
+      },
+      "indexing": {
+        "title": "Indeksowanie bazy danych",
+        "description": "Typy indeksów i ich wpływ na wydajność zapytań"
+      },
+      "fault-tolerance": {
+        "title": "Dostępność i tolerancja błędów",
+        "description": "Budowanie odpornych systemów ze strategiami obsługi awarii"
+      },
+      "data-storage": {
+        "title": "Przechowywanie danych i bazy danych",
+        "description": "Różne rodzaje rozwiązań do przechowywania danych i ich przypadki użycia"
+      },
+      "design-patterns": {
+        "title": "Wzorce projektowe oprogramowania",
+        "description": "Typowe wzorce architektoniczne i projektowe dla systemów oprogramowania"
+      },
+      "architectural-patterns": {
+        "title": "Zrozumienie architektury",
+        "description": "Nowoczesne wzorce i style architektury oprogramowania"
+      },
+      "architecture-beta": {
+        "title": "Architektura infrastruktury chmurowej",
+        "description": "Nowoczesna architektura chmurowa z usługami API i pamięcią masową"
+      },
+      "radar-beta": {
+        "title": "Wykres radarowy",
+        "description": "Wielowymiarowe porównanie danych za pomocą wizualizacji radarowej"
+      },
+      "packet-diagram": {
+        "title": "Struktura pakietu TCP",
+        "description": "Wizualna reprezentacja pól nagłówka pakietu TCP"
+      },
+      "c4-context": {
+        "title": "Diagram kontekstowy C4",
+        "description": "Architektura systemu bankowości internetowej z wykorzystaniem modelu C4"
+      }
+    }
+  }
 }
