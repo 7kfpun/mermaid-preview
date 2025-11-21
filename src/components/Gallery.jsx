@@ -101,68 +101,75 @@ const GALLERY_DIAGRAMS = [
     id: 'scalability',
     title: 'Scalability',
     description: 'Horizontal and vertical scaling strategies',
-    diagram: `graph TB
-    subgraph Vertical["Vertical Scaling (Scale Up)"]
-        V1[Small Server<br/>2 CPU, 4GB RAM]
-        V1 -->|Upgrade| V2[Medium Server<br/>4 CPU, 16GB RAM]
-        V2 -->|Upgrade| V3[Large Server<br/>16 CPU, 64GB RAM]
-    end
-
-    subgraph Horizontal["Horizontal Scaling (Scale Out)"]
-        LB[Load Balancer]
-        LB --> H1[Server 1]
-        LB --> H2[Server 2]
-        LB --> H3[Server 3]
-        LB -.Add more.-> H4[Server N]
-    end
-
-    V3 -.Alternative.-> LB
-
-    style V1 fill:#E8F5E9
-    style V2 fill:#C8E6C9
-    style V3 fill:#4CAF50
-    style LB fill:#9C27B0
-    style H1 fill:#64B5F6
-    style H2 fill:#64B5F6
-    style H3 fill:#64B5F6
-    style H4 fill:#90CAF9`
+    diagram: `journey
+    title Application Scaling Journey
+    section Initial Phase
+      Single Server: 3: System
+      Manual Deployment: 2: DevOps
+      100 Users: 3: Traffic
+    section Growth Phase
+      Vertical Scaling: 4: System
+      Add More RAM/CPU: 4: Infrastructure
+      1000 Users: 4: Traffic
+    section Scale-Up Phase
+      Load Balancer Added: 5: Infrastructure
+      Horizontal Scaling: 5: System
+      Multiple Servers: 5: Infrastructure
+      10K Users: 5: Traffic
+    section Enterprise Phase
+      Auto-Scaling: 5: Cloud
+      Multi-Region: 5: Infrastructure
+      Microservices: 4: Architecture
+      1M+ Users: 5: Traffic`
   },
   {
     id: 'microservices',
     title: 'Microservices Architecture',
     description: 'Distributed system with independent services',
-    diagram: `graph TB
-    Client[Client / API Gateway]
+    diagram: `erDiagram
+    API-GATEWAY ||--o{ USER-SERVICE : routes
+    API-GATEWAY ||--o{ ORDER-SERVICE : routes
+    API-GATEWAY ||--o{ PAYMENT-SERVICE : routes
+    API-GATEWAY ||--o{ AUTH-SERVICE : routes
 
-    Client --> Auth[Auth Service]
-    Client --> User[User Service]
-    Client --> Order[Order Service]
-    Client --> Payment[Payment Service]
-    Client --> Notification[Notification Service]
+    USER-SERVICE ||--|| USER-DB : stores
+    ORDER-SERVICE ||--|| ORDER-DB : stores
+    PAYMENT-SERVICE ||--|| PAYMENT-DB : stores
+    AUTH-SERVICE ||--|| AUTH-DB : stores
 
-    Auth --> AuthDB[(Auth DB)]
-    User --> UserDB[(User DB)]
-    Order --> OrderDB[(Order DB)]
-    Payment --> PaymentDB[(Payment DB)]
+    ORDER-SERVICE }o--|| USER-SERVICE : "calls API"
+    PAYMENT-SERVICE }o--|| USER-SERVICE : "calls API"
+    ORDER-SERVICE }o--|| PAYMENT-SERVICE : "calls API"
 
-    Order -.Event.-> MessageQueue[Message Queue]
-    Payment -.Event.-> MessageQueue
-    MessageQueue --> Notification
+    ORDER-SERVICE ||--o{ MESSAGE-QUEUE : publishes
+    PAYMENT-SERVICE ||--o{ MESSAGE-QUEUE : publishes
+    MESSAGE-QUEUE ||--o{ NOTIFICATION-SERVICE : subscribes
 
-    Payment -.API Call.-> User
-    Order -.API Call.-> Payment
+    API-GATEWAY {
+        string routing
+        string authentication
+        string rate-limiting
+    }
 
-    style Client fill:#673AB7
-    style Auth fill:#4CAF50
-    style User fill:#2196F3
-    style Order fill:#FF9800
-    style Payment fill:#F44336
-    style Notification fill:#9C27B0
-    style MessageQueue fill:#607D8B
-    style AuthDB fill:#A5D6A7
-    style UserDB fill:#90CAF9
-    style OrderDB fill:#FFCC80
-    style PaymentDB fill:#EF9A9A`
+    USER-SERVICE {
+        uuid user_id PK
+        string name
+        string email
+    }
+
+    ORDER-SERVICE {
+        uuid order_id PK
+        uuid user_id FK
+        decimal total
+        string status
+    }
+
+    PAYMENT-SERVICE {
+        uuid payment_id PK
+        uuid order_id FK
+        decimal amount
+        string status
+    }`
   },
   {
     id: 'availability',
@@ -213,58 +220,35 @@ const GALLERY_DIAGRAMS = [
     id: 'cap-theorem',
     title: 'CAP Theorem',
     description: 'Trade-offs between Consistency, Availability, and Partition Tolerance',
-    diagram: `graph TB
-    CAP[CAP Theorem:<br/>Choose 2 of 3]
+    diagram: `sankey-beta
 
-    CAP --> CP[CP Systems<br/>Consistency + Partition Tolerance]
-    CAP --> AP[AP Systems<br/>Availability + Partition Tolerance]
-    CAP --> CA[CA Systems<br/>Consistency + Availability]
+    CAP Theorem,CP Systems,15
+    CAP Theorem,AP Systems,20
+    CAP Theorem,CA Systems,10
 
-    CP --> CPEx[Examples:<br/>MongoDB, HBase, Redis<br/><br/>Sacrifices: Availability<br/>during network partition]
+    CP Systems,MongoDB,5
+    CP Systems,HBase,4
+    CP Systems,Redis,3
+    CP Systems,Zookeeper,3
 
-    AP --> APEx[Examples:<br/>Cassandra, DynamoDB, CouchDB<br/><br/>Sacrifices: Immediate<br/>consistency for availability]
+    AP Systems,Cassandra,7
+    AP Systems,DynamoDB,6
+    AP Systems,CouchDB,4
+    AP Systems,Riak,3
 
-    CA --> CAEx[Examples:<br/>Traditional RDBMS<br/>PostgreSQL, MySQL<br/><br/>Sacrifices: Partition<br/>tolerance - single node]
-
-    style CAP fill:#9B59B6
-    style CP fill:#3498DB
-    style AP fill:#2ECC71
-    style CA fill:#E74C3C
-    style CPEx fill:#5DADE2
-    style APEx fill:#58D68D
-    style CAEx fill:#EC7063`
+    CA Systems,PostgreSQL,4
+    CA Systems,MySQL,3
+    CA Systems,Single-Node RDBMS,3`
   },
   {
     id: 'consistent-hashing',
     title: 'Consistent Hashing',
     description: 'Distributed cache and data partitioning strategy',
-    diagram: `graph TB
-    subgraph Ring["Hash Ring (0-360°)"]
-        direction TB
-        Node1["Server A<br/>(Hash: 45°)"]
-        Node2["Server B<br/>(Hash: 135°)"]
-        Node3["Server C<br/>(Hash: 225°)"]
-        Node4["Server D<br/>(Hash: 315°)"]
-    end
-
-    Key1["Key: user123<br/>(Hash: 60°)"] --> Node2
-    Key2["Key: user456<br/>(Hash: 150°)"] --> Node3
-    Key3["Key: user789<br/>(Hash: 280°)"] --> Node4
-    Key4["Key: user101<br/>(Hash: 20°)"] --> Node1
-
-    AddNode["Add Server E<br/>(Hash: 180°)"]
-    AddNode -.Only affects<br/>nearby keys.-> Rebalance[Minimal<br/>Rebalancing]
-
-    style Node1 fill:#3498DB
-    style Node2 fill:#2ECC71
-    style Node3 fill:#F39C12
-    style Node4 fill:#E74C3C
-    style Key1 fill:#D5DBDB
-    style Key2 fill:#D5DBDB
-    style Key3 fill:#D5DBDB
-    style Key4 fill:#D5DBDB
-    style AddNode fill:#9B59B6
-    style Rebalance fill:#58D68D`
+    diagram: `pie title Hash Ring Distribution
+    "Server A (0°-90°)" : 25
+    "Server B (90°-180°)" : 25
+    "Server C (180°-270°)" : 25
+    "Server D (270°-360°)" : 25`
   },
   {
     id: 'database-sharding',
@@ -337,107 +321,78 @@ const GALLERY_DIAGRAMS = [
     id: 'throughput',
     title: 'Throughput Optimization',
     description: 'System throughput and performance optimization strategies',
-    diagram: `flowchart LR
-    Request[Incoming<br/>Requests<br/>1000 req/s]
-
-    Request --> Queue[Message Queue<br/>Buffer Peak Load]
-    Queue --> Workers[Worker Pool<br/>10 Workers]
-
-    Workers --> Batch[Batch Processing<br/>Process 100 at once]
-    Workers --> Parallel[Parallel Processing<br/>Concurrent Execution]
-    Workers --> Cache[Result Caching<br/>Reduce Redundancy]
-
-    Batch --> DB[(Database<br/>Optimized Queries)]
-    Parallel --> DB
-    Cache --> DB
-
-    DB --> Result[Response<br/>900 req/s throughput<br/>90% success rate]
-
-    Monitor[Monitoring<br/>& Metrics]
-    Monitor -.Track.-> Workers
-    Monitor -.Track.-> DB
-
-    style Request fill:#4A90E2
-    style Queue fill:#F39C12
-    style Workers fill:#2ECC71
-    style Batch fill:#9B59B6
-    style Parallel fill:#9B59B6
-    style Cache fill:#9B59B6
-    style DB fill:#E74C3C
-    style Result fill:#50C878
-    style Monitor fill:#95A5A6`
+    diagram: `timeline
+    title Request Processing Pipeline
+    section Ingestion
+        Receive Request : 1ms : Load Balancer
+        Queue Request : 2ms : Message Queue
+    section Processing
+        Worker Assignment : 5ms : Worker Pool
+        Batch Processing : 50ms : Parallel Execution
+        Cache Lookup : 3ms : Redis Cache
+    section Data Layer
+        Query Optimization : 20ms : Database Query
+        Connection Pooling : 5ms : DB Connection
+    section Response
+        Data Aggregation : 10ms : Combine Results
+        Response Delivery : 5ms : Send to Client
+        Total Latency : 101ms : End-to-End`
   },
   {
     id: 'api-gateway',
     title: 'API Gateway',
     description: 'Centralized API management and routing layer',
-    diagram: `flowchart LR
-    Client1[Web Client]
-    Client2[Mobile Client]
-    Client3[IoT Device]
+    diagram: `block-beta
+    columns 3
+    Client1["Web Client"]:1
+    Client2["Mobile App"]:1
+    Client3["IoT Device"]:1
+
+    space:3
+
+    Gateway["API Gateway<br/>- Authentication<br/>- Rate Limiting<br/>- Routing<br/>- Caching"]:3
+
+    space:3
+
+    UserSvc["User Service<br/>Port 8001"]:1
+    OrderSvc["Order Service<br/>Port 8002"]:1
+    PaymentSvc["Payment Service<br/>Port 8003"]:1
 
     Client1 --> Gateway
     Client2 --> Gateway
     Client3 --> Gateway
-
-    subgraph Gateway["API Gateway"]
-        direction TB
-        Auth[Authentication<br/>& Authorization]
-        RateLimit[Rate Limiting<br/>& Throttling]
-        Route[Request Routing<br/>& Load Balancing]
-        Transform[Request/Response<br/>Transformation]
-        Cache[Response<br/>Caching]
-        Monitor[Logging &<br/>Monitoring]
-    end
-
-    Gateway --> UserService[User Service<br/>:8001]
-    Gateway --> OrderService[Order Service<br/>:8002]
-    Gateway --> PaymentService[Payment Service<br/>:8003]
-    Gateway --> NotifyService[Notification Service<br/>:8004]
-
-    style Client1 fill:#4A90E2
-    style Client2 fill:#4A90E2
-    style Client3 fill:#4A90E2
-    style Gateway fill:#9B59B6
-    style UserService fill:#2ECC71
-    style OrderService fill:#F39C12
-    style PaymentService fill:#E74C3C
-    style NotifyService fill:#3498DB`
+    Gateway --> UserSvc
+    Gateway --> OrderSvc
+    Gateway --> PaymentSvc`
   },
   {
     id: 'database-replication',
     title: 'Database Replication',
     description: 'Master-slave replication for high availability and read scalability',
-    diagram: `flowchart TD
-    App[Application]
-
-    App -->|Write<br/>Operations| Master[(Primary/Master<br/>Database)]
-    App -->|Read<br/>Operations| ReadLB[Read Load<br/>Balancer]
-
-    Master -->|Async<br/>Replication| Slave1[(Replica 1)]
-    Master -->|Async<br/>Replication| Slave2[(Replica 2)]
-    Master -->|Async<br/>Replication| Slave3[(Replica 3)]
-
-    ReadLB --> Slave1
-    ReadLB --> Slave2
-    ReadLB --> Slave3
-
-    Master -.Sync Backup.-> Standby[(Standby Master<br/>Failover)]
-
-    Monitor{Health Monitor}
-    Monitor -.Check.-> Master
-    Monitor -.Check.-> Standby
-    Monitor -->|Failure<br/>Detected| Failover[Promote Standby<br/>to Master]
-
-    style App fill:#4A90E2
-    style Master fill:#E74C3C
-    style Slave1 fill:#2ECC71
-    style Slave2 fill:#2ECC71
-    style Slave3 fill:#2ECC71
-    style Standby fill:#F39C12
-    style ReadLB fill:#9B59B6
-    style Monitor fill:#95A5A6
-    style Failover fill:#E67E22`
+    diagram: `gitGraph
+    commit id: "Initial DB State"
+    commit id: "Write Transaction 1"
+    commit id: "Write Transaction 2"
+    branch replica-1
+    commit id: "Async Replication to R1"
+    checkout main
+    branch replica-2
+    commit id: "Async Replication to R2"
+    checkout main
+    branch replica-3
+    commit id: "Async Replication to R3"
+    checkout main
+    commit id: "Write Transaction 3"
+    checkout replica-1
+    merge main tag: "Sync R1"
+    checkout replica-2
+    merge main tag: "Sync R2"
+    checkout replica-3
+    merge main tag: "Sync R3"
+    checkout main
+    commit id: "Write Transaction 4"
+    branch standby-master
+    commit id: "Sync Backup for Failover"`
   },
   {
     id: 'event-driven',
@@ -477,74 +432,62 @@ const GALLERY_DIAGRAMS = [
     id: 'load-balancing-algorithms',
     title: 'Load Balancing Algorithms',
     description: 'Different strategies for distributing traffic across servers',
-    diagram: `flowchart TD
-    Client[Client Requests]
-    Client --> LB[Load Balancer]
-
-    LB --> Algo{Algorithm<br/>Selection}
-
-    Algo -->|Round Robin| RR[Distribute Equally<br/>Server 1 → 2 → 3 → 1]
-    Algo -->|Least Connections| LC[Route to Server<br/>with Fewest Active<br/>Connections]
-    Algo -->|Weighted Round Robin| WRR[Distribute by<br/>Server Capacity<br/>S1: 50%, S2: 30%, S3: 20%]
-    Algo -->|IP Hash| IPH[Same Client IP<br/>Always Routes to<br/>Same Server]
-    Algo -->|Least Response Time| LRT[Route to Fastest<br/>Responding Server]
-
-    RR --> Servers[Server Pool]
-    LC --> Servers
-    WRR --> Servers
-    IPH --> Servers
-    LRT --> Servers
-
-    Servers --> S1[Server 1]
-    Servers --> S2[Server 2]
-    Servers --> S3[Server 3]
-
-    style Client fill:#4A90E2
-    style LB fill:#9B59B6
-    style Algo fill:#F39C12
-    style RR fill:#2ECC71
-    style LC fill:#2ECC71
-    style WRR fill:#2ECC71
-    style IPH fill:#2ECC71
-    style LRT fill:#2ECC71
-    style Servers fill:#95A5A6
-    style S1 fill:#3498DB
-    style S2 fill:#3498DB
-    style S3 fill:#3498DB`
+    diagram: `pie title Load Balancing Algorithm Usage
+    "Round Robin (Equal Distribution)" : 30
+    "Least Connections (Dynamic)" : 25
+    "Weighted Round Robin (Capacity-Based)" : 20
+    "IP Hash (Session Persistence)" : 15
+    "Least Response Time (Performance)" : 10`
   },
   {
     id: 'partitioning',
     title: 'Data Partitioning',
     description: 'Strategies for dividing data across multiple nodes',
-    diagram: `flowchart LR
-    Data[Large Dataset<br/>1TB Data]
+    diagram: `requirementDiagram
 
-    Data --> Strategy{Partitioning<br/>Strategy}
+    requirement HorizontalPartitioning {
+        id: 1
+        text: Split data by rows across nodes
+        risk: medium
+        verifymethod: load_test
+    }
 
-    Strategy -->|Horizontal| H[Row-Based<br/>Split by Rows]
-    Strategy -->|Vertical| V[Column-Based<br/>Split by Columns]
-    Strategy -->|Hash| HA[Hash Function<br/>hash key mod N]
-    Strategy -->|Range| R[Range-Based<br/>A-M, N-Z]
+    requirement VerticalPartitioning {
+        id: 2
+        text: Split data by columns/tables
+        risk: low
+        verifymethod: schema_review
+    }
 
-    H --> HP1[(Partition 1<br/>Users 1-1000)]
-    H --> HP2[(Partition 2<br/>Users 1001-2000)]
+    requirement HashPartitioning {
+        id: 3
+        text: Use hash function for distribution
+        risk: medium
+        verifymethod: distribution_test
+    }
 
-    V --> VP1[(Partition 1<br/>Basic Info)]
-    V --> VP2[(Partition 2<br/>Extended Info)]
+    requirement RangePartitioning {
+        id: 4
+        text: Partition by key ranges
+        risk: high
+        verifymethod: hotspot_analysis
+    }
 
-    HA --> HAP1[(Node 1<br/>Hash % 3 = 0)]
-    HA --> HAP2[(Node 2<br/>Hash % 3 = 1)]
-    HA --> HAP3[(Node 3<br/>Hash % 3 = 2)]
+    element Database {
+        type: system
+        docref: db_design.md
+    }
 
-    R --> RP1[(Partition 1<br/>Range A-M)]
-    R --> RP2[(Partition 2<br/>Range N-Z)]
+    element LoadBalancer {
+        type: component
+        docref: lb_config.md
+    }
 
-    style Data fill:#4A90E2
-    style Strategy fill:#9B59B6
-    style H fill:#2ECC71
-    style V fill:#F39C12
-    style HA fill:#E74C3C
-    style R fill:#3498DB`
+    Database - satisfies -> HorizontalPartitioning
+    Database - satisfies -> VerticalPartitioning
+    Database - satisfies -> HashPartitioning
+    Database - satisfies -> RangePartitioning
+    LoadBalancer - traces -> HashPartitioning`
   },
   {
     id: 'security',
@@ -660,37 +603,14 @@ const GALLERY_DIAGRAMS = [
     id: 'indexing',
     title: 'Database Indexing',
     description: 'Index types and their impact on query performance',
-    diagram: `flowchart TD
-    Query[Database Query<br/>SELECT * FROM users<br/>WHERE email = ?]
-
-    Query --> Decision{Index Exists?}
-
-    Decision -->|No Index| FullScan[Full Table Scan<br/>O n<br/>Slow for large tables]
-    Decision -->|Index Exists| IndexScan[Index Lookup<br/>O log n<br/>Fast retrieval]
-
-    IndexScan --> IndexTypes{Index Type}
-
-    IndexTypes --> BTree[B-Tree Index<br/>Default, Balanced<br/>Range Queries]
-    IndexTypes --> Hash[Hash Index<br/>Equality Searches<br/>O 1 lookup]
-    IndexTypes --> Bitmap[Bitmap Index<br/>Low Cardinality<br/>Multiple Conditions]
-    IndexTypes --> FullText[Full-Text Index<br/>Text Search<br/>LIKE queries]
-
-    BTree --> Tradeoff{Trade-offs}
-    Hash --> Tradeoff
-    Bitmap --> Tradeoff
-    FullText --> Tradeoff
-
-    Tradeoff --> Pro[Pros:<br/>✓ Faster Reads<br/>✓ Better Performance]
-    Tradeoff --> Con[Cons:<br/>✗ Slower Writes<br/>✗ Extra Storage<br/>✗ Maintenance Cost]
-
-    style Query fill:#4A90E2
-    style Decision fill:#F39C12
-    style FullScan fill:#E74C3C
-    style IndexScan fill:#2ECC71
-    style IndexTypes fill:#9B59B6
-    style Tradeoff fill:#95A5A6
-    style Pro fill:#2ECC71
-    style Con fill:#E74C3C`
+    diagram: `xychart-beta
+    title "Index Performance Comparison"
+    x-axis [1K, 10K, 100K, 1M, 10M, 100M]
+    y-axis "Query Time (ms)" 0 --> 1000
+    line "No Index (Full Scan)" [5, 50, 500, 800, 900, 950]
+    line "B-Tree Index" [2, 5, 10, 15, 20, 25]
+    line "Hash Index" [1, 1, 2, 2, 3, 3]
+    line "Bitmap Index" [3, 8, 20, 40, 60, 80]`
   },
   {
     id: 'fault-tolerance',
@@ -747,39 +667,24 @@ const GALLERY_DIAGRAMS = [
     id: 'data-storage',
     title: 'Data Storage and Databases',
     description: 'Different types of data storage solutions and their use cases',
-    diagram: `flowchart LR
-    Application[Application Layer]
-
-    Application --> Type{Storage Type}
-
-    Type -->|Structured| RDBMS[Relational DB<br/>PostgreSQL, MySQL]
-    Type -->|Semi-Structured| Document[Document DB<br/>MongoDB, CouchDB]
-    Type -->|Key-Value| KV[Key-Value Store<br/>Redis, DynamoDB]
-    Type -->|Column-Family| ColumnDB[Column DB<br/>Cassandra, HBase]
-    Type -->|Graph| GraphDB[Graph DB<br/>Neo4j, Neptune]
-    Type -->|Time-Series| TimeSeriesDB[Time-Series DB<br/>InfluxDB, TimescaleDB]
-    Type -->|Search| SearchEngine[Search Engine<br/>Elasticsearch, Solr]
-    Type -->|Blob| ObjectStorage[Object Storage<br/>S3, Azure Blob]
-
-    RDBMS --> UseCase1[ACID Transactions<br/>Complex Relationships]
-    Document --> UseCase2[Flexible Schema<br/>JSON Documents]
-    KV --> UseCase3[Caching<br/>Session Storage]
-    ColumnDB --> UseCase4[Big Data<br/>Wide Column Data]
-    GraphDB --> UseCase5[Social Networks<br/>Recommendations]
-    TimeSeriesDB --> UseCase6[Metrics<br/>IoT Data]
-    SearchEngine --> UseCase7[Full-Text Search<br/>Log Analysis]
-    ObjectStorage --> UseCase8[Files, Images<br/>Backups]
-
-    style Application fill:#9B59B6
-    style Type fill:#4A90E2
-    style RDBMS fill:#2ECC71
-    style Document fill:#F39C12
-    style KV fill:#E74C3C
-    style ColumnDB fill:#3498DB
-    style GraphDB fill:#9B59B6
-    style TimeSeriesDB fill:#E67E22
-    style SearchEngine fill:#1ABC9C
-    style ObjectStorage fill:#95A5A6`
+    diagram: `quadrantChart
+    title Database Selection Matrix
+    x-axis Low Scalability --> High Scalability
+    y-axis Simple Queries --> Complex Queries
+    quadrant-1 Enterprise RDBMS
+    quadrant-2 Specialized Databases
+    quadrant-3 Cache & KV Stores
+    quadrant-4 Big Data Solutions
+    PostgreSQL: [0.3, 0.8]
+    MySQL: [0.35, 0.75]
+    MongoDB: [0.6, 0.5]
+    Redis: [0.7, 0.2]
+    Cassandra: [0.85, 0.3]
+    DynamoDB: [0.8, 0.25]
+    Neo4j: [0.4, 0.7]
+    Elasticsearch: [0.65, 0.6]
+    InfluxDB: [0.55, 0.4]
+    HBase: [0.9, 0.35]`
   },
   {
     id: 'design-patterns',
