@@ -180,6 +180,13 @@ const GALLERY_DIAGRAMS = [
         uuid order_id FK
         decimal amount
         string status
+    }
+
+    NOTIFICATION-SERVICE {
+        uuid notification_id PK
+        uuid user_id FK
+        string message
+        string type
     }`
   },
   {
