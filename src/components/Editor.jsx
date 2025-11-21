@@ -270,6 +270,32 @@ const Editor = ({
         >
           {t("embedHTML")}
         </button>
+        <button
+          onClick={() => {
+            window.open('https://chatgpt.com/g/g-684cc36f30208191b21383b88650a45d-mermaid-chart-diagrams-and-charts', '_blank');
+            trackEvent("open_mermaid_gpt");
+          }}
+          title={t("mermaidGptHelp", "Get AI help with Mermaid syntax")}
+          aria-label={t("mermaidGptHelp", "Get AI help with Mermaid syntax")}
+          className="gpt-button"
+        >
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            style={{ marginRight: "6px" }}
+          >
+            <circle cx="12" cy="12" r="10"/>
+            <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/>
+            <line x1="12" y1="17" x2="12.01" y2="17"/>
+          </svg>
+          {t("mermaidGpt", "AI Help")}
+        </button>
       </div>
     </section>
   );

@@ -238,7 +238,31 @@ ${code}
       }
     } catch (error) {
       console.error("Mermaid rendering error:", error);
-      previewRef.current.innerHTML = `<div style="color: #e53e3e; padding: 20px;">Error rendering diagram. Check your syntax.</div>`;
+      previewRef.current.innerHTML = `
+        <div style="color: #e53e3e; padding: 20px; text-align: center;">
+          <div style="font-size: 18px; font-weight: bold; margin-bottom: 10px;">⚠️ Error rendering diagram</div>
+          <div style="margin-bottom: 15px;">Check your syntax and try again.</div>
+          <a
+            href="https://chatgpt.com/g/g-684cc36f30208191b21383b88650a45d-mermaid-chart-diagrams-and-charts"
+            target="_blank"
+            rel="noopener noreferrer"
+            style="
+              display: inline-block;
+              background-color: #10a37f;
+              color: white;
+              padding: 10px 20px;
+              border-radius: 6px;
+              text-decoration: none;
+              font-weight: 500;
+              transition: background-color 0.2s;
+            "
+            onmouseover="this.style.backgroundColor='#0d8c6f'"
+            onmouseout="this.style.backgroundColor='#10a37f'"
+          >
+            🤖 Get AI Help with Mermaid Chart GPT
+          </a>
+        </div>
+      `;
     } finally {
       setIsLoading(false);
     }

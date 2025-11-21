@@ -53,6 +53,13 @@
   "embedHTML": "Embed HTML",
   "base": "Base",
   "sampleDiagrams": "Sample Diagrams",
+  "mermaidGpt": "AI Help",
+  "mermaidGptHelp": "Get AI help with Mermaid syntax",
+  "architecture": "Architecture",
+  "radar": "Radar",
+  "packet": "Packet",
+  "zenuml": "ZenUML",
+  "c4": "C4",
   "nav": {
     "editor": "Editor",
     "gallery": "Gallery"
