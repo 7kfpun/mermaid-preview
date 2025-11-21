@@ -11,28 +11,28 @@ const GALLERY_DIAGRAMS = [
     description: 'Multi-layer caching strategy for improving application performance',
     diagram: `sequenceDiagram
     participant Client
-    participant CDN as CDN Cache
     participant Browser as Browser Cache
+    participant CDN as CDN Cache
     participant Server as Server Cache
     participant DB as Database
 
-    Client->>CDN: Request Resource
+    Client->>Browser: Request Resource
     alt Cache Hit
-        CDN-->>Client: Return Cached Response
+        Browser-->>Client: Return Cached Response
     else Cache Miss
-        CDN->>Browser: Forward Request
+        Browser->>CDN: Forward Request
         alt Cache Hit
-            Browser-->>Client: Return Cached Response
+            CDN-->>Client: Return Cached Response
         else Cache Miss
-            Browser->>Server: Forward Request
+            CDN->>Server: Forward Request
             alt Cache Hit
                 Server-->>Client: Return Cached Response
             else Cache Miss
                 Server->>DB: Query Database
                 DB-->>Server: Return Data
                 Server->>Server: Update Server Cache
-                Server->>Browser: Update Browser Cache
                 Server->>CDN: Update CDN Cache
+                Server->>Browser: Update Browser Cache
                 Server-->>Client: Return Fresh Response
             end
         end
@@ -215,7 +215,7 @@ const GALLERY_DIAGRAMS = [
   {
     id: 'cap-theorem',
     title: 'CAP Theorem',
-    description: 'Trade-offs between Consistency, Availability, and Partition Tolerance',
+    description: 'Database systems categorized by CAP properties (numbers show relative adoption)',
     diagram: `sankey-beta
 
     CAP Theorem,CP Systems,15
@@ -269,10 +269,10 @@ const GALLERY_DIAGRAMS = [
       Shard Router
         Routes queries
         Maintains shard map
-      Shard 1: Users 1-1000
-      Shard 2: Users 1001-2000
-      Shard 3: Users 2001-3000
-      Shard 4: Users 3001+
+      Shard 1 Users 1-1000
+      Shard 2 Users 1001-2000
+      Shard 3 Users 2001-3000
+      Shard 4 Users 3001+
     Benefits
       Horizontal Scalability
       Better Performance
@@ -431,12 +431,41 @@ const GALLERY_DIAGRAMS = [
     id: 'load-balancing-algorithms',
     title: 'Load Balancing Algorithms',
     description: 'Different strategies for distributing traffic across servers',
-    diagram: `pie title Load Balancing Algorithm Usage
-    "Round Robin (Equal Distribution)" : 30
-    "Least Connections (Dynamic)" : 25
-    "Weighted Round Robin (Capacity-Based)" : 20
-    "IP Hash (Session Persistence)" : 15
-    "Least Response Time (Performance)" : 10`
+    diagram: `flowchart TD
+    Request[Incoming Request] --> LB{Load Balancer<br/>Algorithm}
+
+    LB -->|Round Robin| RR[Distribute requests<br/>sequentially to each server]
+    LB -->|Least Connections| LC[Route to server with<br/>fewest active connections]
+    LB -->|Weighted Round Robin| WRR[Distribute based on<br/>server capacity weights]
+    LB -->|IP Hash| IPH[Hash client IP to<br/>consistently route to same server]
+    LB -->|Least Response Time| LRT[Route to server with<br/>fastest response time]
+
+    RR --> S1[Server 1]
+    RR --> S2[Server 2]
+    RR --> S3[Server 3]
+
+    LC --> S1
+    LC --> S2
+    LC --> S3
+
+    WRR --> S1
+    WRR --> S2
+    WRR --> S3
+
+    IPH --> S1
+    IPH --> S2
+    IPH --> S3
+
+    LRT --> S1
+    LRT --> S2
+    LRT --> S3
+
+    style LB fill:#4A90E2
+    style RR fill:#2ECC71
+    style LC fill:#2ECC71
+    style WRR fill:#2ECC71
+    style IPH fill:#2ECC71
+    style LRT fill:#2ECC71`
   },
   {
     id: 'partitioning',
@@ -444,49 +473,47 @@ const GALLERY_DIAGRAMS = [
     description: 'Strategies for dividing data across multiple nodes',
     diagram: `requirementDiagram
 
-    requirement HorizontalPartitioning {
+    requirement horizontal_partitioning {
         id: 1
-        text: Split data by rows across nodes
+        text: the data is split by rows across nodes.
         risk: medium
-        verifymethod: load_test
+        verifymethod: test
     }
 
-    requirement VerticalPartitioning {
+    requirement vertical_partitioning {
         id: 2
-        text: Split data by columns/tables
+        text: the data is split by columns or tables.
         risk: low
-        verifymethod: schema_review
+        verifymethod: analysis
     }
 
-    requirement HashPartitioning {
+    requirement hash_partitioning {
         id: 3
-        text: Use hash function for distribution
+        text: the system uses hash function for distribution.
         risk: medium
-        verifymethod: distribution_test
+        verifymethod: test
     }
 
-    requirement RangePartitioning {
+    requirement range_partitioning {
         id: 4
-        text: Partition by key ranges
+        text: the data is partitioned by key ranges.
         risk: high
-        verifymethod: hotspot_analysis
+        verifymethod: analysis
     }
 
-    element Database {
+    element database {
         type: system
-        docref: db_design.md
     }
 
-    element LoadBalancer {
+    element load_balancer {
         type: component
-        docref: lb_config.md
     }
 
-    Database - satisfies -> HorizontalPartitioning
-    Database - satisfies -> VerticalPartitioning
-    Database - satisfies -> HashPartitioning
-    Database - satisfies -> RangePartitioning
-    LoadBalancer - traces -> HashPartitioning`
+    database - satisfies -> horizontal_partitioning
+    database - satisfies -> vertical_partitioning
+    database - satisfies -> hash_partitioning
+    database - satisfies -> range_partitioning
+    load_balancer - traces -> hash_partitioning`
   },
   {
     id: 'security',
@@ -756,7 +783,7 @@ const GALLERY_DIAGRAMS = [
     diagram: `kanban
     Traditional
       Monolithic[Monolithic Architecture]
-      Layered[Layered Architecture (MVC)]
+      Layered[Layered Architecture - MVC]
     Modern
       Microservices[Microservices Architecture]
       Event-Driven[Event-Driven Architecture]
