@@ -39,12 +39,18 @@
   border-radius: 12px;
   overflow: hidden;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  cursor: pointer;
 }
 
 .gallery-card:hover {
   transform: translateY(-4px);
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  border-color: #667eea;
+}
+
+.gallery-card:active {
+  transform: translateY(-2px);
 }
 
 .card-header {
@@ -81,6 +87,38 @@
   max-width: 100%;
   height: auto;
   display: block;
+}
+
+.card-footer {
+  padding: 1rem 1.5rem;
+  background: var(--header-bg);
+  border-top: 1px solid var(--border-color);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.import-button {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: transparent;
+  border: none;
+  color: var(--primary-color);
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+  pointer-events: none;
+}
+
+.import-button svg {
+  flex-shrink: 0;
+}
+
+.gallery-card:hover .import-button {
+  opacity: 1;
 }
 
 .loading-spinner {

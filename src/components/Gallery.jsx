@@ -1,5 +1,6 @@
 import { memo, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 import mermaid from 'mermaid';
 import './Gallery.css';
 
@@ -300,11 +301,593 @@ const GALLERY_DIAGRAMS = [
     style Replica3 fill:#EF9A9A
     style Replica4 fill:#FFE082
     style ConfigDB fill:#607D8B`
+  },
+  {
+    id: 'sql-vs-nosql',
+    title: 'SQL vs NoSQL',
+    description: 'Comparison of relational and non-relational databases',
+    diagram: `flowchart LR
+    subgraph SQL["SQL Databases"]
+        direction TB
+        S1[Structured Schema]
+        S2[ACID Transactions]
+        S3[Vertical Scaling]
+        S4[Complex Queries/Joins]
+        S5[Examples:<br/>PostgreSQL, MySQL<br/>Oracle, SQL Server]
+    end
+
+    subgraph NoSQL["NoSQL Databases"]
+        direction TB
+        N1[Flexible Schema]
+        N2[BASE Properties]
+        N3[Horizontal Scaling]
+        N4[Simple Queries]
+        N5[Examples:<br/>MongoDB, Cassandra<br/>DynamoDB, Redis]
+    end
+
+    UseCase{Use Case}
+    UseCase -->|Structured Data<br/>Complex Relationships| SQL
+    UseCase -->|Unstructured Data<br/>High Scale| NoSQL
+
+    style SQL fill:#4A90E2
+    style NoSQL fill:#F39C12
+    style UseCase fill:#9B59B6`
+  },
+  {
+    id: 'throughput',
+    title: 'Throughput Optimization',
+    description: 'System throughput and performance optimization strategies',
+    diagram: `flowchart LR
+    Request[Incoming<br/>Requests<br/>1000 req/s]
+
+    Request --> Queue[Message Queue<br/>Buffer Peak Load]
+    Queue --> Workers[Worker Pool<br/>10 Workers]
+
+    Workers --> Batch[Batch Processing<br/>Process 100 at once]
+    Workers --> Parallel[Parallel Processing<br/>Concurrent Execution]
+    Workers --> Cache[Result Caching<br/>Reduce Redundancy]
+
+    Batch --> DB[(Database<br/>Optimized Queries)]
+    Parallel --> DB
+    Cache --> DB
+
+    DB --> Result[Response<br/>900 req/s throughput<br/>90% success rate]
+
+    Monitor[Monitoring<br/>& Metrics]
+    Monitor -.Track.-> Workers
+    Monitor -.Track.-> DB
+
+    style Request fill:#4A90E2
+    style Queue fill:#F39C12
+    style Workers fill:#2ECC71
+    style Batch fill:#9B59B6
+    style Parallel fill:#9B59B6
+    style Cache fill:#9B59B6
+    style DB fill:#E74C3C
+    style Result fill:#50C878
+    style Monitor fill:#95A5A6`
+  },
+  {
+    id: 'api-gateway',
+    title: 'API Gateway',
+    description: 'Centralized API management and routing layer',
+    diagram: `flowchart LR
+    Client1[Web Client]
+    Client2[Mobile Client]
+    Client3[IoT Device]
+
+    Client1 --> Gateway
+    Client2 --> Gateway
+    Client3 --> Gateway
+
+    subgraph Gateway["API Gateway"]
+        direction TB
+        Auth[Authentication<br/>& Authorization]
+        RateLimit[Rate Limiting<br/>& Throttling]
+        Route[Request Routing<br/>& Load Balancing]
+        Transform[Request/Response<br/>Transformation]
+        Cache[Response<br/>Caching]
+        Monitor[Logging &<br/>Monitoring]
+    end
+
+    Gateway --> UserService[User Service<br/>:8001]
+    Gateway --> OrderService[Order Service<br/>:8002]
+    Gateway --> PaymentService[Payment Service<br/>:8003]
+    Gateway --> NotifyService[Notification Service<br/>:8004]
+
+    style Client1 fill:#4A90E2
+    style Client2 fill:#4A90E2
+    style Client3 fill:#4A90E2
+    style Gateway fill:#9B59B6
+    style UserService fill:#2ECC71
+    style OrderService fill:#F39C12
+    style PaymentService fill:#E74C3C
+    style NotifyService fill:#3498DB`
+  },
+  {
+    id: 'database-replication',
+    title: 'Database Replication',
+    description: 'Master-slave replication for high availability and read scalability',
+    diagram: `flowchart TD
+    App[Application]
+
+    App -->|Write<br/>Operations| Master[(Primary/Master<br/>Database)]
+    App -->|Read<br/>Operations| ReadLB[Read Load<br/>Balancer]
+
+    Master -->|Async<br/>Replication| Slave1[(Replica 1)]
+    Master -->|Async<br/>Replication| Slave2[(Replica 2)]
+    Master -->|Async<br/>Replication| Slave3[(Replica 3)]
+
+    ReadLB --> Slave1
+    ReadLB --> Slave2
+    ReadLB --> Slave3
+
+    Master -.Sync Backup.-> Standby[(Standby Master<br/>Failover)]
+
+    Monitor{Health Monitor}
+    Monitor -.Check.-> Master
+    Monitor -.Check.-> Standby
+    Monitor -->|Failure<br/>Detected| Failover[Promote Standby<br/>to Master]
+
+    style App fill:#4A90E2
+    style Master fill:#E74C3C
+    style Slave1 fill:#2ECC71
+    style Slave2 fill:#2ECC71
+    style Slave3 fill:#2ECC71
+    style Standby fill:#F39C12
+    style ReadLB fill:#9B59B6
+    style Monitor fill:#95A5A6
+    style Failover fill:#E67E22`
+  },
+  {
+    id: 'event-driven',
+    title: 'Event-Driven Architecture',
+    description: 'Asynchronous event-based communication between services',
+    diagram: `sequenceDiagram
+    participant User
+    participant OrderService
+    participant EventBus
+    participant PaymentService
+    participant InventoryService
+    participant NotificationService
+
+    User->>OrderService: Create Order
+    OrderService->>EventBus: Publish OrderCreated Event
+    OrderService-->>User: Order ID (202 Accepted)
+
+    EventBus->>PaymentService: OrderCreated Event
+    EventBus->>InventoryService: OrderCreated Event
+
+    PaymentService->>PaymentService: Process Payment
+    PaymentService->>EventBus: Publish PaymentCompleted Event
+
+    InventoryService->>InventoryService: Reserve Items
+    InventoryService->>EventBus: Publish InventoryReserved Event
+
+    EventBus->>OrderService: PaymentCompleted Event
+    EventBus->>OrderService: InventoryReserved Event
+
+    OrderService->>OrderService: Update Order Status
+    OrderService->>EventBus: Publish OrderConfirmed Event
+
+    EventBus->>NotificationService: OrderConfirmed Event
+    NotificationService->>User: Send Confirmation Email`
+  },
+  {
+    id: 'load-balancing-algorithms',
+    title: 'Load Balancing Algorithms',
+    description: 'Different strategies for distributing traffic across servers',
+    diagram: `flowchart TD
+    Client[Client Requests]
+    Client --> LB[Load Balancer]
+
+    LB --> Algo{Algorithm<br/>Selection}
+
+    Algo -->|Round Robin| RR[Distribute Equally<br/>Server 1 → 2 → 3 → 1]
+    Algo -->|Least Connections| LC[Route to Server<br/>with Fewest Active<br/>Connections]
+    Algo -->|Weighted Round Robin| WRR[Distribute by<br/>Server Capacity<br/>S1: 50%, S2: 30%, S3: 20%]
+    Algo -->|IP Hash| IPH[Same Client IP<br/>Always Routes to<br/>Same Server]
+    Algo -->|Least Response Time| LRT[Route to Fastest<br/>Responding Server]
+
+    RR --> Servers[Server Pool]
+    LC --> Servers
+    WRR --> Servers
+    IPH --> Servers
+    LRT --> Servers
+
+    Servers --> S1[Server 1]
+    Servers --> S2[Server 2]
+    Servers --> S3[Server 3]
+
+    style Client fill:#4A90E2
+    style LB fill:#9B59B6
+    style Algo fill:#F39C12
+    style RR fill:#2ECC71
+    style LC fill:#2ECC71
+    style WRR fill:#2ECC71
+    style IPH fill:#2ECC71
+    style LRT fill:#2ECC71
+    style Servers fill:#95A5A6
+    style S1 fill:#3498DB
+    style S2 fill:#3498DB
+    style S3 fill:#3498DB`
+  },
+  {
+    id: 'partitioning',
+    title: 'Data Partitioning',
+    description: 'Strategies for dividing data across multiple nodes',
+    diagram: `flowchart LR
+    Data[Large Dataset<br/>1TB Data]
+
+    Data --> Strategy{Partitioning<br/>Strategy}
+
+    Strategy -->|Horizontal| H[Row-Based<br/>Split by Rows]
+    Strategy -->|Vertical| V[Column-Based<br/>Split by Columns]
+    Strategy -->|Hash| HA[Hash Function<br/>hash key mod N]
+    Strategy -->|Range| R[Range-Based<br/>A-M, N-Z]
+
+    H --> HP1[(Partition 1<br/>Users 1-1000)]
+    H --> HP2[(Partition 2<br/>Users 1001-2000)]
+
+    V --> VP1[(Partition 1<br/>Basic Info)]
+    V --> VP2[(Partition 2<br/>Extended Info)]
+
+    HA --> HAP1[(Node 1<br/>Hash % 3 = 0)]
+    HA --> HAP2[(Node 2<br/>Hash % 3 = 1)]
+    HA --> HAP3[(Node 3<br/>Hash % 3 = 2)]
+
+    R --> RP1[(Partition 1<br/>Range A-M)]
+    R --> RP2[(Partition 2<br/>Range N-Z)]
+
+    style Data fill:#4A90E2
+    style Strategy fill:#9B59B6
+    style H fill:#2ECC71
+    style V fill:#F39C12
+    style HA fill:#E74C3C
+    style R fill:#3498DB`
+  },
+  {
+    id: 'security',
+    title: 'Security Architecture',
+    description: 'Multi-layered security approach for protecting systems',
+    diagram: `mindmap
+  root((Security<br/>Architecture))
+    Authentication
+      Multi-Factor Auth
+      OAuth 2.0 / OIDC
+      JWT Tokens
+      Session Management
+    Authorization
+      Role-Based Access RBAC
+      Attribute-Based Access ABAC
+      Policy Enforcement
+      Least Privilege
+    Data Protection
+      Encryption at Rest
+      Encryption in Transit TLS/SSL
+      Data Masking
+      Tokenization
+    Network Security
+      Firewall
+      WAF Web Application Firewall
+      DDoS Protection
+      VPN / Private Network
+    Application Security
+      Input Validation
+      SQL Injection Prevention
+      XSS Protection
+      CSRF Tokens
+    Monitoring
+      Intrusion Detection
+      Security Logging
+      Anomaly Detection
+      Incident Response`
+  },
+  {
+    id: 'distributed-systems',
+    title: 'Distributed Systems',
+    description: 'Core concepts and challenges in distributed computing',
+    diagram: `flowchart TD
+    DS[Distributed System]
+
+    DS --> Challenges{Key Challenges}
+    DS --> Patterns{Design Patterns}
+
+    Challenges --> C1[Network Failures<br/>Partial Failures]
+    Challenges --> C2[Clock Synchronization<br/>Time Ordering]
+    Challenges --> C3[Consensus<br/>Agreement]
+    Challenges --> C4[Data Consistency<br/>Replication]
+
+    Patterns --> P1[Leader Election<br/>Raft/Paxos]
+    Patterns --> P2[Distributed Locking<br/>Coordination]
+    Patterns --> P3[Saga Pattern<br/>Distributed Transactions]
+    Patterns --> P4[Circuit Breaker<br/>Fault Tolerance]
+    Patterns --> P5[CQRS<br/>Command Query Separation]
+
+    P1 --> Benefits[Benefits]
+    P2 --> Benefits
+    P3 --> Benefits
+    P4 --> Benefits
+    P5 --> Benefits
+
+    Benefits --> B1[Scalability]
+    Benefits --> B2[Fault Tolerance]
+    Benefits --> B3[High Availability]
+
+    style DS fill:#9B59B6
+    style Challenges fill:#E74C3C
+    style Patterns fill:#2ECC71
+    style Benefits fill:#4A90E2`
+  },
+  {
+    id: 'proxy',
+    title: 'Forward Proxy vs Reverse Proxy',
+    description: 'Understanding the difference between forward and reverse proxies',
+    diagram: `flowchart LR
+    subgraph Forward["Forward Proxy"]
+        direction TB
+        C1[Client 1]
+        C2[Client 2]
+        C3[Client 3]
+        C1 --> FP[Forward Proxy<br/>Hides Client Identity]
+        C2 --> FP
+        C3 --> FP
+        FP --> Internet1[Internet<br/>Multiple Servers]
+        Note1[Use Cases:<br/>- Content Filtering<br/>- Anonymity<br/>- Bypass Restrictions]
+    end
+
+    subgraph Reverse["Reverse Proxy"]
+        direction TB
+        Internet2[Internet<br/>Multiple Clients] --> RP[Reverse Proxy<br/>Hides Server Identity]
+        RP --> S1[Server 1]
+        RP --> S2[Server 2]
+        RP --> S3[Server 3]
+        Note2[Use Cases:<br/>- Load Balancing<br/>- SSL Termination<br/>- Caching<br/>- Security]
+    end
+
+    style FP fill:#4A90E2
+    style RP fill:#F39C12
+    style C1 fill:#2ECC71
+    style C2 fill:#2ECC71
+    style C3 fill:#2ECC71
+    style S1 fill:#9B59B6
+    style S2 fill:#9B59B6
+    style S3 fill:#9B59B6
+    style Internet1 fill:#95A5A6
+    style Internet2 fill:#95A5A6`
+  },
+  {
+    id: 'indexing',
+    title: 'Database Indexing',
+    description: 'Index types and their impact on query performance',
+    diagram: `flowchart TD
+    Query[Database Query<br/>SELECT * FROM users<br/>WHERE email = ?]
+
+    Query --> Decision{Index Exists?}
+
+    Decision -->|No Index| FullScan[Full Table Scan<br/>O n<br/>Slow for large tables]
+    Decision -->|Index Exists| IndexScan[Index Lookup<br/>O log n<br/>Fast retrieval]
+
+    IndexScan --> IndexTypes{Index Type}
+
+    IndexTypes --> BTree[B-Tree Index<br/>Default, Balanced<br/>Range Queries]
+    IndexTypes --> Hash[Hash Index<br/>Equality Searches<br/>O 1 lookup]
+    IndexTypes --> Bitmap[Bitmap Index<br/>Low Cardinality<br/>Multiple Conditions]
+    IndexTypes --> FullText[Full-Text Index<br/>Text Search<br/>LIKE queries]
+
+    BTree --> Tradeoff{Trade-offs}
+    Hash --> Tradeoff
+    Bitmap --> Tradeoff
+    FullText --> Tradeoff
+
+    Tradeoff --> Pro[Pros:<br/>✓ Faster Reads<br/>✓ Better Performance]
+    Tradeoff --> Con[Cons:<br/>✗ Slower Writes<br/>✗ Extra Storage<br/>✗ Maintenance Cost]
+
+    style Query fill:#4A90E2
+    style Decision fill:#F39C12
+    style FullScan fill:#E74C3C
+    style IndexScan fill:#2ECC71
+    style IndexTypes fill:#9B59B6
+    style Tradeoff fill:#95A5A6
+    style Pro fill:#2ECC71
+    style Con fill:#E74C3C`
+  },
+  {
+    id: 'fault-tolerance',
+    title: 'Availability and Fault Tolerance',
+    description: 'Building resilient systems with failure handling strategies',
+    diagram: `stateDiagram-v2
+    [*] --> Healthy: System Start
+
+    Healthy --> Degraded: Partial Failure
+    Healthy --> Failed: Complete Failure
+
+    Degraded --> Healthy: Recovery
+    Degraded --> Failed: Cascading Failure
+
+    Failed --> Recovering: Automatic Restart
+    Failed --> [*]: Manual Intervention Required
+
+    Recovering --> Healthy: Health Check Pass
+    Recovering --> Failed: Recovery Failed
+
+    state Healthy {
+        [*] --> AllServicesUp
+        AllServicesUp --> LoadBalanced
+        LoadBalanced --> Monitoring
+    }
+
+    state Degraded {
+        [*] --> ReducedCapacity
+        ReducedCapacity --> CircuitBreakerOpen
+        CircuitBreakerOpen --> Fallback
+    }
+
+    state Failed {
+        [*] --> ServiceDown
+        ServiceDown --> AlertTriggered
+    }
+
+    note right of Healthy
+        99.99% Uptime
+        All replicas healthy
+    end note
+
+    note right of Degraded
+        Partial functionality
+        Graceful degradation
+    end note
+
+    note right of Failed
+        Service unavailable
+        Disaster recovery
+    end note`
+  },
+  {
+    id: 'data-storage',
+    title: 'Data Storage and Databases',
+    description: 'Different types of data storage solutions and their use cases',
+    diagram: `flowchart LR
+    Application[Application Layer]
+
+    Application --> Type{Storage Type}
+
+    Type -->|Structured| RDBMS[Relational DB<br/>PostgreSQL, MySQL]
+    Type -->|Semi-Structured| Document[Document DB<br/>MongoDB, CouchDB]
+    Type -->|Key-Value| KV[Key-Value Store<br/>Redis, DynamoDB]
+    Type -->|Column-Family| ColumnDB[Column DB<br/>Cassandra, HBase]
+    Type -->|Graph| GraphDB[Graph DB<br/>Neo4j, Neptune]
+    Type -->|Time-Series| TimeSeriesDB[Time-Series DB<br/>InfluxDB, TimescaleDB]
+    Type -->|Search| SearchEngine[Search Engine<br/>Elasticsearch, Solr]
+    Type -->|Blob| ObjectStorage[Object Storage<br/>S3, Azure Blob]
+
+    RDBMS --> UseCase1[ACID Transactions<br/>Complex Relationships]
+    Document --> UseCase2[Flexible Schema<br/>JSON Documents]
+    KV --> UseCase3[Caching<br/>Session Storage]
+    ColumnDB --> UseCase4[Big Data<br/>Wide Column Data]
+    GraphDB --> UseCase5[Social Networks<br/>Recommendations]
+    TimeSeriesDB --> UseCase6[Metrics<br/>IoT Data]
+    SearchEngine --> UseCase7[Full-Text Search<br/>Log Analysis]
+    ObjectStorage --> UseCase8[Files, Images<br/>Backups]
+
+    style Application fill:#9B59B6
+    style Type fill:#4A90E2
+    style RDBMS fill:#2ECC71
+    style Document fill:#F39C12
+    style KV fill:#E74C3C
+    style ColumnDB fill:#3498DB
+    style GraphDB fill:#9B59B6
+    style TimeSeriesDB fill:#E67E22
+    style SearchEngine fill:#1ABC9C
+    style ObjectStorage fill:#95A5A6`
+  },
+  {
+    id: 'design-patterns',
+    title: 'Software Design Patterns',
+    description: 'Common architectural and design patterns for software systems',
+    diagram: `classDiagram
+    class Singleton {
+        -instance: Singleton
+        -Singleton()
+        +getInstance() Singleton
+    }
+
+    class Factory {
+        <<interface>>
+        +createProduct() Product
+    }
+
+    class Observer {
+        <<interface>>
+        +update()
+    }
+
+    class Subject {
+        -observers: List~Observer~
+        +attach(Observer)
+        +detach(Observer)
+        +notify()
+    }
+
+    class Strategy {
+        <<interface>>
+        +execute()
+    }
+
+    class Context {
+        -strategy: Strategy
+        +setStrategy(Strategy)
+        +executeStrategy()
+    }
+
+    class Decorator {
+        -component: Component
+        +operation()
+    }
+
+    class Component {
+        <<interface>>
+        +operation()
+    }
+
+    Subject --> Observer : notifies
+    Context --> Strategy : uses
+    Decorator --> Component : wraps
+    Factory ..> Product : creates
+
+    class Product {
+        +use()
+    }
+
+    note for Singleton "Creational: Single instance"
+    note for Factory "Creational: Object creation"
+    note for Observer "Behavioral: Event handling"
+    note for Strategy "Behavioral: Algorithm selection"
+    note for Decorator "Structural: Add functionality"`
+  },
+  {
+    id: 'architectural-patterns',
+    title: 'Architectural Understanding',
+    description: 'Modern software architecture patterns and styles',
+    diagram: `flowchart TD
+    Arch[Software Architecture]
+
+    Arch --> Monolith[Monolithic<br/>Architecture]
+    Arch --> Micro[Microservices<br/>Architecture]
+    Arch --> Serverless[Serverless<br/>Architecture]
+    Arch --> EventDriven[Event-Driven<br/>Architecture]
+
+    Monolith --> M1[Single Deployment Unit<br/>Tight Coupling<br/>Shared Database]
+    Monolith --> M2[Pros: Simple, Fast<br/>Cons: Hard to Scale]
+
+    Micro --> MS1[Independent Services<br/>Loose Coupling<br/>Per-Service DB]
+    Micro --> MS2[Pros: Scalable, Flexible<br/>Cons: Complex]
+
+    Serverless --> SL1[Function as a Service<br/>Event Triggered<br/>Auto Scaling]
+    SL1 --> SL2[Pros: No Infrastructure<br/>Cons: Cold Start, Limits]
+
+    EventDriven --> ED1[Message Bus<br/>Async Communication<br/>Event Store]
+    ED1 --> ED2[Pros: Decoupled, Resilient<br/>Cons: Eventual Consistency]
+
+    Layered[Layered Architecture]
+    Arch --> Layered
+    Layered --> L1[Presentation Layer]
+    L1 --> L2[Business Logic Layer]
+    L2 --> L3[Data Access Layer]
+    L3 --> L4[Database Layer]
+
+    style Arch fill:#9B59B6
+    style Monolith fill:#E74C3C
+    style Micro fill:#2ECC71
+    style Serverless fill:#4A90E2
+    style EventDriven fill:#F39C12
+    style Layered fill:#3498DB`
   }
 ];
 
 const Gallery = memo(() => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const [renderedDiagrams, setRenderedDiagrams] = useState({});
 
   useEffect(() => {
@@ -336,6 +919,16 @@ const Gallery = memo(() => {
     renderDiagrams();
   }, []);
 
+  const handleDiagramClick = (diagram) => {
+    // Navigate to editor with the diagram code
+    navigate('/', {
+      state: {
+        diagramCode: diagram.diagram,
+        diagramTitle: diagram.title
+      }
+    });
+  };
+
   return (
     <div className="gallery-container">
       <div className="gallery-header">
@@ -347,7 +940,7 @@ const Gallery = memo(() => {
 
       <div className="gallery-grid">
         {GALLERY_DIAGRAMS.map((item) => (
-          <div key={item.id} className="gallery-card">
+          <div key={item.id} className="gallery-card" onClick={() => handleDiagramClick(item)}>
             <div className="card-header">
               <h2>{item.title}</h2>
               <p className="card-description">{item.description}</p>
@@ -363,6 +956,16 @@ const Gallery = memo(() => {
                   <span>Rendering diagram...</span>
                 </div>
               )}
+            </div>
+            <div className="card-footer">
+              <button className="import-button">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                  <polyline points="7 10 12 15 17 10" />
+                  <line x1="12" y1="15" x2="12" y2="3" />
+                </svg>
+                {t('gallery.import', 'Click to import to editor')}
+              </button>
             </div>
           </div>
         ))}

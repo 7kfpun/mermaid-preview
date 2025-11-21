@@ -59,6 +59,7 @@
   },
   "gallery": {
     "title": "Mermaid Diagram Gallery",
-    "subtitle": "System Design Concepts Visualized"
+    "subtitle": "System Design Concepts Visualized",
+    "import": "Click to import to editor"
   }
 }
