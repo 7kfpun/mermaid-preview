@@ -48,6 +48,39 @@ header h1 {
   margin: 0;
 }
 
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.header-nav {
+  display: flex;
+  gap: 8px;
+}
+
+.nav-link {
+  padding: 8px 16px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+  color: #4a5568;
+  transition: all 0.2s ease;
+  background: transparent;
+}
+
+.nav-link:hover {
+  background: rgba(102, 126, 234, 0.1);
+  color: #667eea;
+}
+
+.nav-link.active {
+  background: rgba(102, 126, 234, 0.15);
+  color: #667eea;
+  font-weight: 600;
+}
+
 .dark-mode-toggle {
   padding: 8px 12px;
   border-radius: 8px;
@@ -93,7 +126,37 @@ header h1 {
 
 /* Mobile styles */
 @media (max-width: 768px) {
-  /* Add mobile specific styles here if needed */
+  header {
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .header-left {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+    width: 100%;
+  }
+
+  header h1 {
+    font-size: 18px;
+  }
+
+  .header-nav {
+    width: 100%;
+  }
+
+  .nav-link {
+    flex: 1;
+    text-align: center;
+    padding: 6px 12px;
+    font-size: 13px;
+  }
+
+  .header-controls {
+    width: 100%;
+    justify-content: flex-end;
+  }
 }
 
 .dark-mode-toggle svg {
@@ -590,6 +653,20 @@ button svg {
 
 .app.dark-mode header h1 {
   color: #e0e0e0;
+}
+
+.app.dark-mode .nav-link {
+  color: #a0aec0;
+}
+
+.app.dark-mode .nav-link:hover {
+  background: rgba(102, 126, 234, 0.2);
+  color: #9ca3ff;
+}
+
+.app.dark-mode .nav-link.active {
+  background: rgba(102, 126, 234, 0.25);
+  color: #9ca3ff;
 }
 
 .app.dark-mode .dark-mode-toggle {

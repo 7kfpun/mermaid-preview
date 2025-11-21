@@ -52,5 +52,13 @@
   "bgColor": "Bg:",
   "embedHTML": "Embed HTML",
   "base": "Base",
-  "sampleDiagrams": "Sample Diagrams"
+  "sampleDiagrams": "Sample Diagrams",
+  "nav": {
+    "editor": "Editor",
+    "gallery": "Gallery"
+  },
+  "gallery": {
+    "title": "Mermaid Diagram Gallery",
+    "subtitle": "System Design Concepts Visualized"
+  }
 }
