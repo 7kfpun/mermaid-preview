@@ -9,93 +9,104 @@ const GALLERY_DIAGRAMS = [
     id: 'caching',
     title: 'Caching',
     description: 'Multi-layer caching strategy for improving application performance',
-    diagram: `graph TB
-    Client[Client Request]
-    Client --> CDN{CDN Cache?}
-    CDN -->|Hit| Return1[Return Cached Response]
-    CDN -->|Miss| Browser{Browser Cache?}
-    Browser -->|Hit| Return2[Return Cached Response]
-    Browser -->|Miss| Server{Server Cache?}
-    Server -->|Hit| Return3[Return Cached Response]
-    Server -->|Miss| DB[(Database)]
-    DB --> Cache[Update Caches]
-    Cache --> Return4[Return Fresh Response]
+    diagram: `sequenceDiagram
+    participant Client
+    participant CDN as CDN Cache
+    participant Browser as Browser Cache
+    participant Server as Server Cache
+    participant DB as Database
 
-    style CDN fill:#4A90E2
-    style Browser fill:#50C878
-    style Server fill:#F39C12
-    style DB fill:#E74C3C
-    style Return1 fill:#2ECC71
-    style Return2 fill:#2ECC71
-    style Return3 fill:#2ECC71
-    style Return4 fill:#2ECC71`
+    Client->>CDN: Request Resource
+    alt Cache Hit
+        CDN-->>Client: Return Cached Response
+    else Cache Miss
+        CDN->>Browser: Forward Request
+        alt Cache Hit
+            Browser-->>Client: Return Cached Response
+        else Cache Miss
+            Browser->>Server: Forward Request
+            alt Cache Hit
+                Server-->>Client: Return Cached Response
+            else Cache Miss
+                Server->>DB: Query Database
+                DB-->>Server: Return Data
+                Server->>Server: Update Server Cache
+                Server->>Browser: Update Browser Cache
+                Server->>CDN: Update CDN Cache
+                Server-->>Client: Return Fresh Response
+            end
+        end
+    end`
   },
   {
     id: 'cdn',
     title: 'Content Delivery Network',
     description: 'Global CDN architecture for fast content delivery',
-    diagram: `graph LR
-    User1[User - Asia]
-    User2[User - Europe]
-    User3[User - Americas]
+    diagram: `block-beta
+    columns 5
+    User1["👤 User<br/>Asia"]:1
+    space:1
+    User2["👤 User<br/>Europe"]:1
+    space:1
+    User3["👤 User<br/>Americas"]:1
 
-    User1 --> CDN1[CDN Edge - Tokyo]
-    User2 --> CDN2[CDN Edge - Frankfurt]
-    User3 --> CDN3[CDN Edge - New York]
+    space:5
 
-    CDN1 --> Origin[Origin Server]
+    CDN1["CDN Edge<br/>Tokyo<br/>🌏"]:1
+    space:1
+    CDN2["CDN Edge<br/>Frankfurt<br/>🌍"]:1
+    space:1
+    CDN3["CDN Edge<br/>New York<br/>🌎"]:1
+
+    space:5
+
+    space:1
+    Origin["Origin Server<br/>🖥️"]:3
+    space:1
+
+    space:5
+
+    space:1
+    Storage["Central Storage<br/>💾"]:3
+    space:1
+
+    User1 --> CDN1
+    User2 --> CDN2
+    User3 --> CDN3
+    CDN1 --> Origin
     CDN2 --> Origin
     CDN3 --> Origin
-
-    Origin --> Storage[(Storage)]
-
-    CDN1 -.Cache.-> Cache1[(Local Cache)]
-    CDN2 -.Cache.-> Cache2[(Local Cache)]
-    CDN3 -.Cache.-> Cache3[(Local Cache)]
-
-    style User1 fill:#4A90E2
-    style User2 fill:#4A90E2
-    style User3 fill:#4A90E2
-    style CDN1 fill:#50C878
-    style CDN2 fill:#50C878
-    style CDN3 fill:#50C878
-    style Origin fill:#F39C12
-    style Storage fill:#E74C3C`
+    Origin --> Storage`
   },
   {
     id: 'load-balancing',
     title: 'Load Balancing',
     description: 'Traffic distribution across multiple servers',
-    diagram: `graph TB
-    Client[Client Requests]
-    Client --> LB[Load Balancer<br/>Round Robin / Least Connections]
+    diagram: `stateDiagram-v2
+    [*] --> LoadBalancer: Client Request
 
-    LB --> Health{Health Check}
+    LoadBalancer --> HealthCheck: Route Traffic
 
-    Health --> S1[Server 1<br/>Active]
-    Health --> S2[Server 2<br/>Active]
-    Health --> S3[Server 3<br/>Active]
-    Health -.X.-> S4[Server 4<br/>Unhealthy]
+    state HealthCheck {
+        [*] --> CheckServers
+        CheckServers --> Server1: Healthy
+        CheckServers --> Server2: Healthy
+        CheckServers --> Server3: Healthy
+        CheckServers --> Failed: Server4 Down
+    }
 
-    S1 --> DB[(Database<br/>Cluster)]
-    S2 --> DB
-    S3 --> DB
+    Server1 --> ProcessRequest
+    Server2 --> ProcessRequest
+    Server3 --> ProcessRequest
 
-    DB --> Primary[(Primary)]
-    DB --> Replica1[(Replica 1)]
-    DB --> Replica2[(Replica 2)]
+    state ProcessRequest {
+        [*] --> QueryDB
+        QueryDB --> ReadReplica: Read
+        QueryDB --> WritePrimary: Write
+    }
 
-    style Client fill:#4A90E2
-    style LB fill:#9B59B6
-    style Health fill:#F39C12
-    style S1 fill:#2ECC71
-    style S2 fill:#2ECC71
-    style S3 fill:#2ECC71
-    style S4 fill:#E74C3C
-    style DB fill:#34495E
-    style Primary fill:#E67E22
-    style Replica1 fill:#95A5A6
-    style Replica2 fill:#95A5A6`
+    ProcessRequest --> [*]: Return Response
+    Failed --> [*]: Retry or Fail`
   },
   {
     id: 'scalability',
@@ -175,46 +186,24 @@ const GALLERY_DIAGRAMS = [
     id: 'availability',
     title: 'High Availability',
     description: 'System design for 99.99% uptime',
-    diagram: `graph TB
-    User[User Traffic]
-    User --> DNS[DNS Load Balancer]
-
-    DNS --> Region1[Region 1 - US East]
-    DNS --> Region2[Region 2 - US West]
-
-    subgraph R1["US East (Active)"]
-        LB1[Load Balancer]
-        LB1 --> App1[App Server 1]
-        LB1 --> App2[App Server 2]
-        App1 --> DB1[(Primary DB)]
-        App2 --> DB1
-        DB1 -.Replication.-> DB2[(Standby)]
-    end
-
-    subgraph R2["US West (Standby)"]
-        LB2[Load Balancer]
-        LB2 --> App3[App Server 1]
-        LB2 --> App4[App Server 2]
-        App3 --> DB3[(Replica DB)]
-        App4 --> DB3
-    end
-
-    Region1 --> LB1
-    Region2 --> LB2
-
-    DB1 -.Async Replication.-> DB3
-
-    style User fill:#4A90E2
-    style DNS fill:#9B59B6
-    style LB1 fill:#2ECC71
-    style LB2 fill:#95A5A6
-    style App1 fill:#3498DB
-    style App2 fill:#3498DB
-    style App3 fill:#7F8C8D
-    style App4 fill:#7F8C8D
-    style DB1 fill:#E74C3C
-    style DB2 fill:#F39C12
-    style DB3 fill:#95A5A6`
+    diagram: `gantt
+    title High Availability System Uptime
+    dateFormat YYYY-MM-DD
+    section US East (Primary)
+    Active Region           :active, 2024-01-01, 365d
+    Load Balancer Cluster   :active, 2024-01-01, 365d
+    App Server Pool         :active, 2024-01-01, 365d
+    Primary Database        :active, 2024-01-01, 365d
+    Planned Maintenance     :crit, 2024-06-15, 4h
+    section US West (Standby)
+    Standby Region          :2024-01-01, 365d
+    Replica Sync            :2024-01-01, 365d
+    Failover Ready          :2024-01-01, 365d
+    section Incidents
+    Minor Outage (Recovered) :crit, 2024-03-10, 15m
+    Auto Failover Test      :milestone, 2024-04-01, 0d
+    Zero Downtime Update    :2024-08-20, 2h
+    99.99% Uptime Achieved  :milestone, 2024-12-31, 0d`
   },
   {
     id: 'cap-theorem',
@@ -254,68 +243,71 @@ const GALLERY_DIAGRAMS = [
     id: 'database-sharding',
     title: 'Database Sharding',
     description: 'Horizontal partitioning of database across multiple servers',
-    diagram: `graph TB
-    App[Application Layer]
-    App --> Router[Shard Router /<br/>Proxy]
-
-    Router --> Logic{Sharding Logic<br/>Hash / Range / Geography}
-
-    Logic -->|User ID 1-1000| Shard1[(Shard 1<br/>Users 1-1000)]
-    Logic -->|User ID 1001-2000| Shard2[(Shard 2<br/>Users 1001-2000)]
-    Logic -->|User ID 2001-3000| Shard3[(Shard 3<br/>Users 2001-3000)]
-    Logic -->|User ID 3001+| Shard4[(Shard 4<br/>Users 3001+)]
-
-    Shard1 --> Replica1[(Replica)]
-    Shard2 --> Replica2[(Replica)]
-    Shard3 --> Replica3[(Replica)]
-    Shard4 --> Replica4[(Replica)]
-
-    ConfigDB[(Config DB<br/>Shard Mapping)]
-    Router -.Query Mapping.-> ConfigDB
-
-    style App fill:#673AB7
-    style Router fill:#9C27B0
-    style Logic fill:#FF9800
-    style Shard1 fill:#4CAF50
-    style Shard2 fill:#2196F3
-    style Shard3 fill:#F44336
-    style Shard4 fill:#FFC107
-    style Replica1 fill:#A5D6A7
-    style Replica2 fill:#90CAF9
-    style Replica3 fill:#EF9A9A
-    style Replica4 fill:#FFE082
-    style ConfigDB fill:#607D8B`
+    diagram: `mindmap
+  root((Database<br/>Sharding))
+    Sharding Strategies
+      Hash-Based Sharding
+        Use hash function on key
+        Even distribution
+        Hard to add shards
+      Range-Based Sharding
+        Partition by key ranges
+        Easy to add shards
+        Risk of hotspots
+      Geography-Based Sharding
+        Partition by location
+        Low latency
+        Data sovereignty
+    Shard Components
+      Shard Router
+        Routes queries
+        Maintains shard map
+      Shard 1: Users 1-1000
+      Shard 2: Users 1001-2000
+      Shard 3: Users 2001-3000
+      Shard 4: Users 3001+
+    Benefits
+      Horizontal Scalability
+      Better Performance
+      Reduced Load Per Node
+    Challenges
+      Complex Queries
+      Rebalancing Data
+      Distributed Transactions
+      Shard Key Selection`
   },
   {
     id: 'sql-vs-nosql',
     title: 'SQL vs NoSQL',
     description: 'Comparison of relational and non-relational databases',
-    diagram: `flowchart LR
-    subgraph SQL["SQL Databases"]
-        direction TB
-        S1[Structured Schema]
-        S2[ACID Transactions]
-        S3[Vertical Scaling]
-        S4[Complex Queries/Joins]
-        S5[Examples:<br/>PostgreSQL, MySQL<br/>Oracle, SQL Server]
-    end
+    diagram: `classDiagram
+    class SQL_Database {
+        +Structured Schema
+        +ACID Transactions
+        +Vertical Scaling
+        +Complex Joins
+        +Strong Consistency
+        +Examples: PostgreSQL, MySQL
+    }
 
-    subgraph NoSQL["NoSQL Databases"]
-        direction TB
-        N1[Flexible Schema]
-        N2[BASE Properties]
-        N3[Horizontal Scaling]
-        N4[Simple Queries]
-        N5[Examples:<br/>MongoDB, Cassandra<br/>DynamoDB, Redis]
-    end
+    class NoSQL_Database {
+        +Flexible Schema
+        +BASE Properties
+        +Horizontal Scaling
+        +Simple Queries
+        +Eventual Consistency
+        +Examples: MongoDB, Cassandra
+    }
 
-    UseCase{Use Case}
-    UseCase -->|Structured Data<br/>Complex Relationships| SQL
-    UseCase -->|Unstructured Data<br/>High Scale| NoSQL
+    class UseCase {
+        <<decision>>
+        +Data Type
+        +Scale Requirements
+        +Consistency Needs
+    }
 
-    style SQL fill:#4A90E2
-    style NoSQL fill:#F39C12
-    style UseCase fill:#9B59B6`
+    UseCase --> SQL_Database : Structured Data\nComplex Relationships\nACID Required
+    UseCase --> NoSQL_Database : Unstructured Data\nMassive Scale\nHigh Availability`
   },
   {
     id: 'throughput',
@@ -754,39 +746,18 @@ const GALLERY_DIAGRAMS = [
     id: 'architectural-patterns',
     title: 'Architectural Understanding',
     description: 'Modern software architecture patterns and styles',
-    diagram: `flowchart TD
-    Arch[Software Architecture]
-
-    Arch --> Monolith[Monolithic<br/>Architecture]
-    Arch --> Micro[Microservices<br/>Architecture]
-    Arch --> Serverless[Serverless<br/>Architecture]
-    Arch --> EventDriven[Event-Driven<br/>Architecture]
-
-    Monolith --> M1[Single Deployment Unit<br/>Tight Coupling<br/>Shared Database]
-    Monolith --> M2[Pros: Simple, Fast<br/>Cons: Hard to Scale]
-
-    Micro --> MS1[Independent Services<br/>Loose Coupling<br/>Per-Service DB]
-    Micro --> MS2[Pros: Scalable, Flexible<br/>Cons: Complex]
-
-    Serverless --> SL1[Function as a Service<br/>Event Triggered<br/>Auto Scaling]
-    SL1 --> SL2[Pros: No Infrastructure<br/>Cons: Cold Start, Limits]
-
-    EventDriven --> ED1[Message Bus<br/>Async Communication<br/>Event Store]
-    ED1 --> ED2[Pros: Decoupled, Resilient<br/>Cons: Eventual Consistency]
-
-    Layered[Layered Architecture]
-    Arch --> Layered
-    Layered --> L1[Presentation Layer]
-    L1 --> L2[Business Logic Layer]
-    L2 --> L3[Data Access Layer]
-    L3 --> L4[Database Layer]
-
-    style Arch fill:#9B59B6
-    style Monolith fill:#E74C3C
-    style Micro fill:#2ECC71
-    style Serverless fill:#4A90E2
-    style EventDriven fill:#F39C12
-    style Layered fill:#3498DB`
+    diagram: `kanban
+    Traditional
+      Monolithic[Monolithic Architecture]
+      Layered[Layered Architecture (MVC)]
+    Modern
+      Microservices[Microservices Architecture]
+      Event-Driven[Event-Driven Architecture]
+      CQRS[CQRS Pattern]
+    Cloud-Native
+      Serverless[Serverless / FaaS]
+      Container-Based[Container Orchestration]
+      Service-Mesh[Service Mesh]`
   }
 ];
 
