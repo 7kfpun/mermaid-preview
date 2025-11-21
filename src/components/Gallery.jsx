@@ -11,28 +11,28 @@ const GALLERY_DIAGRAMS = [
     description: 'Multi-layer caching strategy for improving application performance',
     diagram: `sequenceDiagram
     participant Client
-    participant CDN as CDN Cache
     participant Browser as Browser Cache
+    participant CDN as CDN Cache
     participant Server as Server Cache
     participant DB as Database
 
-    Client->>CDN: Request Resource
+    Client->>Browser: Request Resource
     alt Cache Hit
-        CDN-->>Client: Return Cached Response
+        Browser-->>Client: Return Cached Response
     else Cache Miss
-        CDN->>Browser: Forward Request
+        Browser->>CDN: Forward Request
         alt Cache Hit
-            Browser-->>Client: Return Cached Response
+            CDN-->>Client: Return Cached Response
         else Cache Miss
-            Browser->>Server: Forward Request
+            CDN->>Server: Forward Request
             alt Cache Hit
                 Server-->>Client: Return Cached Response
             else Cache Miss
                 Server->>DB: Query Database
                 DB-->>Server: Return Data
                 Server->>Server: Update Server Cache
-                Server->>Browser: Update Browser Cache
                 Server->>CDN: Update CDN Cache
+                Server->>Browser: Update Browser Cache
                 Server-->>Client: Return Fresh Response
             end
         end
@@ -180,6 +180,13 @@ const GALLERY_DIAGRAMS = [
         uuid order_id FK
         decimal amount
         string status
+    }
+
+    NOTIFICATION-SERVICE {
+        uuid notification_id PK
+        uuid user_id FK
+        string message
+        string type
     }`
   },
   {
@@ -208,7 +215,7 @@ const GALLERY_DIAGRAMS = [
   {
     id: 'cap-theorem',
     title: 'CAP Theorem',
-    description: 'Trade-offs between Consistency, Availability, and Partition Tolerance',
+    description: 'Database systems categorized by CAP properties (numbers show relative adoption)',
     diagram: `sankey-beta
 
     CAP Theorem,CP Systems,15
@@ -233,48 +240,74 @@ const GALLERY_DIAGRAMS = [
     id: 'consistent-hashing',
     title: 'Consistent Hashing',
     description: 'Distributed cache and data partitioning strategy',
-    diagram: `pie title Hash Ring Distribution
-    "Server A (0°-90°)" : 25
-    "Server B (90°-180°)" : 25
-    "Server C (180°-270°)" : 25
-    "Server D (270°-360°)" : 25`
+    diagram: `flowchart TD
+    Client[Client Request] --> Hash[Hash Key<br/>hash mod 360°]
+
+    Hash --> Ring{Hash Ring<br/>360°}
+
+    Ring -->|0°-90°| ServerA[Server A<br/>Handles keys in range]
+    Ring -->|90°-180°| ServerB[Server B<br/>Handles keys in range]
+    Ring -->|180°-270°| ServerC[Server C<br/>Handles keys in range]
+    Ring -->|270°-360°| ServerD[Server D<br/>Handles keys in range]
+
+    ServerA -.->|Virtual Nodes| VNodeA1[VNode A1: 45°]
+    ServerA -.->|Virtual Nodes| VNodeA2[VNode A2: 225°]
+
+    ServerB -.->|Virtual Nodes| VNodeB1[VNode B1: 135°]
+    ServerB -.->|Virtual Nodes| VNodeB2[VNode B2: 315°]
+
+    AddServer[Add New Server] -.->|Minimal<br/>Rebalancing| Ring
+    RemoveServer[Remove Server] -.->|Only affected<br/>range moves| Ring
+
+    style Ring fill:#E67E22
+    style Hash fill:#4A90E2
+    style ServerA fill:#2ECC71
+    style ServerB fill:#2ECC71
+    style ServerC fill:#2ECC71
+    style ServerD fill:#2ECC71
+    style AddServer fill:#9B59B6
+    style RemoveServer fill:#9B59B6`
   },
   {
     id: 'database-sharding',
     title: 'Database Sharding',
     description: 'Horizontal partitioning of database across multiple servers',
-    diagram: `mindmap
-  root((Database<br/>Sharding))
-    Sharding Strategies
-      Hash-Based Sharding
-        Use hash function on key
-        Even distribution
-        Hard to add shards
-      Range-Based Sharding
-        Partition by key ranges
-        Easy to add shards
-        Risk of hotspots
-      Geography-Based Sharding
-        Partition by location
-        Low latency
-        Data sovereignty
-    Shard Components
-      Shard Router
-        Routes queries
-        Maintains shard map
-      Shard 1: Users 1-1000
-      Shard 2: Users 1001-2000
-      Shard 3: Users 2001-3000
-      Shard 4: Users 3001+
-    Benefits
-      Horizontal Scalability
-      Better Performance
-      Reduced Load Per Node
-    Challenges
-      Complex Queries
-      Rebalancing Data
-      Distributed Transactions
-      Shard Key Selection`
+    diagram: `flowchart TD
+    App[Application] --> Router[Shard Router / Proxy]
+
+    Router --> Strategy{Sharding<br/>Strategy}
+
+    Strategy -->|Hash-Based| Hash[Hash user_id<br/>shard = hash mod N]
+    Strategy -->|Range-Based| Range[Check key range<br/>1-1000, 1001-2000, etc]
+    Strategy -->|Geography-Based| Geo[Route by location<br/>US, EU, ASIA]
+
+    Hash --> Shard1
+    Hash --> Shard2
+    Hash --> Shard3
+
+    Range --> Shard1[(Shard 1<br/>Users 1-1000)]
+    Range --> Shard2[(Shard 2<br/>Users 1001-2000)]
+    Range --> Shard3[(Shard 3<br/>Users 2001-3000)]
+
+    Geo --> ShardUS[(Shard US<br/>North America)]
+    Geo --> ShardEU[(Shard EU<br/>Europe)]
+    Geo --> ShardAsia[(Shard ASIA<br/>Asia Pacific)]
+
+    Shard1 -.->|Replica| Replica1[(Replica 1)]
+    Shard2 -.->|Replica| Replica2[(Replica 2)]
+    Shard3 -.->|Replica| Replica3[(Replica 3)]
+
+    style Router fill:#4A90E2
+    style Strategy fill:#E67E22
+    style Hash fill:#2ECC71
+    style Range fill:#2ECC71
+    style Geo fill:#2ECC71
+    style Shard1 fill:#9B59B6
+    style Shard2 fill:#9B59B6
+    style Shard3 fill:#9B59B6
+    style ShardUS fill:#9B59B6
+    style ShardEU fill:#9B59B6
+    style ShardAsia fill:#9B59B6`
   },
   {
     id: 'sql-vs-nosql',
@@ -424,62 +457,81 @@ const GALLERY_DIAGRAMS = [
     id: 'load-balancing-algorithms',
     title: 'Load Balancing Algorithms',
     description: 'Different strategies for distributing traffic across servers',
-    diagram: `pie title Load Balancing Algorithm Usage
-    "Round Robin (Equal Distribution)" : 30
-    "Least Connections (Dynamic)" : 25
-    "Weighted Round Robin (Capacity-Based)" : 20
-    "IP Hash (Session Persistence)" : 15
-    "Least Response Time (Performance)" : 10`
+    diagram: `flowchart TD
+    Request[Incoming Request] --> LB{Load Balancer<br/>Algorithm}
+
+    LB -->|Round Robin| RR[Distribute requests<br/>sequentially to each server]
+    LB -->|Least Connections| LC[Route to server with<br/>fewest active connections]
+    LB -->|Weighted Round Robin| WRR[Distribute based on<br/>server capacity weights]
+    LB -->|IP Hash| IPH[Hash client IP to<br/>consistently route to same server]
+    LB -->|Least Response Time| LRT[Route to server with<br/>fastest response time]
+
+    RR --> S1[Server 1]
+    RR --> S2[Server 2]
+    RR --> S3[Server 3]
+
+    LC --> S1
+    LC --> S2
+    LC --> S3
+
+    WRR --> S1
+    WRR --> S2
+    WRR --> S3
+
+    IPH --> S1
+    IPH --> S2
+    IPH --> S3
+
+    LRT --> S1
+    LRT --> S2
+    LRT --> S3
+
+    style LB fill:#4A90E2
+    style RR fill:#2ECC71
+    style LC fill:#2ECC71
+    style WRR fill:#2ECC71
+    style IPH fill:#2ECC71
+    style LRT fill:#2ECC71`
   },
   {
     id: 'partitioning',
     title: 'Data Partitioning',
     description: 'Strategies for dividing data across multiple nodes',
-    diagram: `requirementDiagram
+    diagram: `flowchart TD
+    Data[Large Dataset] --> Strategy{Partitioning<br/>Strategy}
 
-    requirement HorizontalPartitioning {
-        id: 1
-        text: Split data by rows across nodes
-        risk: medium
-        verifymethod: load_test
-    }
+    Strategy -->|Horizontal| Horizontal[Split by Rows]
+    Strategy -->|Vertical| Vertical[Split by Columns]
+    Strategy -->|Hash-Based| HashPart[Hash Function]
+    Strategy -->|Range-Based| RangePart[Key Ranges]
 
-    requirement VerticalPartitioning {
-        id: 2
-        text: Split data by columns/tables
-        risk: low
-        verifymethod: schema_review
-    }
+    Horizontal --> HNode1[(Node 1<br/>Rows 1-1000)]
+    Horizontal --> HNode2[(Node 2<br/>Rows 1001-2000)]
+    Horizontal --> HNode3[(Node 3<br/>Rows 2001-3000)]
 
-    requirement HashPartitioning {
-        id: 3
-        text: Use hash function for distribution
-        risk: medium
-        verifymethod: distribution_test
-    }
+    Vertical --> VNode1[(Node 1<br/>Columns: ID, Name)]
+    Vertical --> VNode2[(Node 2<br/>Columns: Email, Phone)]
+    Vertical --> VNode3[(Node 3<br/>Columns: Address, City)]
 
-    requirement RangePartitioning {
-        id: 4
-        text: Partition by key ranges
-        risk: high
-        verifymethod: hotspot_analysis
-    }
+    HashPart --> HashNode1[(Node 1<br/>hash mod 3 = 0)]
+    HashPart --> HashNode2[(Node 2<br/>hash mod 3 = 1)]
+    HashPart --> HashNode3[(Node 3<br/>hash mod 3 = 2)]
 
-    element Database {
-        type: system
-        docref: db_design.md
-    }
+    RangePart --> RangeNode1[(Node 1<br/>A-H)]
+    RangePart --> RangeNode2[(Node 2<br/>I-P)]
+    RangePart --> RangeNode3[(Node 3<br/>Q-Z)]
 
-    element LoadBalancer {
-        type: component
-        docref: lb_config.md
-    }
-
-    Database - satisfies -> HorizontalPartitioning
-    Database - satisfies -> VerticalPartitioning
-    Database - satisfies -> HashPartitioning
-    Database - satisfies -> RangePartitioning
-    LoadBalancer - traces -> HashPartitioning`
+    style Strategy fill:#E67E22
+    style Horizontal fill:#2ECC71
+    style Vertical fill:#2ECC71
+    style HashPart fill:#2ECC71
+    style RangePart fill:#2ECC71
+    style HNode1 fill:#9B59B6
+    style HNode2 fill:#9B59B6
+    style HNode3 fill:#9B59B6
+    style VNode1 fill:#9B59B6
+    style VNode2 fill:#9B59B6
+    style VNode3 fill:#9B59B6`
   },
   {
     id: 'security',
@@ -749,7 +801,7 @@ const GALLERY_DIAGRAMS = [
     diagram: `kanban
     Traditional
       Monolithic[Monolithic Architecture]
-      Layered[Layered Architecture (MVC)]
+      Layered[Layered Architecture - MVC]
     Modern
       Microservices[Microservices Architecture]
       Event-Driven[Event-Driven Architecture]
@@ -758,10 +810,119 @@ const GALLERY_DIAGRAMS = [
       Serverless[Serverless / FaaS]
       Container-Based[Container Orchestration]
       Service-Mesh[Service Mesh]`
+  },
+  {
+    id: 'architecture-beta',
+    title: 'Cloud Infrastructure Architecture',
+    description: 'Modern cloud architecture with API services and storage',
+    diagram: `architecture-beta
+    group api(cloud)[API]
+
+    service db(database)[Database] in api
+    service disk1(disk)[Storage] in api
+    service disk2(disk)[Storage] in api
+    service server(server)[Server] in api
+
+    db:L -- R:server
+    disk1:T -- B:server
+    disk2:T -- B:db`
+  },
+  {
+    id: 'radar-beta',
+    title: 'Radar Chart',
+    description: 'Multi-dimensional data comparison using radar visualization',
+    diagram: `radar-beta
+axis A, B, C, D, E
+curve c1{1,2,3,4,5}
+curve c2{5,4,3,2,1}`
+  },
+  {
+    id: 'packet-diagram',
+    title: 'TCP Packet Structure',
+    description: 'Visual representation of TCP packet header fields',
+    diagram: `---
+title: "TCP Packet"
+---
+packet
+0-15: "Source Port"
+16-31: "Destination Port"
+32-63: "Sequence Number"
+64-95: "Acknowledgment Number"
+96-99: "Data Offset"
+100-105: "Reserved"
+106: "URG"
+107: "ACK"
+108: "PSH"
+109: "RST"
+110: "SYN"
+111: "FIN"
+112-127: "Window"
+128-143: "Checksum"
+144-159: "Urgent Pointer"
+160-191: "(Options and Padding)"
+192-255: "Data (variable length)"`
+  },
+  {
+    id: 'zenuml',
+    title: 'ZenUML Sequence Diagram',
+    description: 'Simple and intuitive sequence diagram with ZenUML syntax',
+    diagram: `zenuml
+    title Declare participant (optional)
+    Bob
+    Alice
+    Alice->Bob: Hi Bob
+    Bob->Alice: Hi Alice`
+  },
+  {
+    id: 'c4-context',
+    title: 'C4 Context Diagram',
+    description: 'Internet Banking System architecture using C4 model',
+    diagram: `C4Context
+      title System Context diagram for Internet Banking System
+      Enterprise_Boundary(b0, "BankBoundary0") {
+        Person(customerA, "Banking Customer A", "A customer of the bank, with personal bank accounts.")
+        Person(customerB, "Banking Customer B")
+        Person_Ext(customerC, "Banking Customer C", "desc")
+
+        Person(customerD, "Banking Customer D", "A customer of the bank, <br/> with personal bank accounts.")
+
+        System(SystemAA, "Internet Banking System", "Allows customers to view information about their bank accounts, and make payments.")
+
+        Enterprise_Boundary(b1, "BankBoundary") {
+
+          SystemDb_Ext(SystemE, "Mainframe Banking System", "Stores all of the core banking information about customers, accounts, transactions, etc.")
+
+          System_Boundary(b2, "BankBoundary2") {
+            System(SystemA, "Banking System A")
+            System(SystemB, "Banking System B", "A system of the bank, with personal bank accounts. next line.")
+          }
+
+          System_Ext(SystemC, "E-mail system", "The internal Microsoft Exchange e-mail system.")
+          SystemDb(SystemD, "Banking System D Database", "A system of the bank, with personal bank accounts.")
+
+          Boundary(b3, "BankBoundary3", "boundary") {
+            SystemQueue(SystemF, "Banking System F Queue", "A system of the bank.")
+            SystemQueue_Ext(SystemG, "Banking System G Queue", "A system of the bank, with personal bank accounts.")
+          }
+        }
+      }
+
+      BiRel(customerA, SystemAA, "Uses")
+      BiRel(SystemAA, SystemE, "Uses")
+      Rel(SystemAA, SystemC, "Sends e-mails", "SMTP")
+      Rel(SystemC, customerA, "Sends e-mails to")
+
+      UpdateElementStyle(customerA, $fontColor="red", $bgColor="grey", $borderColor="red")
+      UpdateRelStyle(customerA, SystemAA, $textColor="blue", $lineColor="blue", $offsetX="5")
+      UpdateRelStyle(SystemAA, SystemE, $textColor="blue", $lineColor="blue", $offsetY="-10")
+      UpdateRelStyle(SystemAA, SystemC, $textColor="blue", $lineColor="blue", $offsetY="-40", $offsetX="-50")
+      UpdateRelStyle(SystemC, customerA, $textColor="red", $lineColor="red", $offsetX="-50", $offsetY="20")
+
+      UpdateLayoutConfig($c4ShapeInRow="3", $c4BoundaryInRow="1")`
   }
 ];
 
-const Gallery = memo(() => {
+const Gallery = memo(({ darkMode }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [renderedDiagrams, setRenderedDiagrams] = useState({});
@@ -771,7 +932,7 @@ const Gallery = memo(() => {
       // Initialize mermaid
       mermaid.initialize({
         startOnLoad: false,
-        theme: 'default',
+        theme: darkMode ? 'dark' : 'default',
         securityLevel: 'loose',
         fontFamily: 'monospace'
       });
@@ -793,7 +954,7 @@ const Gallery = memo(() => {
     };
 
     renderDiagrams();
-  }, []);
+  }, [darkMode]);
 
   const handleDiagramClick = (diagram) => {
     // Navigate to editor with the diagram code

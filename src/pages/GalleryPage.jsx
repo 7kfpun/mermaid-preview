@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import toast, { Toaster } from 'react-hot-toast';
+import { Toaster } from 'react-hot-toast';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import Gallery from '../components/Gallery';
@@ -18,7 +18,7 @@ function GalleryPage() {
     <div className={`app ${darkMode ? 'dark-mode' : ''}`}>
       <Toaster />
       <Header toggleDarkMode={toggleDarkMode} darkMode={darkMode} />
-      <Gallery />
+      <Gallery darkMode={darkMode} />
       <Footer />
     </div>
   );

@@ -641,6 +641,17 @@ button svg {
   flex-shrink: 0;
 }
 
+/* GPT Button Styles */
+.gpt-button {
+  background: linear-gradient(135deg, #10a37f 0%, #0d8c6f 100%) !important;
+  box-shadow: 0 2px 8px rgba(16, 163, 127, 0.3) !important;
+}
+
+.gpt-button:hover {
+  box-shadow: 0 4px 12px rgba(16, 163, 127, 0.4) !important;
+  background: linear-gradient(135deg, #0d8c6f 0%, #0a7459 100%) !important;
+}
+
 /* Dark Mode Styles */
 .app.dark-mode {
   background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
