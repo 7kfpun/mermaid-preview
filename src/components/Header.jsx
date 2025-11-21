@@ -1,10 +1,12 @@
 import { useEffect, memo } from "react";
 import { useTranslation } from "react-i18next";
+import { Link, useLocation } from "react-router-dom";
 import { trackEvent } from "../utils/ga";
 import { STORAGE_KEYS } from "../utils/constants";
 
 const Header = ({ toggleDarkMode, darkMode }) => {
   const { t, i18n } = useTranslation();
+  const location = useLocation();
   const languages = {
     en: "English",
     zh: "中文",
@@ -52,7 +54,25 @@ const Header = ({ toggleDarkMode, darkMode }) => {
 
   return (
     <header>
-      <h1>{t("title")}</h1>
+      <div className="header-left">
+        <h1>{t("title")}</h1>
+        <nav className="header-nav">
+          <Link
+            to="/"
+            className={location.pathname === "/" ? "nav-link active" : "nav-link"}
+            onClick={() => trackEvent("navigate_to_editor")}
+          >
+            {t("nav.editor", "Editor")}
+          </Link>
+          <Link
+            to="/gallery"
+            className={location.pathname === "/gallery" ? "nav-link active" : "nav-link"}
+            onClick={() => trackEvent("navigate_to_gallery")}
+          >
+            {t("nav.gallery", "Gallery")}
+          </Link>
+        </nav>
+      </div>
       <div className="header-controls">
         <select
           value={i18n.language}

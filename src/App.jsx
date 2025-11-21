@@ -1,4 +1,5 @@
 import { useEffect, useRef, useCallback } from "react";
+import { useLocation } from "react-router-dom";
 import mermaid from "mermaid";
 import toast, { Toaster } from "react-hot-toast";
 import { useTranslation } from "react-i18next";
@@ -16,6 +17,7 @@ import { isRTL } from "./i18n";
 
 function App() {
   const { i18n } = useTranslation();
+  const location = useLocation();
   const { code, setCode, embedHtml, setEmbedHtml } = useMermaidCode();
   const {
     theme,
@@ -266,6 +268,18 @@ ${code}
       window.removeEventListener("hashchange", handleHashChange);
     };
   }, [loadFromURL]);
+
+  // Handle diagram import from gallery
+  useEffect(() => {
+    if (location.state?.diagramCode) {
+      setCode(location.state.diagramCode);
+      // Clear the state to prevent re-importing on subsequent renders
+      window.history.replaceState({}, document.title);
+      // Show toast notification
+      const title = location.state.diagramTitle || "Diagram";
+      toast.success(`${title} imported to editor`);
+    }
+  }, [location.state, setCode]);
 
   // Debounced diagram rendering
   useEffect(() => {
