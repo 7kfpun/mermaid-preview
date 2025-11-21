@@ -250,38 +250,42 @@ const GALLERY_DIAGRAMS = [
     id: 'database-sharding',
     title: 'Database Sharding',
     description: 'Horizontal partitioning of database across multiple servers',
-    diagram: `mindmap
-  root((Database<br/>Sharding))
-    Sharding Strategies
-      Hash-Based Sharding
-        Use hash function on key
-        Even distribution
-        Hard to add shards
-      Range-Based Sharding
-        Partition by key ranges
-        Easy to add shards
-        Risk of hotspots
-      Geography-Based Sharding
-        Partition by location
-        Low latency
-        Data sovereignty
-    Shard Components
-      Shard Router
-        Routes queries
-        Maintains shard map
-      Shard 1 Users 1-1000
-      Shard 2 Users 1001-2000
-      Shard 3 Users 2001-3000
-      Shard 4 Users 3001+
-    Benefits
-      Horizontal Scalability
-      Better Performance
-      Reduced Load Per Node
-    Challenges
-      Complex Queries
-      Rebalancing Data
-      Distributed Transactions
-      Shard Key Selection`
+    diagram: `flowchart TD
+    App[Application] --> Router[Shard Router / Proxy]
+
+    Router --> Strategy{Sharding<br/>Strategy}
+
+    Strategy -->|Hash-Based| Hash[Hash user_id<br/>shard = hash mod N]
+    Strategy -->|Range-Based| Range[Check key range<br/>1-1000, 1001-2000, etc]
+    Strategy -->|Geography-Based| Geo[Route by location<br/>US, EU, ASIA]
+
+    Hash --> Shard1
+    Hash --> Shard2
+    Hash --> Shard3
+
+    Range --> Shard1[(Shard 1<br/>Users 1-1000)]
+    Range --> Shard2[(Shard 2<br/>Users 1001-2000)]
+    Range --> Shard3[(Shard 3<br/>Users 2001-3000)]
+
+    Geo --> ShardUS[(Shard US<br/>North America)]
+    Geo --> ShardEU[(Shard EU<br/>Europe)]
+    Geo --> ShardAsia[(Shard ASIA<br/>Asia Pacific)]
+
+    Shard1 -.->|Replica| Replica1[(Replica 1)]
+    Shard2 -.->|Replica| Replica2[(Replica 2)]
+    Shard3 -.->|Replica| Replica3[(Replica 3)]
+
+    style Router fill:#4A90E2
+    style Strategy fill:#E67E22
+    style Hash fill:#2ECC71
+    style Range fill:#2ECC71
+    style Geo fill:#2ECC71
+    style Shard1 fill:#9B59B6
+    style Shard2 fill:#9B59B6
+    style Shard3 fill:#9B59B6
+    style ShardUS fill:#9B59B6
+    style ShardEU fill:#9B59B6
+    style ShardAsia fill:#9B59B6`
   },
   {
     id: 'sql-vs-nosql',
