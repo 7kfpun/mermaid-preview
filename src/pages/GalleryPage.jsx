@@ -18,7 +18,7 @@ function GalleryPage() {
     <div className={`app ${darkMode ? 'dark-mode' : ''}`}>
       <Toaster />
       <Header toggleDarkMode={toggleDarkMode} darkMode={darkMode} />
-      <Gallery />
+      <Gallery darkMode={darkMode} />
       <Footer />
     </div>
   );

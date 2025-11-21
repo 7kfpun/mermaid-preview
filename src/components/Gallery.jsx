@@ -240,11 +240,33 @@ const GALLERY_DIAGRAMS = [
     id: 'consistent-hashing',
     title: 'Consistent Hashing',
     description: 'Distributed cache and data partitioning strategy',
-    diagram: `pie title Hash Ring Distribution
-    "Server A (0°-90°)" : 25
-    "Server B (90°-180°)" : 25
-    "Server C (180°-270°)" : 25
-    "Server D (270°-360°)" : 25`
+    diagram: `flowchart TD
+    Client[Client Request] --> Hash[Hash Key<br/>hash mod 360°]
+
+    Hash --> Ring{Hash Ring<br/>360°}
+
+    Ring -->|0°-90°| ServerA[Server A<br/>Handles keys in range]
+    Ring -->|90°-180°| ServerB[Server B<br/>Handles keys in range]
+    Ring -->|180°-270°| ServerC[Server C<br/>Handles keys in range]
+    Ring -->|270°-360°| ServerD[Server D<br/>Handles keys in range]
+
+    ServerA -.->|Virtual Nodes| VNodeA1[VNode A1: 45°]
+    ServerA -.->|Virtual Nodes| VNodeA2[VNode A2: 225°]
+
+    ServerB -.->|Virtual Nodes| VNodeB1[VNode B1: 135°]
+    ServerB -.->|Virtual Nodes| VNodeB2[VNode B2: 315°]
+
+    AddServer[Add New Server] -.->|Minimal<br/>Rebalancing| Ring
+    RemoveServer[Remove Server] -.->|Only affected<br/>range moves| Ring
+
+    style Ring fill:#E67E22
+    style Hash fill:#4A90E2
+    style ServerA fill:#2ECC71
+    style ServerB fill:#2ECC71
+    style ServerC fill:#2ECC71
+    style ServerD fill:#2ECC71
+    style AddServer fill:#9B59B6
+    style RemoveServer fill:#9B59B6`
   },
   {
     id: 'database-sharding',
@@ -475,49 +497,41 @@ const GALLERY_DIAGRAMS = [
     id: 'partitioning',
     title: 'Data Partitioning',
     description: 'Strategies for dividing data across multiple nodes',
-    diagram: `requirementDiagram
+    diagram: `flowchart TD
+    Data[Large Dataset] --> Strategy{Partitioning<br/>Strategy}
 
-    requirement horizontal_partitioning {
-        id: 1
-        text: the data is split by rows across nodes.
-        risk: medium
-        verifymethod: test
-    }
+    Strategy -->|Horizontal| Horizontal[Split by Rows]
+    Strategy -->|Vertical| Vertical[Split by Columns]
+    Strategy -->|Hash-Based| HashPart[Hash Function]
+    Strategy -->|Range-Based| RangePart[Key Ranges]
 
-    requirement vertical_partitioning {
-        id: 2
-        text: the data is split by columns or tables.
-        risk: low
-        verifymethod: analysis
-    }
+    Horizontal --> HNode1[(Node 1<br/>Rows 1-1000)]
+    Horizontal --> HNode2[(Node 2<br/>Rows 1001-2000)]
+    Horizontal --> HNode3[(Node 3<br/>Rows 2001-3000)]
 
-    requirement hash_partitioning {
-        id: 3
-        text: the system uses hash function for distribution.
-        risk: medium
-        verifymethod: test
-    }
+    Vertical --> VNode1[(Node 1<br/>Columns: ID, Name)]
+    Vertical --> VNode2[(Node 2<br/>Columns: Email, Phone)]
+    Vertical --> VNode3[(Node 3<br/>Columns: Address, City)]
 
-    requirement range_partitioning {
-        id: 4
-        text: the data is partitioned by key ranges.
-        risk: high
-        verifymethod: analysis
-    }
+    HashPart --> HashNode1[(Node 1<br/>hash mod 3 = 0)]
+    HashPart --> HashNode2[(Node 2<br/>hash mod 3 = 1)]
+    HashPart --> HashNode3[(Node 3<br/>hash mod 3 = 2)]
 
-    element database {
-        type: system
-    }
+    RangePart --> RangeNode1[(Node 1<br/>A-H)]
+    RangePart --> RangeNode2[(Node 2<br/>I-P)]
+    RangePart --> RangeNode3[(Node 3<br/>Q-Z)]
 
-    element load_balancer {
-        type: component
-    }
-
-    database - satisfies -> horizontal_partitioning
-    database - satisfies -> vertical_partitioning
-    database - satisfies -> hash_partitioning
-    database - satisfies -> range_partitioning
-    load_balancer - traces -> hash_partitioning`
+    style Strategy fill:#E67E22
+    style Horizontal fill:#2ECC71
+    style Vertical fill:#2ECC71
+    style HashPart fill:#2ECC71
+    style RangePart fill:#2ECC71
+    style HNode1 fill:#9B59B6
+    style HNode2 fill:#9B59B6
+    style HNode3 fill:#9B59B6
+    style VNode1 fill:#9B59B6
+    style VNode2 fill:#9B59B6
+    style VNode3 fill:#9B59B6`
   },
   {
     id: 'security',
@@ -908,7 +922,7 @@ packet
   }
 ];
 
-const Gallery = memo(() => {
+const Gallery = memo(({ darkMode }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [renderedDiagrams, setRenderedDiagrams] = useState({});
@@ -918,7 +932,7 @@ const Gallery = memo(() => {
       // Initialize mermaid
       mermaid.initialize({
         startOnLoad: false,
-        theme: 'default',
+        theme: darkMode ? 'dark' : 'default',
         securityLevel: 'loose',
         fontFamily: 'monospace'
       });
@@ -940,7 +954,7 @@ const Gallery = memo(() => {
     };
 
     renderDiagrams();
-  }, []);
+  }, [darkMode]);
 
   const handleDiagramClick = (diagram) => {
     // Navigate to editor with the diagram code
