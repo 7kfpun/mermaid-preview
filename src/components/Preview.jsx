@@ -205,7 +205,7 @@ const Preview = ({
             <div className="spinner"></div>
           </div>
         )}
-        {error ? (
+        {error && (
           <div
             style={{
               position: "absolute",
@@ -251,16 +251,16 @@ const Preview = ({
               <span style={{ fontSize: "16px" }}>🤖</span> Get AI Help
             </a>
           </div>
-        ) : (
-          <div
-            ref={previewRef}
-            className="diagram-container"
-            style={{
-              transform: `translate(${position.x}px, ${position.y}px) scale(${scale})`,
-              cursor: isDragging ? "grabbing" : "grab",
-            }}
-          />
         )}
+        <div
+          ref={previewRef}
+          className="diagram-container"
+          style={{
+            transform: `translate(${position.x}px, ${position.y}px) scale(${scale})`,
+            cursor: isDragging ? "grabbing" : "grab",
+            opacity: error ? 0.3 : 1, // Dim the diagram when there's an error
+          }}
+        />
         <div className="zoom-controls">
           <button
             onClick={() => {

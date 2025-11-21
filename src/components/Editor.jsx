@@ -217,23 +217,7 @@ const Editor = ({
                   trackEvent("copy_png");
                 }}
               >
-                {t("png")}
-              </button>
-              <button
-                onClick={() => {
-                  copyImage("jpg");
-                  trackEvent("copy_jpg");
-                }}
-              >
-                {t("jpg")}
-              </button>
-              <button
-                onClick={() => {
-                  copyImage("webp");
-                  trackEvent("copy_webp");
-                }}
-              >
-                {t("webp")}
+                {t("image")}
               </button>
             </div>
           )}

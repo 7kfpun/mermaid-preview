@@ -24,6 +24,7 @@
   "png": "PNG",
   "jpg": "JPG",
   "webp": "WebP",
+  "image": "Image",
   "copy": "Copier",
   "share": "Partager",
   "shareLink": "Copier le lien partageable",

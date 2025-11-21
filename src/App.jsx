@@ -452,7 +452,11 @@ ${code}
 
   const downloadSvg = useCallback(() => {
     const svgEl = previewRef.current?.querySelector("svg");
-    if (!svgEl) return;
+    if (!svgEl) {
+      console.error("Download SVG: No SVG element found in previewRef");
+      toast.error("Diagram not ready to download.");
+      return;
+    }
 
     const svgText = svgEl.outerHTML;
     const blob = new Blob([svgText], { type: "image/svg+xml" });
@@ -470,7 +474,11 @@ ${code}
   const svgToRaster = useCallback(
     (type) => {
       const svgEl = previewRef.current?.querySelector("svg");
-      if (!svgEl) return;
+      if (!svgEl) {
+        console.error("SVG to Raster: No SVG element found in previewRef");
+        toast.error("Diagram not ready to download.");
+        return;
+      }
 
       const originalWidth =
         svgEl.width.baseVal.value || svgEl.clientWidth || 800;
@@ -544,8 +552,8 @@ ${code}
         );
       };
 
-      img.onerror = () => {
-        console.error("Failed to load SVG into image");
+      img.onerror = (e) => {
+        console.error("Failed to load SVG into image", e);
         toast.error("Failed to convert diagram.");
       };
 
@@ -565,6 +573,7 @@ ${code}
     (type) => {
       const svgEl = previewRef.current?.querySelector("svg");
       if (!svgEl) {
+        console.error("Copy Image: No SVG element found");
         toast.error("No diagram to copy.");
         return;
       }
@@ -598,25 +607,10 @@ ${code}
       const svgDataUrl = "data:image/svg+xml;base64," + btoa(binString);
 
       // Determine mime type and quality
-      let mimeType, quality;
-      switch (type) {
-        case "png":
-          mimeType = "image/png";
-          quality = 1.0;
-          break;
-        case "jpg":
-        case "jpeg":
-          mimeType = "image/jpeg";
-          quality = 0.9;
-          break;
-        case "webp":
-          mimeType = "image/webp";
-          quality = 0.9;
-          break;
-        default:
-          mimeType = "image/png";
-          quality = 1.0;
-      }
+      // Clipboard API has limited support for image types (mostly PNG)
+      // So we always convert to PNG for clipboard copy, but keep the background color logic
+      const mimeType = "image/png";
+      const quality = 1.0;
 
       // Create a Promise that resolves to the image blob
       // This allows us to call navigator.clipboard.write immediately
@@ -667,7 +661,7 @@ ${code}
 
         toast.promise(promise, {
           loading: "Copying...",
-          success: `${type.toUpperCase()} copied to clipboard!`,
+          success: `Image copied to clipboard!`,
           error: (err) => `Failed to copy: ${err.message || "Unknown error"}`,
         });
       } catch (e) {
