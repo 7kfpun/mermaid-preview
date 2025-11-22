@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { STORAGE_KEYS } from "../utils/constants";
 
 const useUIState = () => {
@@ -22,8 +22,31 @@ const useUIState = () => {
   const [hasManuallyAdjusted, setHasManuallyAdjusted] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [editorHeight, setEditorHeight] = useState(120);
+
   const [backgroundColor, setBackgroundColor] = useState("#ffffff");
-  const [showSamples, setShowSamples] = useState(true);
+
+  // Initialize showSamples from localStorage (collapsed by default on mobile)
+  const [showSamples, setShowSamples] = useState(() => {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEYS.SHOW_SAMPLES);
+      if (saved !== null) {
+        return saved === "true";
+      }
+      // Default: collapsed on mobile (width <= 768px), open on desktop
+      return window.innerWidth > 768;
+    } catch {
+      return window.innerWidth > 768;
+    }
+  });
+
+  // Persist showSamples to localStorage
+  useEffect(() => {
+    try {
+      localStorage.setItem(STORAGE_KEYS.SHOW_SAMPLES, showSamples.toString());
+    } catch (e) {
+      console.error("Failed to save showSamples preference:", e);
+    }
+  }, [showSamples]);
 
   return {
     isDragging,
