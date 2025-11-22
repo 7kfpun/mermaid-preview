@@ -23,15 +23,7 @@ const useUIState = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [editorHeight, setEditorHeight] = useState(120);
 
-  // Initialize backgroundColor from localStorage
-  const [backgroundColor, setBackgroundColor] = useState(() => {
-    try {
-      const saved = localStorage.getItem(STORAGE_KEYS.BACKGROUND_COLOR);
-      return saved || "#ffffff";
-    } catch {
-      return "#ffffff";
-    }
-  });
+  const [backgroundColor, setBackgroundColor] = useState("#ffffff");
 
   // Initialize showSamples from localStorage (collapsed by default on mobile)
   const [showSamples, setShowSamples] = useState(() => {
@@ -55,15 +47,6 @@ const useUIState = () => {
       console.error("Failed to save showSamples preference:", e);
     }
   }, [showSamples]);
-
-  // Persist backgroundColor to localStorage
-  useEffect(() => {
-    try {
-      localStorage.setItem(STORAGE_KEYS.BACKGROUND_COLOR, backgroundColor);
-    } catch (e) {
-      console.error("Failed to save backgroundColor preference:", e);
-    }
-  }, [backgroundColor]);
 
   return {
     isDragging,

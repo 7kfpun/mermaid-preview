@@ -309,6 +309,57 @@ ${code}
     document.documentElement.setAttribute("dir", direction);
   }, [i18n.language]);
 
+  // Initialize background color from localStorage on mount
+  useEffect(() => {
+    try {
+      const key = darkMode
+        ? STORAGE_KEYS.BACKGROUND_COLOR_DARK
+        : STORAGE_KEYS.BACKGROUND_COLOR_LIGHT;
+      const saved = localStorage.getItem(key);
+      if (saved) {
+        setBackgroundColor(saved);
+      } else {
+        // Set defaults if not found
+        setBackgroundColor(darkMode ? "#1a1a1a" : "#ffffff");
+      }
+    } catch (e) {
+      console.error("Failed to load background color:", e);
+      setBackgroundColor(darkMode ? "#1a1a1a" : "#ffffff");
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // Only run on mount
+
+  // Sync background color when dark mode changes
+  useEffect(() => {
+    try {
+      const key = darkMode
+        ? STORAGE_KEYS.BACKGROUND_COLOR_DARK
+        : STORAGE_KEYS.BACKGROUND_COLOR_LIGHT;
+      const saved = localStorage.getItem(key);
+      if (saved) {
+        setBackgroundColor(saved);
+      } else {
+        // Use defaults if no saved preference
+        setBackgroundColor(darkMode ? "#1a1a1a" : "#ffffff");
+      }
+    } catch (e) {
+      console.error("Failed to load background color:", e);
+      setBackgroundColor(darkMode ? "#1a1a1a" : "#ffffff");
+    }
+  }, [darkMode, setBackgroundColor]);
+
+  // Save background color to localStorage when it changes
+  useEffect(() => {
+    try {
+      const key = darkMode
+        ? STORAGE_KEYS.BACKGROUND_COLOR_DARK
+        : STORAGE_KEYS.BACKGROUND_COLOR_LIGHT;
+      localStorage.setItem(key, backgroundColor);
+    } catch (e) {
+      console.error("Failed to save background color:", e);
+    }
+  }, [backgroundColor, darkMode]);
+
   // Initialize theme config when custom theme is selected
   useEffect(() => {
     if (theme === "custom" && !themeConfig) {

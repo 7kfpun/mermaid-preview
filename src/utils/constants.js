@@ -6,7 +6,8 @@ export const STORAGE_KEYS = {
   DARK_MODE: "mermaid_dark_mode",
   LANGUAGE: "mermaid_language",
   SHOW_SAMPLES: "mermaid_show_samples",
-  BACKGROUND_COLOR: "mermaid_background_color",
+  BACKGROUND_COLOR_LIGHT: "mermaid_background_color_light",
+  BACKGROUND_COLOR_DARK: "mermaid_background_color_dark",
 };
 
 export const DEFAULT_CUSTOM_THEME = `{
