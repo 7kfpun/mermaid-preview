@@ -309,11 +309,6 @@ ${code}
     document.documentElement.setAttribute("dir", direction);
   }, [i18n.language]);
 
-  // Sync background color with dark mode
-  useEffect(() => {
-    setBackgroundColor(darkMode ? "#1a1a1a" : "#ffffff");
-  }, [darkMode, setBackgroundColor]);
-
   // Initialize theme config when custom theme is selected
   useEffect(() => {
     if (theme === "custom" && !themeConfig) {

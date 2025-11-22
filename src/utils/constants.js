@@ -5,6 +5,8 @@ export const STORAGE_KEYS = {
   DIVIDER_POS: "mermaid_divider_position",
   DARK_MODE: "mermaid_dark_mode",
   LANGUAGE: "mermaid_language",
+  SHOW_SAMPLES: "mermaid_show_samples",
+  BACKGROUND_COLOR: "mermaid_background_color",
 };
 
 export const DEFAULT_CUSTOM_THEME = `{
