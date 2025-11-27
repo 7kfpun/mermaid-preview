@@ -2,7 +2,7 @@
   width: 100%;
   min-height: 100vh;
   padding: 2rem;
-  background: var(--bg-color);
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   overflow-y: auto;
 }
 
@@ -157,7 +157,7 @@
 
 /* Dark mode support */
 body.dark-mode .gallery-container {
-  --bg-color: #1a1a1a;
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
   --text-color: #ffffff;
   --text-secondary: #b0b0b0;
   --card-bg: #2a2a2a;
@@ -169,12 +169,11 @@ body.dark-mode .gallery-container {
 
 /* Light mode support */
 body:not(.dark-mode) .gallery-container {
-  --bg-color: #f5f5f5;
   --text-color: #333333;
   --text-secondary: #666666;
-  --card-bg: #ffffff;
-  --header-bg: #fafafa;
-  --border-color: #e0e0e0;
+  --card-bg: #faf9ff;
+  --header-bg: #f3f2ff;
+  --border-color: #e8e6f5;
   --diagram-bg: #ffffff;
   --primary-color: #4a90e2;
 }
