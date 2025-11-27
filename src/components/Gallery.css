@@ -171,9 +171,9 @@ body.dark-mode .gallery-container {
 body:not(.dark-mode) .gallery-container {
   --text-color: #333333;
   --text-secondary: #666666;
-  --card-bg: #ffffff;
-  --header-bg: #fafafa;
-  --border-color: #e0e0e0;
+  --card-bg: #faf9ff;
+  --header-bg: #f3f2ff;
+  --border-color: #e8e6f5;
   --diagram-bg: #ffffff;
   --primary-color: #4a90e2;
 }
