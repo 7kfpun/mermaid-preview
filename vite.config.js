@@ -4,7 +4,7 @@ import { VitePWA } from "vite-plugin-pwa";
 
 // https://vite.dev/config/
 export default defineConfig({
-  base: "./",
+  base: "/",
   plugins: [
     react(),
     VitePWA({
@@ -30,6 +30,16 @@ export default defineConfig({
       },
     }),
   ],
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: undefined,
+      },
+    },
+  },
+  ssr: {
+    noExternal: ["react-router-dom"],
+  },
   test: {
     globals: true,
     environment: "jsdom",

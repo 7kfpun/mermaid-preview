@@ -8,10 +8,13 @@
   },
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "yarn build:client && yarn build:server",
+    "build:client": "vite build --outDir dist/client --ssrManifest",
+    "build:server": "vite build --ssr src/entry-server.jsx --outDir dist/server",
+    "deploy": "wrangler pages deploy dist/client",
     "lint": "eslint .",
     "test": "vitest",
-    "preview": "vite preview",
+    "preview": "wrangler pages dev dist/client",
     "format": "prettier --write \"src/**/*.{js,jsx,css}\"",
     "format:check": "prettier --check \"src/**/*.{js,jsx,css}\"",
     "prepare": "husky"
@@ -57,6 +60,7 @@
     "prettier": "^3.6.2",
     "vite": "^7.2.2",
     "vite-plugin-pwa": "^1.1.0",
-    "vitest": "^2.1.5"
+    "vitest": "^2.1.5",
+    "wrangler": "^3.100.0"
   }
 }
