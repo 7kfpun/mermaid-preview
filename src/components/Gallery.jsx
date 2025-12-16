@@ -1,4 +1,4 @@
-import { memo, useEffect, useState } from 'react';
+import { memo, useEffect, useState, useRef, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import mermaid from 'mermaid';
@@ -916,6 +916,32 @@ const Gallery = memo(({ darkMode }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [renderedDiagrams, setRenderedDiagrams] = useState({});
+  const [isMobile, setIsMobile] = useState(false);
+  const [showScrollTop, setShowScrollTop] = useState(false);
+  const touchStartRef = useRef(null);
+  const touchEndRef = useRef(null);
+
+  // Detect mobile device
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  // Handle scroll to show/hide scroll-to-top button
+  useEffect(() => {
+    const handleScroll = () => {
+      setShowScrollTop(window.scrollY > 400);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   useEffect(() => {
     const renderDiagrams = async () => {
@@ -946,7 +972,7 @@ const Gallery = memo(({ darkMode }) => {
     renderDiagrams();
   }, [darkMode]);
 
-  const handleDiagramClick = (diagram) => {
+  const handleDiagramClick = useCallback((diagram) => {
     // Navigate to editor with the diagram code
     navigate('/', {
       state: {
@@ -954,7 +980,61 @@ const Gallery = memo(({ darkMode }) => {
         diagramTitle: t(`gallery.items.${diagram.id}.title`, diagram.title)
       }
     });
-  };
+  }, [navigate, t]);
+
+  // Handle touch start for swipe detection
+  const handleTouchStart = useCallback((e) => {
+    touchStartRef.current = {
+      x: e.touches[0].clientX,
+      y: e.touches[0].clientY,
+      time: Date.now()
+    };
+    touchEndRef.current = null;
+  }, []);
+
+  // Handle touch move
+  const handleTouchMove = useCallback((e) => {
+    touchEndRef.current = {
+      x: e.touches[0].clientX,
+      y: e.touches[0].clientY
+    };
+  }, []);
+
+  // Handle touch end for swipe gestures
+  const handleTouchEnd = useCallback((diagram, e) => {
+    if (!touchStartRef.current || !touchEndRef.current) {
+      return;
+    }
+
+    const deltaX = touchEndRef.current.x - touchStartRef.current.x;
+    const deltaY = touchEndRef.current.y - touchStartRef.current.y;
+    const deltaTime = Date.now() - touchStartRef.current.time;
+
+    // Check if it's a swipe (fast horizontal movement)
+    const isHorizontalSwipe = Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > 50;
+    const isQuickSwipe = deltaTime < 300;
+
+    // If not a swipe, treat as a tap/click
+    if (!isHorizontalSwipe || !isQuickSwipe) {
+      // Check if target is not a scrollable element
+      const target = e.target;
+      const isScrollableElement = target.closest('.card-diagram');
+
+      if (!isScrollableElement || Math.abs(deltaX) < 10) {
+        handleDiagramClick(diagram);
+      }
+    }
+
+    touchStartRef.current = null;
+    touchEndRef.current = null;
+  }, [handleDiagramClick]);
+
+  const scrollToTop = useCallback(() => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
+  }, []);
 
   return (
     <div className="gallery-container">
@@ -967,7 +1047,14 @@ const Gallery = memo(({ darkMode }) => {
 
       <div className="gallery-grid">
         {GALLERY_DIAGRAMS.map((item) => (
-          <div key={item.id} className="gallery-card" onClick={() => handleDiagramClick(item)}>
+          <div
+            key={item.id}
+            className="gallery-card"
+            onClick={isMobile ? undefined : () => handleDiagramClick(item)}
+            onTouchStart={isMobile ? handleTouchStart : undefined}
+            onTouchMove={isMobile ? handleTouchMove : undefined}
+            onTouchEnd={isMobile ? (e) => handleTouchEnd(item, e) : undefined}
+          >
             <div className="card-header">
               <h2>{t(`gallery.items.${item.id}.title`, item.title)}</h2>
               <p className="card-description">{t(`gallery.items.${item.id}.description`, item.description)}</p>
@@ -980,23 +1067,36 @@ const Gallery = memo(({ darkMode }) => {
               ) : (
                 <div className="loading-spinner">
                   <div className="spinner"></div>
-                  <span>Rendering diagram...</span>
+                  <span>{isMobile ? 'Loading...' : 'Rendering diagram...'}</span>
                 </div>
               )}
             </div>
             <div className="card-footer">
-              <button className="import-button">
+              <button className="import-button" onClick={isMobile ? (e) => { e.stopPropagation(); handleDiagramClick(item); } : undefined}>
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                   <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
                   <polyline points="7 10 12 15 17 10" />
                   <line x1="12" y1="15" x2="12" y2="3" />
                 </svg>
-                {t('gallery.import', 'Click to import to editor')}
+                {t('gallery.import', isMobile ? 'Import to editor' : 'Click to import to editor')}
               </button>
             </div>
           </div>
         ))}
       </div>
+
+      {/* Scroll to top button */}
+      {isMobile && (
+        <button
+          className={`scroll-to-top ${showScrollTop ? 'visible' : ''}`}
+          onClick={scrollToTop}
+          aria-label="Scroll to top"
+        >
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <path d="M18 15l-6-6-6 6" />
+          </svg>
+        </button>
+      )}
     </div>
   );
 });
