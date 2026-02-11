@@ -282,11 +282,13 @@ const Editor = ({
         </button>
         <button
           onClick={() => {
+            const prompt = `Help me with this Mermaid diagram:\n\`\`\`mermaid\n${code}\n\`\`\``;
+            navigator.clipboard.writeText(prompt).catch(() => {});
             window.open('https://chatgpt.com/g/g-684cc36f30208191b21383b88650a45d-mermaid-chart-diagrams-and-charts', '_blank');
             trackEvent("open_mermaid_gpt");
           }}
-          title={t("mermaidGptHelp", "Get AI help with Mermaid syntax")}
-          aria-label={t("mermaidGptHelp", "Get AI help with Mermaid syntax")}
+          title={t("mermaidGptHelp")}
+          aria-label={t("mermaidGptHelp")}
           className="gpt-button"
         >
           <svg

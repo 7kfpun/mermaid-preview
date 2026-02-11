@@ -56,7 +56,7 @@
   "base": "Base",
   "sampleDiagrams": "Sample Diagrams",
   "mermaidGpt": "AI Help",
-  "mermaidGptHelp": "Get AI help with Mermaid syntax",
+  "mermaidGptHelp": "Copy diagram & open ChatGPT — paste with ⌘V / Ctrl+V",
   "exportToFigma": "Figma",
   "figmaExportTitle": "Copy SVG to clipboard — paste into Figma with ⌘V / Ctrl+V",
   "figmaExportCopied": "SVG copied! Paste in Figma with ⌘V / Ctrl+V",
