@@ -298,20 +298,53 @@ function App() {
       // Render with Mermaid
       await mermaid.run({ querySelector: "#diagram-target" });
 
-      // Normalize SVG dimensions — some diagram types (e.g. kanban) emit
-      // width="100%" instead of a fixed pixel value, which breaks layout,
-      // auto-fit scaling, and raster export.  Fall back to viewBox sizes.
+      // Normalize SVG dimensions — some diagram types (e.g. kanban,
+      // architecture) emit width="100%" instead of a fixed pixel value,
+      // which breaks layout, auto-fit scaling, and raster export.
+      // Additionally, some renderers produce a viewBox that is too tight,
+      // clipping labels or group borders.  Use getBBox() to measure the
+      // actual content and expand the viewBox when necessary.
       const renderedSvg = previewRef.current.querySelector("svg");
       if (renderedSvg) {
-        const vb = renderedSvg.viewBox?.baseVal;
-        if (vb && vb.width > 0 && vb.height > 0) {
-          const widthAttr = renderedSvg.getAttribute("width");
-          const heightAttr = renderedSvg.getAttribute("height");
-          if (!widthAttr || widthAttr.includes("%")) {
-            renderedSvg.setAttribute("width", vb.width);
+        const widthAttr = renderedSvg.getAttribute("width");
+        const heightAttr = renderedSvg.getAttribute("height");
+        if (!widthAttr || widthAttr.includes("%") || !heightAttr || heightAttr.includes("%")) {
+          let x, y, w, h;
+          try {
+            const bbox = renderedSvg.getBBox();
+            if (bbox.width > 0 && bbox.height > 0) {
+              const pad = 8;
+              const vb = renderedSvg.viewBox?.baseVal;
+              // Union of existing viewBox and actual content bounds
+              x = vb && vb.width > 0 ? Math.min(vb.x, bbox.x - pad) : bbox.x - pad;
+              y = vb && vb.height > 0 ? Math.min(vb.y, bbox.y - pad) : bbox.y - pad;
+              const right = vb && vb.width > 0
+                ? Math.max(vb.x + vb.width, bbox.x + bbox.width + pad)
+                : bbox.x + bbox.width + pad;
+              const bottom = vb && vb.height > 0
+                ? Math.max(vb.y + vb.height, bbox.y + bbox.height + pad)
+                : bbox.y + bbox.height + pad;
+              w = right - x;
+              h = bottom - y;
+            }
+          } catch {
+            // getBBox unavailable — fall back to viewBox
           }
-          if (!heightAttr || heightAttr.includes("%")) {
-            renderedSvg.setAttribute("height", vb.height);
+
+          if (!w || !h) {
+            const vb = renderedSvg.viewBox?.baseVal;
+            if (vb && vb.width > 0 && vb.height > 0) {
+              x = vb.x;
+              y = vb.y;
+              w = vb.width;
+              h = vb.height;
+            }
+          }
+
+          if (w > 0 && h > 0) {
+            renderedSvg.setAttribute("viewBox", `${x} ${y} ${w} ${h}`);
+            renderedSvg.setAttribute("width", w);
+            renderedSvg.setAttribute("height", h);
           }
         }
       }
