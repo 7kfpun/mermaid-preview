@@ -767,8 +767,25 @@ ${code}
     function convertForeignObjectsToText(root) {
       const svgNS = "http://www.w3.org/2000/svg";
       root.querySelectorAll("foreignObject").forEach((fo) => {
-        const textContent = fo.textContent?.trim();
-        if (!textContent) {
+        // Walk the HTML inside the foreignObject and split on <br> elements so
+        // multi-line mindmap nodes are preserved as separate tspan lines.
+        const lines = [];
+        let current = "";
+        function walk(node) {
+          if (node.nodeType === Node.TEXT_NODE) {
+            current += node.textContent;
+          } else if (node.nodeName.toUpperCase() === "BR") {
+            lines.push(current);
+            current = "";
+          } else {
+            for (const child of node.childNodes) walk(child);
+          }
+        }
+        walk(fo);
+        lines.push(current);
+
+        const nonEmpty = lines.map((l) => l.trim()).filter(Boolean);
+        if (nonEmpty.length === 0) {
           fo.remove();
           return;
         }
@@ -776,25 +793,40 @@ ${code}
         const width = parseFloat(fo.getAttribute("width") || 0);
         const height = parseFloat(fo.getAttribute("height") || 0);
 
-        const textEl = document.createElementNS(svgNS, "text");
-        // Centre the text within the foreignObject bounding box
-        textEl.setAttribute("x", String(width / 2));
-        textEl.setAttribute("y", String(height / 2));
-
         // Carry over the inlined style (font-family, font-size, fill, etc.)
-        // but force centering overrides so the text sits in the right spot.
+        // but strip centering props we will set ourselves.
         const foStyle = fo.getAttribute("style") || "";
-        const centeredStyle = foStyle
+        const baseStyle = foStyle
           .replace(/text-anchor\s*:[^;]*/g, "")
           .replace(/dominant-baseline\s*:[^;]*/g, "")
           .replace(/;{2,}/g, ";")
           .replace(/^;|;$/g, "");
-        textEl.setAttribute(
-          "style",
-          centeredStyle + ";text-anchor:middle;dominant-baseline:middle",
-        );
 
-        textEl.textContent = textContent;
+        const textEl = document.createElementNS(svgNS, "text");
+        textEl.setAttribute("x", String(width / 2));
+        textEl.setAttribute("style", baseStyle + ";text-anchor:middle");
+
+        if (nonEmpty.length === 1) {
+          // Single line: vertically centre with dominant-baseline.
+          textEl.setAttribute("y", String(height / 2));
+          textEl.setAttribute(
+            "style",
+            textEl.getAttribute("style") + ";dominant-baseline:middle",
+          );
+          textEl.textContent = nonEmpty[0];
+        } else {
+          // Multi-line: emit one <tspan> per line, spaced evenly.
+          const lineH = height / nonEmpty.length;
+          nonEmpty.forEach((line, i) => {
+            const tspan = document.createElementNS(svgNS, "tspan");
+            tspan.setAttribute("x", String(width / 2));
+            tspan.setAttribute("y", String(lineH * (i + 0.5)));
+            tspan.setAttribute("dominant-baseline", "middle");
+            tspan.textContent = line;
+            textEl.appendChild(tspan);
+          });
+        }
+
         fo.replaceWith(textEl);
       });
     }
