@@ -847,34 +847,8 @@ ${code}
     [imageSize, backgroundColor],
   );
 
-  const exportToFigma = useCallback(() => {
-    const svgEl = previewRef.current?.querySelector("svg");
-    if (!svgEl) {
-      toast.error(t("noDiagramToCopy"));
-      return;
-    }
-
-    const svgClone = svgEl.cloneNode(true);
-    svgClone.setAttribute("xmlns", "http://www.w3.org/2000/svg");
-
-    // Inline styles before removing <style> blocks so indices stay aligned.
-    inlineComputedStyles(svgEl, svgClone);
-
-    // Convert <foreignObject> text nodes to native SVG <text> elements.
-    // Must run after inlineComputedStyles so the font/colour styles are
-    // already present on the foreignObject before we copy them over.
-    convertForeignObjectsToText(svgClone);
-
-    // Now safe to strip <style> blocks — everything is inlined.
-    svgClone.querySelectorAll("style").forEach((s) => s.remove());
-
-    const svgText = new XMLSerializer().serializeToString(svgClone);
-
-    navigator.clipboard
-      .writeText(svgText)
-      .then(() => toast.success(t("figmaExportCopied")))
-      .catch(() => toast.error(t("failedToCopySVG")));
-  }, [t]);
+  // exportToFigma produces the same output as copyImage("svg") — delegate to it.
+  const exportToFigma = useCallback(() => copyImage("svg"), [copyImage]);
 
   const handleWheel = useCallback(
     (e) => {
