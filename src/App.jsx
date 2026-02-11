@@ -718,6 +718,23 @@ ${code}
     [imageSize, backgroundColor],
   );
 
+  const exportToFigma = useCallback(() => {
+    const svgEl = previewRef.current?.querySelector("svg");
+    if (!svgEl) {
+      toast.error(t("noDiagramToCopy"));
+      return;
+    }
+
+    const svgClone = svgEl.cloneNode(true);
+    svgClone.setAttribute("xmlns", "http://www.w3.org/2000/svg");
+    const svgText = new XMLSerializer().serializeToString(svgClone);
+
+    navigator.clipboard
+      .writeText(svgText)
+      .then(() => toast.success(t("figmaExportCopied")))
+      .catch(() => toast.error(t("failedToCopySVG")));
+  }, [t]);
+
   const handleWheel = useCallback(
     (e) => {
       e.preventDefault();
@@ -921,6 +938,7 @@ ${code}
           copyImage={copyImage}
           handleShare={handleShare}
           copyEmbedHtml={copyEmbedHtml}
+          exportToFigma={exportToFigma}
           showSamples={showSamples}
           setShowSamples={setShowSamples}
         />

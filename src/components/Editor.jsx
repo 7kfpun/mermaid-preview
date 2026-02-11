@@ -25,6 +25,7 @@ const Editor = ({
   copyImage,
   handleShare,
   copyEmbedHtml,
+  exportToFigma,
   backgroundColor,
   setBackgroundColor,
   showSamples,
@@ -253,6 +254,31 @@ const Editor = ({
           }}
         >
           {t("embedHTML")}
+        </button>
+        <button
+          onClick={() => {
+            exportToFigma();
+            trackEvent("export_to_figma");
+          }}
+          title={t("figmaExportTitle")}
+          aria-label={t("figmaExportTitle")}
+          className="figma-button"
+        >
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 38 57"
+            fill="currentColor"
+            style={{ marginRight: "6px" }}
+            aria-hidden="true"
+          >
+            <path d="M19 28.5a9.5 9.5 0 1 1 19 0 9.5 9.5 0 0 1-19 0z"/>
+            <path d="M0 47.5A9.5 9.5 0 0 1 9.5 38H19v9.5a9.5 9.5 0 0 1-19 0z"/>
+            <path d="M19 0v19h9.5a9.5 9.5 0 0 0 0-19H19z"/>
+            <path d="M0 9.5A9.5 9.5 0 0 0 9.5 19H19V0H9.5A9.5 9.5 0 0 0 0 9.5z"/>
+            <path d="M0 28.5A9.5 9.5 0 0 0 9.5 38H19V19H9.5A9.5 9.5 0 0 0 0 28.5z"/>
+          </svg>
+          {t("exportToFigma")}
         </button>
         <button
           onClick={() => {
