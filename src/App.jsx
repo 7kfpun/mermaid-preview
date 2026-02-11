@@ -22,6 +22,7 @@ const SVG_STYLE_PROPS = [
   "stroke", "stroke-width", "stroke-opacity",
   "stroke-dasharray", "stroke-dashoffset",
   "stroke-linecap", "stroke-linejoin", "stroke-miterlimit",
+  "marker-end", "marker-start", "marker-mid",
   "opacity",
   "font-family", "font-size", "font-weight", "font-style",
   "letter-spacing", "text-anchor", "dominant-baseline",
