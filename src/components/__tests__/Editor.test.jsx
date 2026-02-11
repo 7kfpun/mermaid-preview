@@ -148,14 +148,16 @@ describe("Editor", () => {
   });
 
   // ── Other action buttons ──────────────────────────────────────────────────
-  it("calls handleShare when share button clicked", () => {
+  it("calls handleShare when share link option clicked", () => {
     renderEditor();
-    fireEvent.click(screen.getByRole("button", { name: /share/i }));
+    fireEvent.click(screen.getByRole("button", { name: /^share$/i }));
+    fireEvent.click(screen.getByRole("button", { name: /shareLink/i }));
     expect(baseProps.handleShare).toHaveBeenCalled();
   });
 
-  it("calls copyEmbedHtml when Embed HTML button clicked", () => {
+  it("calls copyEmbedHtml when Embed HTML option clicked", () => {
     renderEditor();
+    fireEvent.click(screen.getByRole("button", { name: /^share$/i }));
     fireEvent.click(screen.getByRole("button", { name: /embedHTML/i }));
     expect(baseProps.copyEmbedHtml).toHaveBeenCalled();
   });

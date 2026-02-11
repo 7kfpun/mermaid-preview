@@ -121,7 +121,7 @@ header h1 {
   .controls>button {
     font-size: 12px;
     padding: 0 10px;
-    height: 32px;
+    height: 28px;
   }
 }
 
@@ -509,7 +509,7 @@ main {
 
 .controls > button,
 .controls .dropdown-toggle {
-  height: 32px;
+  height: 28px;
   min-width: 0;
   padding: 0 10px;
   font-size: 12px;
@@ -545,13 +545,13 @@ main {
   background: white;
   font-size: 12px;
   text-align: center;
-  height: 32px;
+  height: 28px;
 }
 
 .size-input input[type="color"] {
   padding: 2px;
   width: 50px;
-  height: 32px;
+  height: 28px;
   border: 1px solid #e2e8f0;
 }
 
@@ -961,7 +961,7 @@ button svg {
 
   .size-input input[type="color"] {
     width: 50px;
-    height: 32px;
+    height: 28px;
   }
 
   .dropdown-toggle,

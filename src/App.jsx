@@ -15,6 +15,112 @@ import { STORAGE_KEYS, DEFAULT_CUSTOM_THEME, samples } from "./utils/constants";
 import { encodeState, decodeState } from "./utils/url";
 import { isRTL } from "./i18n";
 
+// SVG visual properties that need to be inlined for external consumers
+// (e.g. Figma) that ignore <style> CSS class rules.
+const SVG_STYLE_PROPS = [
+  "fill", "fill-opacity", "fill-rule",
+  "stroke", "stroke-width", "stroke-opacity",
+  "stroke-dasharray", "stroke-dashoffset",
+  "stroke-linecap", "stroke-linejoin", "stroke-miterlimit",
+  "opacity",
+  "font-family", "font-size", "font-weight", "font-style",
+  "letter-spacing", "text-anchor", "dominant-baseline",
+  "visibility", "stop-color", "stop-opacity",
+];
+
+// Walk live + clone trees in parallel so we can read computed styles
+// from the live DOM while writing them onto the detached clone.
+function inlineComputedStyles(liveEl, cloneEl) {
+  if (liveEl.nodeType !== Node.ELEMENT_NODE) return;
+
+  const computed = window.getComputedStyle(liveEl);
+  const parts = SVG_STYLE_PROPS.reduce((acc, prop) => {
+    const val = computed.getPropertyValue(prop);
+    if (val && val.trim() !== "") acc.push(`${prop}:${val}`);
+    return acc;
+  }, []);
+
+  if (parts.length) cloneEl.setAttribute("style", parts.join(";"));
+  cloneEl.removeAttribute("class");
+
+  const liveKids = liveEl.children;
+  const cloneKids = cloneEl.children;
+  for (let i = 0; i < liveKids.length; i++) {
+    inlineComputedStyles(liveKids[i], cloneKids[i]);
+  }
+}
+
+// Replace each <foreignObject> (used by Mermaid for HTML text, e.g. mindmap
+// nodes with <br/> line-breaks) with a native SVG <text> element so that the
+// output renders correctly in any SVG viewer / application that doesn't
+// support <foreignObject>.
+function convertForeignObjectsToText(root) {
+  const svgNS = "http://www.w3.org/2000/svg";
+  root.querySelectorAll("foreignObject").forEach((fo) => {
+    // Walk the HTML inside the foreignObject and split on <br> elements so
+    // multi-line mindmap nodes are preserved as separate tspan lines.
+    const lines = [];
+    let current = "";
+    function walk(node) {
+      if (node.nodeType === Node.TEXT_NODE) {
+        current += node.textContent;
+      } else if (node.nodeName.toUpperCase() === "BR") {
+        lines.push(current);
+        current = "";
+      } else {
+        for (const child of node.childNodes) walk(child);
+      }
+    }
+    walk(fo);
+    lines.push(current);
+
+    const nonEmpty = lines.map((l) => l.trim()).filter(Boolean);
+    if (nonEmpty.length === 0) {
+      fo.remove();
+      return;
+    }
+
+    const width = parseFloat(fo.getAttribute("width") || 0);
+    const height = parseFloat(fo.getAttribute("height") || 0);
+
+    // Carry over the inlined style (font-family, font-size, fill, etc.)
+    // but strip centering props we will set ourselves.
+    const foStyle = fo.getAttribute("style") || "";
+    const baseStyle = foStyle
+      .replace(/text-anchor\s*:[^;]*/g, "")
+      .replace(/dominant-baseline\s*:[^;]*/g, "")
+      .replace(/;{2,}/g, ";")
+      .replace(/^;|;$/g, "");
+
+    const textEl = document.createElementNS(svgNS, "text");
+    textEl.setAttribute("x", String(width / 2));
+    textEl.setAttribute("style", baseStyle + ";text-anchor:middle");
+
+    if (nonEmpty.length === 1) {
+      // Single line: vertically centre with dominant-baseline.
+      textEl.setAttribute("y", String(height / 2));
+      textEl.setAttribute(
+        "style",
+        textEl.getAttribute("style") + ";dominant-baseline:middle",
+      );
+      textEl.textContent = nonEmpty[0];
+    } else {
+      // Multi-line: emit one <tspan> per line, spaced evenly.
+      const lineH = height / nonEmpty.length;
+      nonEmpty.forEach((line, i) => {
+        const tspan = document.createElementNS(svgNS, "tspan");
+        tspan.setAttribute("x", String(width / 2));
+        tspan.setAttribute("y", String(lineH * (i + 0.5)));
+        tspan.setAttribute("dominant-baseline", "middle");
+        tspan.textContent = line;
+        textEl.appendChild(tspan);
+      });
+    }
+
+    fo.replaceWith(textEl);
+  });
+}
+
 function App() {
   const { t, i18n } = useTranslation();
   const location = useLocation();
@@ -504,7 +610,22 @@ ${code}
       return;
     }
 
-    const svgText = svgEl.outerHTML;
+    const svgClone = svgEl.cloneNode(true);
+    svgClone.setAttribute("xmlns", "http://www.w3.org/2000/svg");
+
+    // Inline computed styles so the SVG renders correctly as a standalone file
+    // (external viewers don't execute the embedded <style> class rules).
+    inlineComputedStyles(svgEl, svgClone);
+
+    // Replace <foreignObject> nodes (used by Mermaid for HTML text / <br/>
+    // line-breaks in mindmaps) with native SVG <text>/<tspan> elements so
+    // that any SVG viewer renders the labels correctly.
+    convertForeignObjectsToText(svgClone);
+
+    // Strip <style> blocks — all styles are now inlined.
+    svgClone.querySelectorAll("style").forEach((s) => s.remove());
+
+    const svgText = new XMLSerializer().serializeToString(svgClone);
     const blob = new Blob([svgText], { type: "image/svg+xml" });
     const url = URL.createObjectURL(blob);
 
@@ -635,15 +756,23 @@ ${code}
 
       const svgClone = svgEl.cloneNode(true);
       svgClone.setAttribute("xmlns", "http://www.w3.org/2000/svg");
-      const svgText = new XMLSerializer().serializeToString(svgClone);
 
       if (type === "svg") {
+        // Inline computed styles and convert <foreignObject>/<br/> nodes so the
+        // copied SVG renders correctly in any application (fixes dark-mode text
+        // colour and multi-line mindmap labels).
+        inlineComputedStyles(svgEl, svgClone);
+        convertForeignObjectsToText(svgClone);
+        svgClone.querySelectorAll("style").forEach((s) => s.remove());
+        const svgTextProcessed = new XMLSerializer().serializeToString(svgClone);
         navigator.clipboard
-          .writeText(svgText)
+          .writeText(svgTextProcessed)
           .then(() => toast.success("SVG copied!"))
           .catch(() => toast.error("Failed to copy SVG."));
         return;
       }
+
+      const svgText = new XMLSerializer().serializeToString(svgClone);
 
       // Convert SVG to base64 using TextEncoder
       const bytes = new TextEncoder().encode(svgText);
@@ -725,124 +854,11 @@ ${code}
       return;
     }
 
-    // SVG visual properties that Figma needs inlined to render correctly.
-    // Mermaid uses <style> CSS classes which Figma ignores, so we resolve
-    // computed styles and write them as inline attributes on every element.
-    const SVG_STYLE_PROPS = [
-      "fill", "fill-opacity", "fill-rule",
-      "stroke", "stroke-width", "stroke-opacity",
-      "stroke-dasharray", "stroke-dashoffset",
-      "stroke-linecap", "stroke-linejoin", "stroke-miterlimit",
-      "opacity",
-      "font-family", "font-size", "font-weight", "font-style",
-      "letter-spacing", "text-anchor", "dominant-baseline",
-      "visibility", "stop-color", "stop-opacity",
-    ];
-
-    // Walk live + clone trees in parallel so we can read computed styles
-    // from the live DOM while writing them onto the detached clone.
-    function inlineComputedStyles(liveEl, cloneEl) {
-      if (liveEl.nodeType !== Node.ELEMENT_NODE) return;
-
-      const computed = window.getComputedStyle(liveEl);
-      const parts = SVG_STYLE_PROPS.reduce((acc, prop) => {
-        const val = computed.getPropertyValue(prop);
-        if (val && val.trim() !== "") acc.push(`${prop}:${val}`);
-        return acc;
-      }, []);
-
-      if (parts.length) cloneEl.setAttribute("style", parts.join(";"));
-      cloneEl.removeAttribute("class");
-
-      const liveKids = liveEl.children;
-      const cloneKids = cloneEl.children;
-      for (let i = 0; i < liveKids.length; i++) {
-        inlineComputedStyles(liveKids[i], cloneKids[i]);
-      }
-    }
-
-    // Figma does not support <foreignObject> (used by some Mermaid diagram types
-    // such as block diagrams to render text via HTML). Replace each foreignObject
-    // with a native SVG <text> element so labels are visible after import.
-    function convertForeignObjectsToText(root) {
-      const svgNS = "http://www.w3.org/2000/svg";
-      root.querySelectorAll("foreignObject").forEach((fo) => {
-        // Walk the HTML inside the foreignObject and split on <br> elements so
-        // multi-line mindmap nodes are preserved as separate tspan lines.
-        const lines = [];
-        let current = "";
-        function walk(node) {
-          if (node.nodeType === Node.TEXT_NODE) {
-            current += node.textContent;
-          } else if (node.nodeName.toUpperCase() === "BR") {
-            lines.push(current);
-            current = "";
-          } else {
-            for (const child of node.childNodes) walk(child);
-          }
-        }
-        walk(fo);
-        lines.push(current);
-
-        const nonEmpty = lines.map((l) => l.trim()).filter(Boolean);
-        if (nonEmpty.length === 0) {
-          fo.remove();
-          return;
-        }
-
-        const width = parseFloat(fo.getAttribute("width") || 0);
-        const height = parseFloat(fo.getAttribute("height") || 0);
-
-        // Carry over the inlined style (font-family, font-size, fill, etc.)
-        // but strip centering props we will set ourselves.
-        const foStyle = fo.getAttribute("style") || "";
-        const baseStyle = foStyle
-          .replace(/text-anchor\s*:[^;]*/g, "")
-          .replace(/dominant-baseline\s*:[^;]*/g, "")
-          .replace(/;{2,}/g, ";")
-          .replace(/^;|;$/g, "");
-
-        const textEl = document.createElementNS(svgNS, "text");
-        textEl.setAttribute("x", String(width / 2));
-        textEl.setAttribute("style", baseStyle + ";text-anchor:middle");
-
-        if (nonEmpty.length === 1) {
-          // Single line: vertically centre with dominant-baseline.
-          textEl.setAttribute("y", String(height / 2));
-          textEl.setAttribute(
-            "style",
-            textEl.getAttribute("style") + ";dominant-baseline:middle",
-          );
-          textEl.textContent = nonEmpty[0];
-        } else {
-          // Multi-line: emit one <tspan> per line, spaced evenly.
-          const lineH = height / nonEmpty.length;
-          nonEmpty.forEach((line, i) => {
-            const tspan = document.createElementNS(svgNS, "tspan");
-            tspan.setAttribute("x", String(width / 2));
-            tspan.setAttribute("y", String(lineH * (i + 0.5)));
-            tspan.setAttribute("dominant-baseline", "middle");
-            tspan.textContent = line;
-            textEl.appendChild(tspan);
-          });
-        }
-
-        fo.replaceWith(textEl);
-      });
-    }
-
     const svgClone = svgEl.cloneNode(true);
     svgClone.setAttribute("xmlns", "http://www.w3.org/2000/svg");
 
-    // Inline styles before removing <style> blocks so indices stay aligned
     inlineComputedStyles(svgEl, svgClone);
-
-    // Convert <foreignObject> text nodes to native SVG <text> elements.
-    // Must run after inlineComputedStyles so the font/colour styles are
-    // already present on the foreignObject before we copy them over.
     convertForeignObjectsToText(svgClone);
-
-    // Now safe to strip <style> blocks — everything is inlined
     svgClone.querySelectorAll("style").forEach((s) => s.remove());
 
     const svgText = new XMLSerializer().serializeToString(svgClone);

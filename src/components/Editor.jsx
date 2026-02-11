@@ -32,6 +32,7 @@ const Editor = ({
   setShowSamples,
 }) => {
   const { t } = useTranslation();
+  const [shareMenuOpen, setShareMenuOpen] = useState(false);
   const [aiHelpMenuOpen, setAiHelpMenuOpen] = useState(false);
 
   const openAiHelp = (url, eventName) => {
@@ -153,7 +154,8 @@ const Editor = ({
           <button
             onClick={() => {
               setDownloadMenuOpen(!downloadMenuOpen);
-              setCopyMenuOpen(false); // Close copy menu
+              setCopyMenuOpen(false);
+              setShareMenuOpen(false);
               trackEvent("open_download_menu");
             }}
             className="dropdown-toggle"
@@ -203,7 +205,8 @@ const Editor = ({
           <button
             onClick={() => {
               setCopyMenuOpen(!copyMenuOpen);
-              setDownloadMenuOpen(false); // Close download menu
+              setDownloadMenuOpen(false);
+              setShareMenuOpen(false);
               trackEvent("open_copy_menu");
             }}
             className="dropdown-toggle"
@@ -233,38 +236,43 @@ const Editor = ({
             </div>
           )}
         </div>
-        <button
-          onClick={() => {
-            handleShare();
-            trackEvent("share_link");
-          }}
-          title={t("shareLink")}
-          aria-label={t("shareLink")}
-        >
-          <svg
-            width="16"
-            height="16"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            style={{ marginRight: "6px" }}
+        <div className="dropdown">
+          <button
+            onClick={() => {
+              setShareMenuOpen(!shareMenuOpen);
+              setDownloadMenuOpen(false);
+              setCopyMenuOpen(false);
+              trackEvent("open_share_menu");
+            }}
+            className="dropdown-toggle"
+            aria-haspopup="true"
+            aria-expanded={shareMenuOpen}
           >
-            <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
-            <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
-          </svg>
-          {t("share")}
-        </button>
-        <button
-          onClick={() => {
-            copyEmbedHtml();
-            trackEvent("copy_embed_html");
-          }}
-        >
-          {t("embedHTML")}
-        </button>
+            {t("share")}
+          </button>
+          {shareMenuOpen && (
+            <div className="dropdown-menu">
+              <button
+                onClick={() => {
+                  handleShare();
+                  setShareMenuOpen(false);
+                  trackEvent("share_link");
+                }}
+              >
+                {t("shareLink")}
+              </button>
+              <button
+                onClick={() => {
+                  copyEmbedHtml();
+                  setShareMenuOpen(false);
+                  trackEvent("copy_embed_html");
+                }}
+              >
+                {t("embedHTML")}
+              </button>
+            </div>
+          )}
+        </div>
         <button
           onClick={() => {
             exportToFigma();
@@ -296,6 +304,7 @@ const Editor = ({
               setAiHelpMenuOpen(!aiHelpMenuOpen);
               setDownloadMenuOpen(false);
               setCopyMenuOpen(false);
+              setShareMenuOpen(false);
             }}
             className="dropdown-toggle"
             aria-haspopup="true"
