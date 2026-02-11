@@ -1,4 +1,4 @@
-import { memo } from "react";
+import { memo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import CodeMirror from "@uiw/react-codemirror";
 import { oneDark } from "@codemirror/theme-one-dark";
@@ -32,6 +32,16 @@ const Editor = ({
   setShowSamples,
 }) => {
   const { t } = useTranslation();
+  const [aiHelpMenuOpen, setAiHelpMenuOpen] = useState(false);
+
+  const openAiHelp = (url, eventName) => {
+    const prompt = `Help me with this Mermaid diagram:\n\`\`\`mermaid\n${code}\n\`\`\``;
+    navigator.clipboard.writeText(prompt).catch(() => {});
+    window.open(url, "_blank");
+    trackEvent(eventName);
+    setAiHelpMenuOpen(false);
+  };
+
   return (
     <section
       className="editor"
@@ -280,34 +290,43 @@ const Editor = ({
           </svg>
           {t("exportToFigma")}
         </button>
-        <button
-          onClick={() => {
-            const prompt = `Help me with this Mermaid diagram:\n\`\`\`mermaid\n${code}\n\`\`\``;
-            navigator.clipboard.writeText(prompt).catch(() => {});
-            window.open('https://chatgpt.com/g/g-684cc36f30208191b21383b88650a45d-mermaid-chart-diagrams-and-charts', '_blank');
-            trackEvent("open_mermaid_gpt");
-          }}
-          title={t("mermaidGptHelp")}
-          aria-label={t("mermaidGptHelp")}
-          className="gpt-button"
-        >
-          <svg
-            width="16"
-            height="16"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            style={{ marginRight: "6px" }}
+        <div className="dropdown">
+          <button
+            onClick={() => {
+              setAiHelpMenuOpen(!aiHelpMenuOpen);
+              setDownloadMenuOpen(false);
+              setCopyMenuOpen(false);
+            }}
+            className="dropdown-toggle"
+            aria-haspopup="true"
+            aria-expanded={aiHelpMenuOpen}
           >
-            <circle cx="12" cy="12" r="10"/>
-            <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/>
-            <line x1="12" y1="17" x2="12.01" y2="17"/>
-          </svg>
-          {t("mermaidGpt", "AI Help")}
-        </button>
+            {t("mermaidGpt")}
+          </button>
+          {aiHelpMenuOpen && (
+            <div className="dropdown-menu">
+              <button
+                onClick={() =>
+                  openAiHelp(
+                    "https://chatgpt.com/g/g-684cc36f30208191b21383b88650a45d-mermaid-chart-diagrams-and-charts",
+                    "open_mermaid_gpt"
+                  )
+                }
+                title={t("aiHelpChatGptTitle")}
+              >
+                {t("aiHelpChatGpt")}
+              </button>
+              <button
+                onClick={() =>
+                  openAiHelp("https://claude.ai/new", "open_mermaid_claude")
+                }
+                title={t("aiHelpClaudeTitle")}
+              >
+                {t("aiHelpClaude")}
+              </button>
+            </div>
+          )}
+        </div>
       </div>
     </section>
   );

@@ -168,49 +168,66 @@ describe("Editor", () => {
     expect(baseProps.exportToFigma).toHaveBeenCalled();
   });
 
-  // ── AI Help button ────────────────────────────────────────────────────────
-  it("copies a formatted mermaid prompt to clipboard when AI Help clicked", async () => {
+  // ── AI Help dropdown ──────────────────────────────────────────────────────
+  const setupClipboard = () => {
     const writeText = vi.fn().mockResolvedValue(undefined);
     Object.defineProperty(navigator, "clipboard", {
       value: { writeText },
       writable: true,
       configurable: true,
     });
+    return writeText;
+  };
 
+  const openAiHelpMenu = () => {
+    fireEvent.click(screen.getByRole("button", { name: /mermaidGpt/i }));
+  };
+
+  it("shows ChatGPT and Claude options when AI Help is opened", () => {
     renderEditor();
-    fireEvent.click(screen.getByRole("button", { name: /mermaidGptHelp/i }));
-
-    const expected =
-      `Help me with this Mermaid diagram:\n\`\`\`mermaid\n${baseProps.code}\n\`\`\``;
-    expect(writeText).toHaveBeenCalledWith(expected);
+    openAiHelpMenu();
+    expect(screen.getByRole("button", { name: /aiHelpChatGpt/i })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /aiHelpClaude/i })).toBeInTheDocument();
   });
 
-  it("opens ChatGPT in a new tab when AI Help clicked", () => {
-    const writeText = vi.fn().mockResolvedValue(undefined);
-    Object.defineProperty(navigator, "clipboard", {
-      value: { writeText },
-      writable: true,
-      configurable: true,
-    });
-
+  it("copies formatted prompt and opens ChatGPT when ChatGPT option clicked", () => {
+    const writeText = setupClipboard();
     renderEditor();
-    fireEvent.click(screen.getByRole("button", { name: /mermaidGptHelp/i }));
+    openAiHelpMenu();
+    fireEvent.click(screen.getByRole("button", { name: /aiHelpChatGpt/i }));
 
+    const expected = `Help me with this Mermaid diagram:\n\`\`\`mermaid\n${baseProps.code}\n\`\`\``;
+    expect(writeText).toHaveBeenCalledWith(expected);
     expect(openSpy).toHaveBeenCalledWith(CHATGPT_URL, "_blank");
   });
 
-  it("includes the current code in the clipboard prompt", async () => {
-    const customCode = "sequenceDiagram\n  Alice->>Bob: Hello";
-    const writeText = vi.fn().mockResolvedValue(undefined);
-    Object.defineProperty(navigator, "clipboard", {
-      value: { writeText },
-      writable: true,
-      configurable: true,
-    });
+  it("copies formatted prompt and opens Claude when Claude option clicked", () => {
+    const writeText = setupClipboard();
+    renderEditor();
+    openAiHelpMenu();
+    fireEvent.click(screen.getByRole("button", { name: /aiHelpClaude/i }));
 
+    const expected = `Help me with this Mermaid diagram:\n\`\`\`mermaid\n${baseProps.code}\n\`\`\``;
+    expect(writeText).toHaveBeenCalledWith(expected);
+    expect(openSpy).toHaveBeenCalledWith("https://claude.ai/new", "_blank");
+  });
+
+  it("includes the current code in the clipboard prompt", () => {
+    const customCode = "sequenceDiagram\n  Alice->>Bob: Hello";
+    const writeText = setupClipboard();
     renderEditor({ code: customCode });
-    fireEvent.click(screen.getByRole("button", { name: /mermaidGptHelp/i }));
+    openAiHelpMenu();
+    fireEvent.click(screen.getByRole("button", { name: /aiHelpClaude/i }));
 
     expect(writeText.mock.calls[0][0]).toContain(customCode);
+  });
+
+  it("closes AI Help menu after selecting an option", () => {
+    setupClipboard();
+    renderEditor();
+    openAiHelpMenu();
+    expect(screen.getByRole("button", { name: /aiHelpChatGpt/i })).toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: /aiHelpChatGpt/i }));
+    expect(screen.queryByRole("button", { name: /aiHelpChatGpt/i })).not.toBeInTheDocument();
   });
 });
