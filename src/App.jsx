@@ -847,8 +847,27 @@ ${code}
     [imageSize, backgroundColor],
   );
 
-  // exportToFigma produces the same output as copyImage("svg") — delegate to it.
-  const exportToFigma = useCallback(() => copyImage("svg"), [copyImage]);
+  const exportToFigma = useCallback(() => {
+    const svgEl = previewRef.current?.querySelector("svg");
+    if (!svgEl) {
+      toast.error(t("noDiagramToCopy"));
+      return;
+    }
+
+    const svgClone = svgEl.cloneNode(true);
+    svgClone.setAttribute("xmlns", "http://www.w3.org/2000/svg");
+
+    inlineComputedStyles(svgEl, svgClone);
+    convertForeignObjectsToText(svgClone);
+    svgClone.querySelectorAll("style").forEach((s) => s.remove());
+
+    const svgText = new XMLSerializer().serializeToString(svgClone);
+
+    navigator.clipboard
+      .writeText(svgText)
+      .then(() => toast.success(t("figmaExportCopied")))
+      .catch(() => toast.error(t("failedToCopySVG")));
+  }, [t]);
 
   const handleWheel = useCallback(
     (e) => {
