@@ -298,6 +298,24 @@ function App() {
       // Render with Mermaid
       await mermaid.run({ querySelector: "#diagram-target" });
 
+      // Normalize SVG dimensions — some diagram types (e.g. kanban) emit
+      // width="100%" instead of a fixed pixel value, which breaks layout,
+      // auto-fit scaling, and raster export.  Fall back to viewBox sizes.
+      const renderedSvg = previewRef.current.querySelector("svg");
+      if (renderedSvg) {
+        const vb = renderedSvg.viewBox?.baseVal;
+        if (vb && vb.width > 0 && vb.height > 0) {
+          const widthAttr = renderedSvg.getAttribute("width");
+          const heightAttr = renderedSvg.getAttribute("height");
+          if (!widthAttr || widthAttr.includes("%")) {
+            renderedSvg.setAttribute("width", vb.width);
+          }
+          if (!heightAttr || heightAttr.includes("%")) {
+            renderedSvg.setAttribute("height", vb.height);
+          }
+        }
+      }
+
       // Update URL
       updateURL();
 
