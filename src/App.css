@@ -120,7 +120,8 @@ header h1 {
   .dropdown-toggle,
   .controls>button {
     font-size: 12px;
-    padding: 9px 14px;
+    padding: 0 10px;
+    height: 32px;
   }
 }
 
@@ -494,9 +495,9 @@ main {
 }
 
 .controls {
-  padding: 12px;
+  padding: 8px 12px;
   display: flex;
-  gap: 8px;
+  gap: 6px;
   background: #f8fafc;
   border-top: 1px solid #e2e8f0;
   position: relative;
@@ -508,10 +509,10 @@ main {
 
 .controls > button,
 .controls .dropdown-toggle {
-  height: 38px;
-  min-width: 90px;
-  padding: 0 12px;
-  font-size: 13px;
+  height: 32px;
+  min-width: 0;
+  padding: 0 10px;
+  font-size: 12px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -537,19 +538,20 @@ main {
 }
 
 .size-input input {
-  width: 80px;
-  padding: 8px;
+  width: 72px;
+  padding: 4px 8px;
   border-radius: 6px;
   border: 1px solid #e2e8f0;
   background: white;
-  font-size: 13px;
+  font-size: 12px;
   text-align: center;
+  height: 32px;
 }
 
 .size-input input[type="color"] {
   padding: 2px;
-  width: 60px;
-  height: 38px;
+  width: 50px;
+  height: 32px;
   border: 1px solid #e2e8f0;
 }
 

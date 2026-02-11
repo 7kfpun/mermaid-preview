@@ -1,4 +1,4 @@
-import { memo } from "react";
+import { memo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import CodeMirror from "@uiw/react-codemirror";
 import { oneDark } from "@codemirror/theme-one-dark";
@@ -25,12 +25,23 @@ const Editor = ({
   copyImage,
   handleShare,
   copyEmbedHtml,
+  exportToFigma,
   backgroundColor,
   setBackgroundColor,
   showSamples,
   setShowSamples,
 }) => {
   const { t } = useTranslation();
+  const [aiHelpMenuOpen, setAiHelpMenuOpen] = useState(false);
+
+  const openAiHelp = (url, eventName) => {
+    const prompt = `Help me with this Mermaid diagram:\n\`\`\`mermaid\n${code}\n\`\`\``;
+    navigator.clipboard.writeText(prompt).catch(() => {});
+    window.open(url, "_blank");
+    trackEvent(eventName);
+    setAiHelpMenuOpen(false);
+  };
+
   return (
     <section
       className="editor"
@@ -256,30 +267,66 @@ const Editor = ({
         </button>
         <button
           onClick={() => {
-            window.open('https://chatgpt.com/g/g-684cc36f30208191b21383b88650a45d-mermaid-chart-diagrams-and-charts', '_blank');
-            trackEvent("open_mermaid_gpt");
+            exportToFigma();
+            trackEvent("export_to_figma");
           }}
-          title={t("mermaidGptHelp", "Get AI help with Mermaid syntax")}
-          aria-label={t("mermaidGptHelp", "Get AI help with Mermaid syntax")}
-          className="gpt-button"
+          title={t("figmaExportTitle")}
+          aria-label={t("figmaExportTitle")}
+          className="figma-button"
         >
           <svg
             width="16"
             height="16"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
+            viewBox="0 0 38 57"
+            fill="currentColor"
             style={{ marginRight: "6px" }}
+            aria-hidden="true"
           >
-            <circle cx="12" cy="12" r="10"/>
-            <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/>
-            <line x1="12" y1="17" x2="12.01" y2="17"/>
+            <path d="M19 28.5a9.5 9.5 0 1 1 19 0 9.5 9.5 0 0 1-19 0z"/>
+            <path d="M0 47.5A9.5 9.5 0 0 1 9.5 38H19v9.5a9.5 9.5 0 0 1-19 0z"/>
+            <path d="M19 0v19h9.5a9.5 9.5 0 0 0 0-19H19z"/>
+            <path d="M0 9.5A9.5 9.5 0 0 0 9.5 19H19V0H9.5A9.5 9.5 0 0 0 0 9.5z"/>
+            <path d="M0 28.5A9.5 9.5 0 0 0 9.5 38H19V19H9.5A9.5 9.5 0 0 0 0 28.5z"/>
           </svg>
-          {t("mermaidGpt", "AI Help")}
+          {t("exportToFigma")}
         </button>
+        <div className="dropdown">
+          <button
+            onClick={() => {
+              setAiHelpMenuOpen(!aiHelpMenuOpen);
+              setDownloadMenuOpen(false);
+              setCopyMenuOpen(false);
+            }}
+            className="dropdown-toggle"
+            aria-haspopup="true"
+            aria-expanded={aiHelpMenuOpen}
+          >
+            {t("mermaidGpt")}
+          </button>
+          {aiHelpMenuOpen && (
+            <div className="dropdown-menu">
+              <button
+                onClick={() =>
+                  openAiHelp(
+                    "https://chatgpt.com/g/g-684cc36f30208191b21383b88650a45d-mermaid-chart-diagrams-and-charts",
+                    "open_mermaid_gpt"
+                  )
+                }
+                title={t("aiHelpChatGptTitle")}
+              >
+                {t("aiHelpChatGpt")}
+              </button>
+              <button
+                onClick={() =>
+                  openAiHelp("https://claude.ai/new", "open_mermaid_claude")
+                }
+                title={t("aiHelpClaudeTitle")}
+              >
+                {t("aiHelpClaude")}
+              </button>
+            </div>
+          )}
+        </div>
       </div>
     </section>
   );

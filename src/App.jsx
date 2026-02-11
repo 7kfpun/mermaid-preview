@@ -718,6 +718,66 @@ ${code}
     [imageSize, backgroundColor],
   );
 
+  const exportToFigma = useCallback(() => {
+    const svgEl = previewRef.current?.querySelector("svg");
+    if (!svgEl) {
+      toast.error(t("noDiagramToCopy"));
+      return;
+    }
+
+    // SVG visual properties that Figma needs inlined to render correctly.
+    // Mermaid uses <style> CSS classes which Figma ignores, so we resolve
+    // computed styles and write them as inline attributes on every element.
+    const SVG_STYLE_PROPS = [
+      "fill", "fill-opacity", "fill-rule",
+      "stroke", "stroke-width", "stroke-opacity",
+      "stroke-dasharray", "stroke-dashoffset",
+      "stroke-linecap", "stroke-linejoin", "stroke-miterlimit",
+      "opacity",
+      "font-family", "font-size", "font-weight", "font-style",
+      "letter-spacing", "text-anchor", "dominant-baseline",
+      "visibility", "stop-color", "stop-opacity",
+    ];
+
+    // Walk live + clone trees in parallel so we can read computed styles
+    // from the live DOM while writing them onto the detached clone.
+    function inlineComputedStyles(liveEl, cloneEl) {
+      if (liveEl.nodeType !== Node.ELEMENT_NODE) return;
+
+      const computed = window.getComputedStyle(liveEl);
+      const parts = SVG_STYLE_PROPS.reduce((acc, prop) => {
+        const val = computed.getPropertyValue(prop);
+        if (val && val.trim() !== "") acc.push(`${prop}:${val}`);
+        return acc;
+      }, []);
+
+      if (parts.length) cloneEl.setAttribute("style", parts.join(";"));
+      cloneEl.removeAttribute("class");
+
+      const liveKids = liveEl.children;
+      const cloneKids = cloneEl.children;
+      for (let i = 0; i < liveKids.length; i++) {
+        inlineComputedStyles(liveKids[i], cloneKids[i]);
+      }
+    }
+
+    const svgClone = svgEl.cloneNode(true);
+    svgClone.setAttribute("xmlns", "http://www.w3.org/2000/svg");
+
+    // Inline styles before removing <style> blocks so indices stay aligned
+    inlineComputedStyles(svgEl, svgClone);
+
+    // Now safe to strip <style> blocks — everything is inlined
+    svgClone.querySelectorAll("style").forEach((s) => s.remove());
+
+    const svgText = new XMLSerializer().serializeToString(svgClone);
+
+    navigator.clipboard
+      .writeText(svgText)
+      .then(() => toast.success(t("figmaExportCopied")))
+      .catch(() => toast.error(t("failedToCopySVG")));
+  }, [t]);
+
   const handleWheel = useCallback(
     (e) => {
       e.preventDefault();
@@ -921,6 +981,7 @@ ${code}
           copyImage={copyImage}
           handleShare={handleShare}
           copyEmbedHtml={copyEmbedHtml}
+          exportToFigma={exportToFigma}
           showSamples={showSamples}
           setShowSamples={setShowSamples}
         />
