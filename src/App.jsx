@@ -260,6 +260,20 @@ function App() {
       Object.assign(config, configObj);
     }
 
+    // Mermaid's Gantt renderer uses elem.parentElement.offsetWidth to
+    // determine chart width.  The .diagram-container is position:absolute
+    // with no explicit width, so offsetWidth resolves to 0 (CSS shrink-to-
+    // fit), producing viewBox="0 0 0 H" and style="max-width:0px" which
+    // makes the chart invisible.  Providing useWidth from the actual preview
+    // container bypasses that offsetWidth lookup and gives the Gantt a
+    // correct pixel width.
+    if (!config.gantt) {
+      config.gantt = {};
+    }
+    if (config.gantt.useWidth === undefined) {
+      config.gantt.useWidth = svgContainerRef.current?.offsetWidth || 1200;
+    }
+
     mermaid.initialize(config);
   };
 
