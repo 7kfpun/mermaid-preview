@@ -9,4 +9,3 @@ coverage
 *.tsbuildinfo
 .vite
 /.husky/_/
-package-lock.json

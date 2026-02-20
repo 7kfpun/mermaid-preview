@@ -32,6 +32,8 @@ const baseHandlers = {
   handleMouseDown: vi.fn(),
   handleWheel: vi.fn(),
   handleTouchMove: vi.fn(),
+  handleTouchStart: vi.fn(),
+  handleTouchEnd: vi.fn(),
   zoomIn: vi.fn(),
   zoomOut: vi.fn(),
   resetZoom: vi.fn(),
@@ -56,6 +58,7 @@ const renderPreview = (overrideProps = {}) => {
       isLoading={false}
       editorHeight={120}
       backgroundColor="#ffffff"
+      error={null}
       {...baseHandlers}
       svgContainerRef={svgContainerRef}
       previewRef={previewRef}
@@ -99,5 +102,72 @@ describe("Preview", () => {
       }),
     );
     expect(setShowThemeConfig).toHaveBeenCalled();
+  });
+
+  it("calls setTheme with 'default' when default button is clicked", () => {
+    renderPreview({ theme: "dark" });
+    fireEvent.click(screen.getByText("default"));
+    expect(baseHandlers.setTheme).toHaveBeenCalledWith("default");
+  });
+
+  it("calls setTheme with 'forest' when forest button is clicked", () => {
+    renderPreview();
+    fireEvent.click(screen.getByText("forest"));
+    expect(baseHandlers.setTheme).toHaveBeenCalledWith("forest");
+  });
+
+  it("calls setTheme with 'neutral' when neutral button is clicked", () => {
+    renderPreview();
+    fireEvent.click(screen.getByText("neutral"));
+    expect(baseHandlers.setTheme).toHaveBeenCalledWith("neutral");
+  });
+
+  it("calls setTheme with 'base' when base button is clicked", () => {
+    renderPreview();
+    fireEvent.click(screen.getByText("base"));
+    expect(baseHandlers.setTheme).toHaveBeenCalledWith("base");
+  });
+
+  it("marks the active theme button", () => {
+    renderPreview({ theme: "forest" });
+    expect(screen.getByText("forest")).toHaveClass("active");
+  });
+
+  it("shows error overlay when error prop is truthy", () => {
+    renderPreview({ error: new Error("Syntax error") });
+    expect(screen.getByText(/Error rendering diagram/i)).toBeInTheDocument();
+  });
+
+  it("does not show error overlay when error is null", () => {
+    renderPreview({ error: null });
+    expect(screen.queryByText(/Error rendering diagram/i)).not.toBeInTheDocument();
+  });
+
+  it("shows loading spinner when isLoading is true", () => {
+    const { container } = renderPreview({ isLoading: true });
+    expect(container.querySelector(".loading-overlay")).toBeInTheDocument();
+  });
+
+  it("does not show loading spinner when isLoading is false", () => {
+    const { container } = renderPreview({ isLoading: false });
+    expect(container.querySelector(".loading-overlay")).not.toBeInTheDocument();
+  });
+
+  it("calls zoomIn when zoom-in button is clicked", () => {
+    renderPreview();
+    fireEvent.click(screen.getByTitle("zoomIn"));
+    expect(baseHandlers.zoomIn).toHaveBeenCalled();
+  });
+
+  it("calls zoomOut when zoom-out button is clicked", () => {
+    renderPreview();
+    fireEvent.click(screen.getByTitle("zoomOut"));
+    expect(baseHandlers.zoomOut).toHaveBeenCalled();
+  });
+
+  it("calls resetZoom when reset button is clicked", () => {
+    renderPreview();
+    fireEvent.click(screen.getByTitle("resetZoom"));
+    expect(baseHandlers.resetZoom).toHaveBeenCalled();
   });
 });
